@@ -40,10 +40,12 @@ class TestSimpleCovHtml < Test::Unit::TestCase
     return true
   end
   def test_git
+    ENV['CI'] = nil
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
   end
   def test_travis
+    ENV['CI'] = 'true'
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = "master"
     ENV['TRAVIS_COMMIT'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
@@ -51,6 +53,7 @@ class TestSimpleCovHtml < Test::Unit::TestCase
     assert_equal(passes, true)
   end
   def test_codeship
+      ENV['CI'] = 'true'
       ENV['CI_NAME'] = 'codeship'
       ENV['CI_BRANCH'] = 'master'
       ENV['CI_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
@@ -58,6 +61,7 @@ class TestSimpleCovHtml < Test::Unit::TestCase
       assert_equal(passes, true)
   end
   def test_circleci
+      ENV['CI'] = 'true'
       ENV['CIRCLECI'] = 'true'
       ENV['CIRCLE_BRANCH'] = "master"
       ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
@@ -65,6 +69,7 @@ class TestSimpleCovHtml < Test::Unit::TestCase
       assert_equal(passes, true)
   end
   def test_semaphore
+      ENV['CI'] = 'true'
       ENV['SEMAPHORE'] = "true"
       ENV['BRANCH_NAME'] = "master"
       ENV['SEMAPHORE_PROJECT_HASH_ID'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
@@ -72,6 +77,7 @@ class TestSimpleCovHtml < Test::Unit::TestCase
       assert_equal(passes, true)
   end
   def test_drone
+      ENV['CI'] = 'true'
       ENV['DRONE'] = "true"
       ENV['DRONE_BRANCH'] = "master"
       ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
