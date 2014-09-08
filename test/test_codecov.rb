@@ -1,3 +1,6 @@
+# require 'simplecov'
+# SimpleCov.start
+
 require 'helper'
 
 class TestSimpleCovHtml < Test::Unit::TestCase
