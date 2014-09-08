@@ -1,4 +1,4 @@
-require 'url'
+require 'uri'
 require 'codecov'
 require 'net/http'
 require 'rubygems'

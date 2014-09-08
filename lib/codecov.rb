@@ -1,7 +1,7 @@
-require "uri"
-require "json"
-require "net/http"
-require "simplecov"
+require 'uri'
+require 'json'
+require 'net/http'
+require 'simplecov'
 
 VERSION = "0.0.1"
 

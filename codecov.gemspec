@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.test_files         = ["test/helper.rb", "test/test_codecov.rb"]
   s.require_paths      = ["lib"]
   
-  s.add_dependency "url"
+  s.add_dependency "uri"
   s.add_dependency "json"
   s.add_dependency "simplecov"
 
