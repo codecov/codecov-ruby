@@ -65,7 +65,7 @@ class TestCodecov < Test::Unit::TestCase
   def teardown
     # needed for sending this projects coverage
     ENV['CI'] = "true"
-    ENV['TRAVIS'] = REALENV["TRAVIS"]
+    ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
