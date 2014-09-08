@@ -1,6 +1,12 @@
 require 'helper'
 
+
 class TestCodecov < Test::Unit::TestCase
+  REALENV = {
+    "TRAVIS_BRANCH" => ENV["TRAVIS_BRANCH"],
+    "TRAVIS_COMMIT" => ENV["TRAVIS_COMMIT"],
+    "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"]
+  }
   def url
     return ENV['CODECOV_URL'] || "https://codecov.io"
   end
@@ -33,25 +39,36 @@ class TestCodecov < Test::Unit::TestCase
   end
   def setup
     ENV['CI'] = "true"
+    ENV['CODECOV_TOKEN'] = nil
+    # travis
     ENV['TRAVIS'] = nil
     ENV['TRAVIS_BRANCH'] = nil
     ENV['TRAVIS_COMMIT'] = nil
     ENV['TRAVIS_JOB_ID'] = nil
+    # codeship
     ENV['CI_NAME'] = nil
     ENV['CI_BRANCH'] = nil
     ENV['CI_COMMIT_ID'] = nil
-    ENV['CODECOV_TOKEN'] = nil
+    # circleci
     ENV['CIRCLECI'] = nil
     ENV['CIRCLE_BRANCH'] = nil
     ENV['CIRCLE_SHA1'] = nil
-    ENV['CODECOV_TOKEN'] = nil
+    # semaphore
     ENV['SEMAPHORE'] = nil
     ENV['BRANCH_NAME'] = nil
     ENV['SEMAPHORE_PROJECT_HASH_ID'] = nil
-    ENV['CODECOV_TOKEN'] = nil
+    # drone
     ENV['DRONE'] = nil
     ENV['DRONE_BRANCH'] = nil
     ENV['DRONE_COMMIT'] = nil
+  end
+  def teardown
+    # needed for sending this projects coverage
+    ENV['CI'] = "true"
+    ENV['TRAVIS'] = REALENV["TRAVIS"]
+    ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
+    ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
+    ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
     ENV['CODECOV_TOKEN'] = nil
   end
   def test_git
