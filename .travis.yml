@@ -1,8 +1,6 @@
 lang: ruby
 notifications:
   email: false
-install:
-  - pip install codecov
 script:
   - rake
 rvm:

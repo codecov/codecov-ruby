@@ -28,6 +28,6 @@ PLATFORMS
 
 DEPENDENCIES
   codecov!
-  mocha (~> 0.14)
+  mocha
   rake
   simplecov
