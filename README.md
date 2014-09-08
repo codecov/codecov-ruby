@@ -15,7 +15,20 @@ gem 'codecov', :require => false, :group => :test
 ```ruby
 require 'simplecov'
 require 'codecov'
+
 SimpleCov.start
+SimpleCov.formatter = SimpleCov::Formatter::Codecov
+```
+> Add to the top of your `test/test_helper.rb` file
+
+### Send only from CI
+```
+require 'simplecov'
+SimpleCov.start
+if ENV['CI'] == 'true'
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
 ```
 
 

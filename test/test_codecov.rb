@@ -1,7 +1,5 @@
 require 'helper'
 
-SimpleCov.start
-
 class TestCodecov < Test::Unit::TestCase
   def url
     return ENV['CODECOV_URL'] || "https://codecov.io"
