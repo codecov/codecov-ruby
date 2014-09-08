@@ -3,7 +3,7 @@ PATH
   specs:
     codecov (0.0.1)
       json
-      simplecov
+      simplecov-html
       url
 
 GEM

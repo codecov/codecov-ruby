@@ -2,7 +2,6 @@ lang: ruby
 notifications:
   email: false
 script:
-  - bundle
   - rake
 rvm:
   - 1.9.3
