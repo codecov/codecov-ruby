@@ -1,21 +1,17 @@
-require 'simplecov'
+require 'helper'
+
 SimpleCov.start
 
-require 'uri'
-require 'simplecov'
-require 'net/http'
-require 'rubygems'
-require 'test/unit'
-require 'mocha/setup'
-
-require 'codecov'
-
-class TestSimpleCovHtml < Test::Unit::TestCase
+class TestCodecov < Test::Unit::TestCase
   def url
     return ENV['CODECOV_URL'] || "https://codecov.io"
   end
+  def test_defined
+    assert defined?(SimpleCov::Formatter::Codecov)
+    assert defined?(SimpleCov::Formatter::Codecov::VERSION)
+  end
   def passes
-    formatter = SimpleCov::Formatter::JSONFormatter.new
+    formatter = SimpleCov::Formatter::Codecov.new
     result = mock()
     something = mock()
     somefile = mock()

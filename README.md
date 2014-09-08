@@ -5,8 +5,18 @@
 
 -----
 
+## Usage
 
+```ruby
+gem 'codecov', :require => false, :group => :test
+```
+> Add to your Gemfile
 
+```ruby
+require 'simplecov'
+require 'codecov'
+SimpleCov.start
+```
 
 
 [1]: https://codecov.io/

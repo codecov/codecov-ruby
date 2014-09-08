@@ -1,19 +1,16 @@
 require 'uri'
 require 'json'
 require 'net/http'
-require 'simplecov'
 
-VERSION = "0.0.1"
-
-class SimpleCov::Formatter::JSONFormatter
-  
+class SimpleCov::Formatter::Codecov
+  VERSION = "0.0.1"
   def format(result)
     # =================
     # Build JSON Report
     # =================
     report = {
       "meta" => {
-        "version" => "codecov-python/v0.0.1",
+        "version" => "codecov-python/v"+SimpleCov::Formatter::Codecov::VERSION,
       },
       "coverage" => {}
     }
@@ -108,5 +105,4 @@ class SimpleCov::Formatter::JSONFormatter
     # return json data
     report
   end
-  
 end

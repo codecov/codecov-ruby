@@ -3,7 +3,7 @@ PATH
   specs:
     codecov (0.0.1)
       json
-      simplecov-html
+      simplecov
       url
 
 GEM
@@ -30,4 +30,3 @@ DEPENDENCIES
   codecov!
   mocha
   rake
-  simplecov
