@@ -7,24 +7,25 @@
 
 ## Usage
 
-> Add to your Gemfile
+> Add to your `Gemfile`
+
 ```ruby
 gem 'codecov', :require => false, :group => :test
 ```
 
-> Add to the top of your `test/test_helper.rb` file
+> Add to the top of your `tests/helper.rb` file
+
 ```ruby
 require 'simplecov'
-require 'codecov'
-
 SimpleCov.start
+
+require 'codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov
 ```
 
 #### Submit only from CI
-```
-require 'simplecov'
-SimpleCov.start
+
+```ruby
 if ENV['CI'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov

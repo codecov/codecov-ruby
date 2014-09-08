@@ -23,7 +23,6 @@ class TestCodecov < Test::Unit::TestCase
     result.expects(:filenames).twice.returns(['/lib/something.rb', '/lib/somefile.rb'])
     data = formatter.format(result)
     assert_equal(data['result']['uploaded'], true)
-    assert_match(/\/github\/codecov\/ci\-repo\?ref\=[a-z\d]{40}$/, data['result']['url'])
     assert_equal(data['result']['message'], "Coverage reports upload successfully")
     assert_equal(data['meta']['version'], "codecov-python/v0.0.1")
     assert_equal(data['coverage'].to_json, {
@@ -32,13 +31,35 @@ class TestCodecov < Test::Unit::TestCase
     }.to_json)
     return true
   end
+  def setup
+    ENV['CI'] = "true"
+    ENV['TRAVIS'] = nil
+    ENV['TRAVIS_BRANCH'] = nil
+    ENV['TRAVIS_COMMIT'] = nil
+    ENV['TRAVIS_JOB_ID'] = nil
+    ENV['CI_NAME'] = nil
+    ENV['CI_BRANCH'] = nil
+    ENV['CI_COMMIT_ID'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+    ENV['CIRCLECI'] = nil
+    ENV['CIRCLE_BRANCH'] = nil
+    ENV['CIRCLE_SHA1'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+    ENV['SEMAPHORE'] = nil
+    ENV['BRANCH_NAME'] = nil
+    ENV['SEMAPHORE_PROJECT_HASH_ID'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+    ENV['DRONE'] = nil
+    ENV['DRONE_BRANCH'] = nil
+    ENV['DRONE_COMMIT'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+  end
   def test_git
     ENV['CI'] = nil
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
   end
   def test_travis
-    ENV['CI'] = "true"
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = "master"
     ENV['TRAVIS_COMMIT'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
@@ -46,35 +67,31 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal(passes, true)
   end
   def test_codeship
-      ENV['CI'] = "true"
-      ENV['CI_NAME'] = 'codeship'
-      ENV['CI_BRANCH'] = 'master'
-      ENV['CI_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-      ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
-      assert_equal(passes, true)
+    ENV['CI_NAME'] = 'codeship'
+    ENV['CI_BRANCH'] = 'master'
+    ENV['CI_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
   end
   def test_circleci
-      ENV['CI'] = "true"
-      ENV['CIRCLECI'] = 'true'
-      ENV['CIRCLE_BRANCH'] = "master"
-      ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-      ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
-      assert_equal(passes, true)
+    ENV['CIRCLECI'] = 'true'
+    ENV['CIRCLE_BRANCH'] = "master"
+    ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
   end
   def test_semaphore
-      ENV['CI'] = "true"
-      ENV['SEMAPHORE'] = "true"
-      ENV['BRANCH_NAME'] = "master"
-      ENV['SEMAPHORE_PROJECT_HASH_ID'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-      ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
-      assert_equal(passes, true)
+    ENV['SEMAPHORE'] = "true"
+    ENV['BRANCH_NAME'] = "master"
+    ENV['SEMAPHORE_PROJECT_HASH_ID'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
   end
   def test_drone
-      ENV['CI'] = "true"
-      ENV['DRONE'] = "true"
-      ENV['DRONE_BRANCH'] = "master"
-      ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-      ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
-      assert_equal(passes, true)
+    ENV['DRONE'] = "true"
+    ENV['DRONE_BRANCH'] = "master"
+    ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
   end
 end
