@@ -19,7 +19,7 @@ class SimpleCov::Formatter::Codecov
       next unless result.filenames.include? sourceFile.filename
       # https://github.com/colszowka/simplecov/blob/fee9dcf1f990a57503b0d518d9844a7209db4734/lib/simplecov/source_file.rb
       lines = [nil] * (sourceFile.lines_of_code + 1)
-      sourceFile.coverage.each_with_index {|h,x| lines[x]=h if h }
+      sourceFile.coverage.each_with_index {|h,x| lines[x+1]=h if h }
       report["coverage"][sourceFile.filename] = lines
     end
 
