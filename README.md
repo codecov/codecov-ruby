@@ -22,6 +22,13 @@ require 'codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov
 ```
 
+> In your CI Environment Variables *(not needed for [https://travis-ci.org/](https://travis-ci.org/))*
+
+```sh
+CODECOV_TOKEN=<your repo token>
+```
+Find you repo token on your repo page at [codecov.io][1]
+
 #### ... perhaps send it only when
 
 ```ruby
