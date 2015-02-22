@@ -59,7 +59,7 @@ class SimpleCov::Formatter::Codecov
     elsif ENV['CI'] == "true" and ENV['SEMAPHORE'] == "true"
         # https://semaphoreapp.com/docs/available-environment-variables.html
         params[:branch] = ENV['BRANCH_NAME']
-        params[:commit] = ENV['SEMAPHORE_PROJECT_HASH_ID']
+        params[:commit] = ENV['REVISION']
 
     # drone.io
     # --------
