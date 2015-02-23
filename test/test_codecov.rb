@@ -56,7 +56,7 @@ class TestCodecov < Test::Unit::TestCase
     # semaphore
     ENV['SEMAPHORE'] = nil
     ENV['BRANCH_NAME'] = nil
-    ENV['SEMAPHORE_PROJECT_HASH_ID'] = nil
+    ENV['REVISION'] = nil
     # drone
     ENV['DRONE'] = nil
     ENV['DRONE_BRANCH'] = nil
@@ -100,7 +100,7 @@ class TestCodecov < Test::Unit::TestCase
   def test_semaphore
     ENV['SEMAPHORE'] = "true"
     ENV['BRANCH_NAME'] = "master"
-    ENV['SEMAPHORE_PROJECT_HASH_ID'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['REVISION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
   end
