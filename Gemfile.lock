@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    codecov (0.0.1)
+    codecov (0.0.2)
       json
       simplecov
       url

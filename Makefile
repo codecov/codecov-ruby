@@ -4,7 +4,7 @@ build:
 	gem build codecov.gemspec
 
 deploy:	
-	gem push codecov-0.0.1.gem
+	gem push codecov-0.0.2.gem
 
 install:
 	rm -rf vendor .bundle
@@ -12,6 +12,3 @@ install:
 
 test:
 	rake
-
-p:
-	irb
