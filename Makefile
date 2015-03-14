@@ -3,8 +3,8 @@
 build:
 	gem build codecov.gemspec
 
-deploy:	
-	gem push codecov-0.0.2.gem
+deploy:
+	gem push codecov-0.0.3.gem
 
 install:
 	rm -rf vendor .bundle
