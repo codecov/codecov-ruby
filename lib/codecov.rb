@@ -86,6 +86,8 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['DRONE_BUILD_NUMBER']
         params[:build_url] = ENV['DRONE_BUILD_URL']
 
+    # Appveyor
+    # --------
     elsif ENV['CI'] == "True" and ENV['APPVEYOR'] == 'True'
         # http://www.appveyor.com/docs/environment-variables
         params[:service] = "appveyor"
@@ -95,7 +97,6 @@ class SimpleCov::Formatter::Codecov
         params[:repo] = ENV['APPVEYOR_REPO_NAME'].split('/')[1]
         params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
 
-    # -------
     # Wercker
     # -------
     elsif ENV['CI'] == "true" and ENV['WERCKER_GIT_BRANCH']
@@ -107,6 +108,8 @@ class SimpleCov::Formatter::Codecov
         params[:repo] = ENV['WERCKER_GIT_REPOSITORY']
         params[:commit] = ENV['WERCKER_GIT_COMMIT']
 
+    # Jenkins
+    # --------
     elsif ENV['JENKINS_URL'] != nil
         # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
         params[:service] = 'jenkins'
@@ -115,6 +118,19 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['BUILD_NUMBER']
         params[:root] = ENV['WORKSPACE']
         params[:build_url] = ENV['BUILD_URL']
+
+    # Shippable
+    # ---------
+    elsif ENV['SHIPPABLE'] == "true"
+        # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+        params[:service] = 'shippable'
+        params[:branch] = ENV['BRANCH']
+        params[:build] = ENV['BUILD_NUMBER']
+        params[:build_url] = ENV['BUILD_URL']
+        params[:pull_request] = ENV['PULL_REQUEST']!='false' ? ENV['PULL_REQUEST'] : ''
+        params[:owner] = ENV['REPO_NAME'].split('/')[0]
+        params[:repo] = ENV['REPO_NAME'].split('/')[1]
+        params[:commit] = ENV['COMMIT']
 
     # git
     # ---

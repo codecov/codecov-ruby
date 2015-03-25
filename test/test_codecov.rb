@@ -61,6 +61,19 @@ class TestCodecov < Test::Unit::TestCase
     ENV['DRONE'] = nil
     ENV['DRONE_BRANCH'] = nil
     ENV['DRONE_COMMIT'] = nil
+    # appveyor
+    ENV["APPVEYOR"] = nil
+    ENV["APPVEYOR_REPO_BRANCH"] = nil
+    ENV["APPVEYOR_BUILD_NUMBER"] = nil
+    ENV["APPVEYOR_REPO_NAME"] = nil
+    ENV["APPVEYOR_REPO_COMMIT"] = nil
+    # shippable
+    ENV["BRANCH"] = nil
+    ENV["BUILD_NUMBER"] = nil
+    ENV["BUILD_URL"] = nil
+    ENV["PULL_REQUEST"] = nil
+    ENV["REPO_NAME"] = nil
+    ENV["COMMIT"] = nil
   end
   def teardown
     # needed for sending this projects coverage
@@ -88,6 +101,25 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CI_BRANCH'] = 'master'
     ENV['CI_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
+  end
+  def test_shippable
+    ENV["SHIPPABLE"] = 'True'
+    ENV["BRANCH"] = 'master'
+    ENV["BUILD_NUMBER"] = '1'
+    ENV["BUILD_URL"] = 'http://shippable.com/...'
+    ENV["PULL_REQUEST"] = '1'
+    ENV["REPO_NAME"] = 'owner/repo'
+    ENV["COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    assert_equal(passes, true)
+  end
+  def test_appveyor
+    ENV["CI"] = 'True'
+    ENV["APPVEYOR"] = 'True'
+    ENV["APPVEYOR_REPO_BRANCH"] = 'master'
+    ENV["APPVEYOR_BUILD_NUMBER"] = '1'
+    ENV["APPVEYOR_REPO_NAME"] = 'owner/repo'
+    ENV["APPVEYOR_REPO_COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     assert_equal(passes, true)
   end
   def test_circleci
