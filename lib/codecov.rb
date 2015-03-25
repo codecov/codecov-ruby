@@ -170,7 +170,7 @@ class SimpleCov::Formatter::Codecov
   # @return [Hash<String, Array<nil, Integer>>]
   def result_to_codecov(result)
     result.files.inject({}) do |memo, file|
-      memo[file.filename] = file_to_codecov(file)
+      memo[shortened_filename(file)] = file_to_codecov(file)
       memo
     end
   end
@@ -188,5 +188,14 @@ class SimpleCov::Formatter::Codecov
         line.coverage
       end
     end
+  end
+
+  # Get a filename relative to the project root. Based on
+  # https://github.com/colszowka/simplecov-html, copyright Christoph Olszowka.
+  #
+  # @param file [SimeplCov::SourceFile] The file to use.
+  # @return [String]
+  def shortened_filename(file)
+    file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
   end
 end
