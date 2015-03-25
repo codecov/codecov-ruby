@@ -12,16 +12,8 @@ class SimpleCov::Formatter::Codecov
       "meta" => {
         "version" => "codecov-python/v"+SimpleCov::Formatter::Codecov::VERSION,
       },
-      "coverage" => {}
+      "coverage" => result_to_codecov(result),
     }
-
-    result.files.each do |sourceFile|
-      next unless result.filenames.include? sourceFile.filename
-      # https://github.com/colszowka/simplecov/blob/fee9dcf1f990a57503b0d518d9844a7209db4734/lib/simplecov/source_file.rb
-      lines = [nil] * (sourceFile.lines_of_code + 1)
-      sourceFile.coverage.each_with_index {|h,x| lines[x+1]=h if h }
-      report["coverage"][sourceFile.filename] = lines
-    end
 
     json = report.to_json
 
@@ -168,5 +160,35 @@ class SimpleCov::Formatter::Codecov
 
     # return json data
     report
+  end
+
+  private
+
+  # Format SimpleCov coverage data for the Codecov.io API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash<String, Array<nil, Integer>>]
+  def result_to_codecov(result)
+    result.files.inject({}) do |memo, file|
+      if result.filenames.include?(file.filename)
+        memo[file.filename] = file_to_codecov(file)
+      end
+      memo
+    end
+  end
+
+  # Format coverage data for a single file for the Codecov.io API.
+  #
+  # @param file [SimpleCov::SourceFile] The file to process.
+  # @return [Array<nil, Integer>]
+  def file_to_codecov(file)
+    # Initial nil is required to offset line numbers.
+    [nil] + file.lines.map do |line|
+      if line.skipped?
+        nil
+      else
+        line.coverage
+      end
+    end
   end
 end
