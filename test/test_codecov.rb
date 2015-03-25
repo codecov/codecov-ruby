@@ -40,6 +40,10 @@ class TestCodecov < Test::Unit::TestCase
     }.to_json)
     data
   end
+  def setup
+    ENV['CI'] = nil
+    ENV['TRAVIS'] = nil
+  end
   def teardown
     # needed for sending this projects coverage
     ENV['CI'] = "true"
@@ -48,11 +52,9 @@ class TestCodecov < Test::Unit::TestCase
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
     ENV['TRAVIS_JOB_NUMBER'] = REALENV["TRAVIS_JOB_NUMBER"]
     ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
-    ENV['TRAVIS_TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
+    ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
     ENV['CODECOV_TOKEN'] = nil
-    # travis
-    ENV['TRAVIS'] = nil
     ENV['CI_NAME'] = nil
     ENV['CIRCLECI'] = nil
     ENV['SEMAPHORE'] = nil
