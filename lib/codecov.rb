@@ -99,7 +99,7 @@ class SimpleCov::Formatter::Codecov
 
     # Wercker
     # -------
-    elsif ENV['CI'] == "true" and ENV['WERCKER_GIT_BRANCH']
+    elsif ENV['CI'] == "true" and ENV['WERCKER_GIT_BRANCH'] != nil
         # http://devcenter.wercker.com/articles/steps/variables.html
         params[:service] = "wercker"
         params[:branch] = ENV['WERCKER_GIT_BRANCH']

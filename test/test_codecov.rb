@@ -5,6 +5,7 @@ class TestCodecov < Test::Unit::TestCase
   REALENV = {
     "TRAVIS_BRANCH" => ENV["TRAVIS_BRANCH"],
     "TRAVIS_COMMIT" => ENV["TRAVIS_COMMIT"],
+    "TRAVIS_PULL_REQUEST" => ENV["TRAVIS_PULL_REQUEST"],
     "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"]
   }
   def url
@@ -42,38 +43,13 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CODECOV_TOKEN'] = nil
     # travis
     ENV['TRAVIS'] = nil
-    ENV['TRAVIS_BRANCH'] = nil
-    ENV['TRAVIS_COMMIT'] = nil
-    ENV['TRAVIS_JOB_ID'] = nil
-    # codeship
     ENV['CI_NAME'] = nil
-    ENV['CI_BRANCH'] = nil
-    ENV['CI_COMMIT_ID'] = nil
-    # circleci
     ENV['CIRCLECI'] = nil
-    ENV['CIRCLE_BRANCH'] = nil
-    ENV['CIRCLE_SHA1'] = nil
-    # semaphore
     ENV['SEMAPHORE'] = nil
-    ENV['BRANCH_NAME'] = nil
-    ENV['REVISION'] = nil
-    # drone
     ENV['DRONE'] = nil
-    ENV['DRONE_BRANCH'] = nil
-    ENV['DRONE_COMMIT'] = nil
-    # appveyor
     ENV["APPVEYOR"] = nil
-    ENV["APPVEYOR_REPO_BRANCH"] = nil
-    ENV["APPVEYOR_BUILD_NUMBER"] = nil
-    ENV["APPVEYOR_REPO_NAME"] = nil
-    ENV["APPVEYOR_REPO_COMMIT"] = nil
-    # shippable
-    ENV["BRANCH"] = nil
-    ENV["BUILD_NUMBER"] = nil
-    ENV["BUILD_URL"] = nil
-    ENV["PULL_REQUEST"] = nil
-    ENV["REPO_NAME"] = nil
-    ENV["COMMIT"] = nil
+    ENV["SHIPPABLE"] = nil
+    ENV["WERCKER_GIT_BRANCH"] = nil
   end
   def teardown
     # needed for sending this projects coverage
@@ -82,6 +58,7 @@ class TestCodecov < Test::Unit::TestCase
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
+    ENV['TRAVIS_TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['CODECOV_TOKEN'] = nil
   end
   def test_git
@@ -104,7 +81,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal(passes, true)
   end
   def test_shippable
-    ENV["SHIPPABLE"] = 'True'
+    ENV["SHIPPABLE"] = 'true'
     ENV["BRANCH"] = 'master'
     ENV["BUILD_NUMBER"] = '1'
     ENV["BUILD_URL"] = 'http://shippable.com/...'
@@ -125,6 +102,9 @@ class TestCodecov < Test::Unit::TestCase
   def test_circleci
     ENV['CIRCLECI'] = 'true'
     ENV['CIRCLE_BRANCH'] = "master"
+    ENV['CIRCLE_BUILD_NUM'] = "1"
+    ENV['CIRCLE_PROJECT_USERNAME'] = "owner"
+    ENV['CIRCLE_PROJECT_REPONAME'] = "repo"
     ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
@@ -132,6 +112,8 @@ class TestCodecov < Test::Unit::TestCase
   def test_semaphore
     ENV['SEMAPHORE'] = "true"
     ENV['BRANCH_NAME'] = "master"
+    ENV['SEMAPHORE_REPO_SLUG'] = 'repo/owner'
+    ENV['SEMAPHORE_BUILD_NUMBER'] = 1
     ENV['REVISION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
@@ -139,7 +121,17 @@ class TestCodecov < Test::Unit::TestCase
   def test_drone
     ENV['DRONE'] = "true"
     ENV['DRONE_BRANCH'] = "master"
+    ENV['DRONE_BUILD_URL'] = "https://drone.io/..."
     ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    assert_equal(passes, true)
+  end
+  def test_wercker
+    ENV['WERCKER_GIT_BRANCH'] = "master"
+    ENV['WERCKER_MAIN_PIPELINE_STARTED'] = "1"
+    ENV['WERCKER_GIT_OWNER'] = "owner"
+    ENV['WERCKER_GIT_REPOSITORY'] = "repo"
+    ENV['WERCKER_GIT_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     assert_equal(passes, true)
   end
