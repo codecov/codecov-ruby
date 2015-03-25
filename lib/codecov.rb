@@ -170,9 +170,7 @@ class SimpleCov::Formatter::Codecov
   # @return [Hash<String, Array<nil, Integer>>]
   def result_to_codecov(result)
     result.files.inject({}) do |memo, file|
-      if result.filenames.include?(file.filename)
-        memo[file.filename] = file_to_codecov(file)
-      end
+      memo[file.filename] = file_to_codecov(file)
       memo
     end
   end
