@@ -121,7 +121,7 @@ class SimpleCov::Formatter::Codecov
 
     # Shippable
     # ---------
-    elsif ENV['SHIPPABLE'] == "true"
+    elsif ENV['CI'] == 'true' and ENV['SHIPPABLE'] == "true"
         # http://docs.shippable.com/en/latest/config.html#common-environment-variables
         params[:service] = 'shippable'
         params[:branch] = ENV['BRANCH']

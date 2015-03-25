@@ -104,6 +104,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal(result['params']['token'], '473c8c5b-10ee-4d83-86c6-bfd72a185a27')
   end
   def test_shippable
+    ENV['CI'] = "true"
     ENV["SHIPPABLE"] = 'true'
     ENV["BRANCH"] = 'master'
     ENV["BUILD_NUMBER"] = '1'
@@ -176,6 +177,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal(result['params']['token'], '473c8c5b-10ee-4d83-86c6-bfd72a185a27')
   end
   def test_drone
+    ENV['CI'] = "true"
     ENV['DRONE'] = "true"
     ENV['DRONE_BRANCH'] = "master"
     ENV['DRONE_BUILD_NUMBER'] = "1"
@@ -191,6 +193,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal(result['params']['token'], '473c8c5b-10ee-4d83-86c6-bfd72a185a27')
   end
   def test_wercker
+    ENV['CI'] = "true"
     ENV['WERCKER_GIT_BRANCH'] = "master"
     ENV['WERCKER_MAIN_PIPELINE_STARTED'] = "1"
     ENV['WERCKER_GIT_OWNER'] = "owner"
