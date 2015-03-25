@@ -33,7 +33,7 @@ class TestCodecov < Test::Unit::TestCase
     data = formatter.format(result)
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], "Coverage reports upload successfully")
-    assert_equal(data['meta']['version'], "codecov-python/v0.0.3")
+    assert_equal(data['meta']['version'], "codecov-python/v0.0.4")
     assert_equal(data['coverage'].to_json, {
       '/lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       '/lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
