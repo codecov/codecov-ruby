@@ -12,10 +12,11 @@ class SimpleCov::Formatter::Codecov
       "meta" => {
         "version" => "codecov-python/v"+SimpleCov::Formatter::Codecov::VERSION,
       },
-      "coverage" => result_to_codecov(result),
     }
+    report.update(result_to_codecov(result))
 
     json = report.to_json
+    IO.write('tmp.json', json)
 
     # ==============
     # CI Environment
@@ -167,10 +168,35 @@ class SimpleCov::Formatter::Codecov
   # Format SimpleCov coverage data for the Codecov.io API.
   #
   # @param result [SimpleCov::Result] The coverage data to process.
-  # @return [Hash<String, Array<nil, Integer>>]
+  # @return [Hash]
   def result_to_codecov(result)
+    {
+      'coverage' => result_to_codecov_coverage(result),
+      'messages' => result_to_codecov_messages(result),
+    }
+  end
+
+  # Format SimpleCov coverage data for the Codecov.io coverage API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash<String, Array>]
+  def result_to_codecov_coverage(result)
     result.files.inject({}) do |memo, file|
       memo[shortened_filename(file)] = file_to_codecov(file)
+      memo
+    end
+  end
+
+  # Format SimpleCov coverage data for the Codecov.io messages API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash<String, Hash>]
+  def result_to_codecov_messages(result)
+    result.files.inject({}) do |memo, file|
+      memo[shortened_filename(file)] = file.lines.inject({}) do |lines_memo, line|
+        lines_memo[line.line_number.to_s] = 'skipped' if line.skipped?
+        lines_memo
+      end
       memo
     end
   end
