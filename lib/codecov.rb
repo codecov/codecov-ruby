@@ -165,6 +165,8 @@ class SimpleCov::Formatter::Codecov
 
     # join the response to report
     report['result'] = JSON.parse(response.body)
+    report['params'] = params
+    report['query'] = uri.query
 
     # return json data
     report
