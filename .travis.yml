@@ -1,4 +1,5 @@
 lang: ruby
+sudo: false
 notifications:
   email: false
 script:
