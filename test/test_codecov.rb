@@ -8,7 +8,8 @@ class TestCodecov < Test::Unit::TestCase
     "TRAVIS_REPO_SLUG" => ENV['TRAVIS_REPO_SLUG'],
     "TRAVIS_JOB_NUMBER" => ENV['TRAVIS_JOB_NUMBER'],
     "TRAVIS_PULL_REQUEST" => ENV["TRAVIS_PULL_REQUEST"],
-    "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"]
+    "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"],
+    "TRAVIS_REPO_SLUG" => ENV["TRAVIS_REPO_SLUG"],
   }
   def url
     return ENV['CODECOV_URL'] || "https://codecov.io"
@@ -17,26 +18,31 @@ class TestCodecov < Test::Unit::TestCase
     assert defined?(SimpleCov::Formatter::Codecov)
     assert defined?(SimpleCov::Formatter::Codecov::VERSION)
   end
+  def stub_file(filename, coverage)
+    lines = coverage.each_with_index.map do |cov, i|
+      skipped = false
+      if cov == :skipped
+        skipped = true
+        cov = 0
+      end
+      stub('SimpleCov::SourceFile::Line', skipped?: skipped, line_number: i+1, coverage: cov)
+    end
+    stub('SimpleCov::SourceFile', filename: filename, lines: lines)
+  end
   def upload
     formatter = SimpleCov::Formatter::Codecov.new
-    result = mock()
-    something = mock()
-    somefile = mock()
-    something.expects(:filename).twice.returns('/lib/something.rb')
-    something.expects(:lines_of_code).returns(6)
-    something.expects(:coverage).returns([1, 0, 0, nil, 1, nil])
-    somefile.expects(:filename).twice.returns('/lib/somefile.rb')
-    somefile.expects(:lines_of_code).returns(10)
-    somefile.expects(:coverage).returns([1, nil, 1, 1, 1, 0, 0, nil, 1, nil])
-    result.expects(:files).returns([something, somefile])
-    result.expects(:filenames).twice.returns(['/lib/something.rb', '/lib/somefile.rb'])
+    result = stub('SimpleCov::Result', files: [
+      stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
+      stub_file('/path/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil]),
+    ])
+    SimpleCov.stubs(:root).returns('/path')
     data = formatter.format(result)
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], "Coverage reports upload successfully")
     assert_equal(data['meta']['version'], "codecov-ruby/v0.0.4")
     assert_equal(data['coverage'].to_json, {
-      '/lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
-      '/lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
+      'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
+      'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
     }.to_json)
     data
   end
@@ -54,6 +60,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
     ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
+    ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
+    ENV['TRAVIS_TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['CODECOV_TOKEN'] = nil
     ENV['CI_NAME'] = nil
     ENV['CIRCLECI'] = nil

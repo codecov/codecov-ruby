@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.3"
+  VERSION = "0.0.4"
   def format(result)
     # =================
     # Build JSON Report
@@ -12,18 +12,11 @@ class SimpleCov::Formatter::Codecov
       "meta" => {
         "version" => "codecov-ruby/v"+SimpleCov::Formatter::Codecov::VERSION,
       },
-      "coverage" => {}
     }
-
-    result.files.each do |sourceFile|
-      next unless result.filenames.include? sourceFile.filename
-      # https://github.com/colszowka/simplecov/blob/fee9dcf1f990a57503b0d518d9844a7209db4734/lib/simplecov/source_file.rb
-      lines = [nil] * (sourceFile.lines_of_code + 1)
-      sourceFile.coverage.each_with_index {|h,x| lines[x+1]=h if h }
-      report["coverage"][sourceFile.filename] = lines
-    end
+    report.update(result_to_codecov(result))
 
     json = report.to_json
+    IO.write('tmp.json', json)
 
     # ==============
     # CI Environment
@@ -170,5 +163,67 @@ class SimpleCov::Formatter::Codecov
 
     # return json data
     report
+  end
+
+  private
+
+  # Format SimpleCov coverage data for the Codecov.io API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash]
+  def result_to_codecov(result)
+    {
+      'coverage' => result_to_codecov_coverage(result),
+      'messages' => result_to_codecov_messages(result),
+    }
+  end
+
+  # Format SimpleCov coverage data for the Codecov.io coverage API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash<String, Array>]
+  def result_to_codecov_coverage(result)
+    result.files.inject({}) do |memo, file|
+      memo[shortened_filename(file)] = file_to_codecov(file)
+      memo
+    end
+  end
+
+  # Format SimpleCov coverage data for the Codecov.io messages API.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [Hash<String, Hash>]
+  def result_to_codecov_messages(result)
+    result.files.inject({}) do |memo, file|
+      memo[shortened_filename(file)] = file.lines.inject({}) do |lines_memo, line|
+        lines_memo[line.line_number.to_s] = 'skipped' if line.skipped?
+        lines_memo
+      end
+      memo
+    end
+  end
+
+  # Format coverage data for a single file for the Codecov.io API.
+  #
+  # @param file [SimpleCov::SourceFile] The file to process.
+  # @return [Array<nil, Integer>]
+  def file_to_codecov(file)
+    # Initial nil is required to offset line numbers.
+    [nil] + file.lines.map do |line|
+      if line.skipped?
+        nil
+      else
+        line.coverage
+      end
+    end
+  end
+
+  # Get a filename relative to the project root. Based on
+  # https://github.com/colszowka/simplecov-html, copyright Christoph Olszowka.
+  #
+  # @param file [SimeplCov::SourceFile] The file to use.
+  # @return [String]
+  def shortened_filename(file)
+    file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
   end
 end
