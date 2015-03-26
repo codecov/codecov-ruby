@@ -10,7 +10,7 @@ class SimpleCov::Formatter::Codecov
     # =================
     report = {
       "meta" => {
-        "version" => "codecov-python/v"+SimpleCov::Formatter::Codecov::VERSION,
+        "version" => "codecov-ruby/v"+SimpleCov::Formatter::Codecov::VERSION,
       },
       "coverage" => {}
     }
