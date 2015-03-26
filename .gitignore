@@ -37,3 +37,5 @@ build/
 
 vendor
 coverage
+
+Gemfile.lock
