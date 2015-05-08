@@ -85,7 +85,8 @@ class SimpleCov::Formatter::Codecov
         # http://www.appveyor.com/docs/environment-variables
         params[:service] = "appveyor"
         params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
-        params[:build] = ENV['APPVEYOR_BUILD_NUMBER']
+        params[:build] = ENV['APPVEYOR_JOB_ID']
+        params[:job] = ENV['APPVEYOR_BUILD_VERSION']
         params[:owner] = ENV['APPVEYOR_REPO_NAME'].split('/')[0]
         params[:repo] = ENV['APPVEYOR_REPO_NAME'].split('/')[1]
         params[:commit] = ENV['APPVEYOR_REPO_COMMIT']

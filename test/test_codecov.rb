@@ -140,7 +140,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV["CI"] = 'True'
     ENV["APPVEYOR"] = 'True'
     ENV["APPVEYOR_REPO_BRANCH"] = 'master'
-    ENV["APPVEYOR_BUILD_NUMBER"] = '1'
+    ENV['APPVEYOR_JOB_ID'] = 'build'
+    ENV['APPVEYOR_BUILD_VERSION'] = 'job'
     ENV["APPVEYOR_REPO_NAME"] = 'owner/repo'
     ENV["APPVEYOR_REPO_COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
@@ -150,6 +151,8 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])
+    assert_equal("build", result['params'][:build])
+    assert_equal("job", result['params'][:job])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_circleci
