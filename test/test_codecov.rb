@@ -96,8 +96,8 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])
     assert_equal("1", result['params'][:build])
-    assert_equal("33116958", result['params'][:travis_job_id])
-    assert_equal('1', result['params'][:pull_request])
+    assert_equal("33116958", result['params'][:job])
+    assert_equal('false', result['params'][:pull_request])
     assert_equal('', result['params']['token'])
   end
   def test_codeship
@@ -120,14 +120,14 @@ class TestCodecov < Test::Unit::TestCase
     ENV["BRANCH"] = 'master'
     ENV["BUILD_NUMBER"] = '1'
     ENV["BUILD_URL"] = 'http://shippable.com/...'
-    ENV["PULL_REQUEST"] = '1'
+    ENV["PULL_REQUEST"] = 'false'
     ENV["REPO_NAME"] = 'owner/repo'
     ENV["COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
     assert_equal("shippable", result['params'][:service], )
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:pull_request])
+    assert_equal("false", result['params'][:pull_request])
     assert_equal("1", result['params'][:build])
     assert_equal('http://shippable.com/...', result['params'][:build_url])
     assert_equal("master", result['params'][:branch])

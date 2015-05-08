@@ -30,8 +30,8 @@ class SimpleCov::Formatter::Codecov
         # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
         params[:service] = "travis-org"
         params[:branch] = ENV['TRAVIS_BRANCH']
-        params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']!='false' ? ENV['TRAVIS_PULL_REQUEST'] : ''
         params[:travis_job_id] = ENV['TRAVIS_JOB_ID']
+        params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
         params[:owner] = ENV['TRAVIS_REPO_SLUG'].split('/')[0]
         params[:repo] = ENV['TRAVIS_REPO_SLUG'].split('/')[1]
         params[:build] = ENV['TRAVIS_JOB_NUMBER']
@@ -120,7 +120,7 @@ class SimpleCov::Formatter::Codecov
         params[:branch] = ENV['BRANCH']
         params[:build] = ENV['BUILD_NUMBER']
         params[:build_url] = ENV['BUILD_URL']
-        params[:pull_request] = ENV['PULL_REQUEST']!='false' ? ENV['PULL_REQUEST'] : ''
+        params[:pull_request] = ENV['PULL_REQUEST']
         params[:owner] = ENV['REPO_NAME'].split('/')[0]
         params[:repo] = ENV['REPO_NAME'].split('/')[1]
         params[:commit] = ENV['COMMIT']
