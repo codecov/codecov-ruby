@@ -89,13 +89,13 @@ class TestCodecov < Test::Unit::TestCase
     ENV['TRAVIS_JOB_ID'] = "33116958"
     ENV['TRAVIS_PULL_REQUEST'] = "false"
     ENV['TRAVIS_JOB_NUMBER'] = "1"
-    ENV['TRAVIS_REPO_SLUG'] = "owner/repo"
+    ENV['TRAVIS_REPO_SLUG'] = "codecov/ci-repo"
     ENV['CODECOV_TOKEN'] = ''
     result = upload
-    assert_equal("travis-org", result['params'][:service])
+    assert_equal("travis", result['params'][:service])
     assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("codecov", result['params'][:owner])
+    assert_equal("ci-repo", result['params'][:repo])
     assert_equal("1", result['params'][:build])
     assert_equal("33116958", result['params'][:job])
     assert_equal('false', result['params'][:pull_request])

@@ -28,10 +28,10 @@ class SimpleCov::Formatter::Codecov
     # ---------
     if ENV['CI'] == "true" and ENV['TRAVIS'] == "true"
         # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-        params[:service] = "travis-org"
+        params[:service] = "travis"
         params[:branch] = ENV['TRAVIS_BRANCH']
-        params[:travis_job_id] = ENV['TRAVIS_JOB_ID']
         params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
+        params[:job] = ENV['TRAVIS_JOB_ID']
         params[:owner] = ENV['TRAVIS_REPO_SLUG'].split('/')[0]
         params[:repo] = ENV['TRAVIS_REPO_SLUG'].split('/')[1]
         params[:build] = ENV['TRAVIS_JOB_NUMBER']
