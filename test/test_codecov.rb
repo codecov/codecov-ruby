@@ -37,9 +37,10 @@ class TestCodecov < Test::Unit::TestCase
     ])
     SimpleCov.stubs(:root).returns('/path')
     data = formatter.format(result)
+    puts data['params']
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], "Coverage reports upload successfully")
-    assert_equal(data['meta']['version'], "codecov-ruby/v0.0.4")
+    assert_equal(data['meta']['version'], "codecov-ruby/v0.0.6")
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
@@ -86,7 +87,7 @@ class TestCodecov < Test::Unit::TestCase
     ENV['TRAVIS_BRANCH'] = "master"
     ENV['TRAVIS_COMMIT'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
     ENV['TRAVIS_JOB_ID'] = "33116958"
-    ENV['TRAVIS_PULL_REQUEST'] = "1"
+    ENV['TRAVIS_PULL_REQUEST'] = "false"
     ENV['TRAVIS_JOB_NUMBER'] = "1"
     ENV['TRAVIS_REPO_SLUG'] = "owner/repo"
     ENV['CODECOV_TOKEN'] = ''
@@ -125,7 +126,7 @@ class TestCodecov < Test::Unit::TestCase
     ENV["COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("shippable", result['params'][:service], )
+    assert_equal("shippable", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("false", result['params'][:pull_request])
     assert_equal("1", result['params'][:build])
@@ -144,9 +145,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV["APPVEYOR_REPO_COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("appveyor", result['params'][:service], )
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit], )
-    assert_equal("1", result['params'][:build])
+    assert_equal("appveyor", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])
@@ -162,8 +162,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("circleci", result['params'][:service], )
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit], )
+    assert_equal("circleci", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
@@ -179,8 +179,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['REVISION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("semaphore", result['params'][:service], )
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit], )
+    assert_equal("semaphore", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
@@ -196,8 +196,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("drone.io", result['params'][:service], )
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit], )
+    assert_equal("drone.io", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("https://drone.io/...", result['params'][:build_url])
     assert_equal("master", result['params'][:branch])
@@ -212,8 +212,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['WERCKER_GIT_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
-    assert_equal("wercker", result['params'][:service], )
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit], )
+    assert_equal("wercker", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])

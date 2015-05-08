@@ -27,7 +27,7 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov
 ```sh
 CODECOV_TOKEN=<your repo token>
 ```
-Find you repo token on your repo page at [codecov.io][1]
+Find you repo token on your repo page at [codecov.io][1]. Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or AppVeyor CI.
 
 #### ... perhaps send it only when
 

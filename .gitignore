@@ -39,3 +39,4 @@ vendor
 coverage
 
 Gemfile.lock
+tmp.json

@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
   def format(result)
     # =================
     # Build JSON Report
