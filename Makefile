@@ -4,7 +4,10 @@ build:
 	gem build codecov.gemspec
 
 deploy:
-	gem push codecov-$(shell cat lib/codecov.rb | grep 'VERSION = ' | cut -d\" -f2).gem
+	$(eval VERSION := $(shell cat lib/codecov.rb | grep 'VERSION = ' | cut -d\" -f2))
+	git tag v$(VERSION) -m ""
+	git push origin v$(VERSION)
+	gem push codecov-$(VERSION).gem
 
 install:
 	rm -rf vendor .bundle
