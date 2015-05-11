@@ -1,3 +1,6 @@
+### `0.0.7`
+- added GitLab CI Runner support
+
 ### `0.0.5`
 - added line messages by @coderanger
 - fixed skip lines during reporting by @coderanger

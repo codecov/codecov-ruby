@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.6"
+  VERSION = "0.0.7"
   def format(result)
     # =================
     # Build JSON Report
@@ -125,6 +125,17 @@ class SimpleCov::Formatter::Codecov
         params[:owner] = ENV['REPO_NAME'].split('/')[0]
         params[:repo] = ENV['REPO_NAME'].split('/')[1]
         params[:commit] = ENV['COMMIT']
+
+    # GitLab CI
+    # ---------
+    elsif ENV['CI_SERVER_NAME'] == 'GitLab CI'
+        # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
+        # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+        params[:service] = 'gitlab'
+        params[:branch] = ENV['CI_BUILD_REF_NAME']
+        params[:build] = ENV['CI_BUILD_ID']
+        params[:slug] = ENV['CI_BUILD_REPO'].split('/', 4)[-1].sub('.git', '')
+        params[:commit] = ENV['CI_BUILD_REF']
 
     # git
     # ---

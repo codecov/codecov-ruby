@@ -223,4 +223,20 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("repo", result['params'][:repo])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
+  def test_gitlab
+    ENV['CI_SERVER_NAME'] = "GitLab CI"
+    ENV['CI_BUILD_REF_NAME'] = "master"
+    ENV['CI_BUILD_ID'] = "1"
+    ENV['CI_BUILD_REPO'] = "https://gitlab.com/owner/repo.git"
+    ENV['CI_BUILD_REF'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    result = upload
+    assert_equal("gitlab", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner", result['params'][:owner])
+    assert_equal("repo", result['params'][:repo])
+    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+  end
 end

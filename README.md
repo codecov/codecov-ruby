@@ -38,6 +38,10 @@ if ENV['CI'] == 'true'
 end
 ```
 
+### CI Companies Supported
+Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, and Gitlab CI. Otherwise fallbacks on `git`.
+
+
 
 [1]: https://codecov.io/
 [2]: https://twitter.com/codecov
