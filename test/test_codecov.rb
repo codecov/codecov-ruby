@@ -40,7 +40,7 @@ class TestCodecov < Test::Unit::TestCase
     puts data['params']
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], "Coverage reports upload successfully")
-    assert_equal(data['meta']['version'], "codecov-ruby/v0.0.6")
+    assert_equal(data['meta']['version'], "codecov-ruby/v" + SimpleCov::Formatter::Codecov::VERSION)
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
@@ -235,8 +235,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
 end
