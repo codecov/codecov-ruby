@@ -106,9 +106,11 @@ class SimpleCov::Formatter::Codecov
     # --------
     elsif ENV['JENKINS_URL'] != nil
         # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+        # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
         params[:service] = 'jenkins'
-        params[:branch] = ENV['GIT_BRANCH']
-        params[:commit] = ENV['GIT_COMMIT']
+        params[:branch] = ENV['ghprbSourceBranch'] || ENV['GIT_BRANCH']
+        params[:commit] = ENV['ghprbActualCommit'] || ENV['GIT_COMMIT']
+        params[:pr] = ENV['ghprbPullId']
         params[:build] = ENV['BUILD_NUMBER']
         params[:root] = ENV['WORKSPACE']
         params[:build_url] = ENV['BUILD_URL']

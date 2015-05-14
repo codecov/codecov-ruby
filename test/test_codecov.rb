@@ -53,25 +53,74 @@ class TestCodecov < Test::Unit::TestCase
   end
   def teardown
     # needed for sending this projects coverage
+    ENV['APPVEYOR'] = nil
+    ENV['APPVEYOR_BUILD_VERSION'] = nil
+    ENV['APPVEYOR_JOB_ID'] = nil
+    ENV['APPVEYOR_REPO_BRANCH'] = nil
+    ENV['APPVEYOR_REPO_COMMIT'] = nil
+    ENV['APPVEYOR_REPO_NAME'] = nil
+    ENV['BRANCH'] = nil
+    ENV['BRANCH_NAME'] = nil
+    ENV['BUILD_ID'] = nil
+    ENV['BUILD_NUMBER'] = nil
+    ENV['BUILD_NUMBER'] = nil
+    ENV['BUILD_URL'] = nil
     ENV['CI'] = "true"
+    ENV['CI_BRANCH'] = nil
+    ENV['CI_BUILD_ID'] = nil
+    ENV['CI_BUILD_NUMBER'] = nil
+    ENV['CI_BUILD_REF'] = nil
+    ENV['CI_BUILD_REF_NAME'] = nil
+    ENV['CI_BUILD_REPO'] = nil
+    ENV['CI_BUILD_URL'] = nil
+    ENV['CI_COMMIT'] = nil
+    ENV['CI_COMMIT_ID'] = nil
+    ENV['CI_NAME'] = nil
+    ENV['CI_PROJECT_DIR'] = nil
+    ENV['CI_SERVER_NAME'] = nil
+    ENV['CI_SERVER_NAME'] = nil
+    ENV['CIRCLE_BRANCH'] = nil
+    ENV['CIRCLE_BUILD_NUM'] = nil
+    ENV['CIRCLE_PROJECT_REPONAME'] = nil
+    ENV['CIRCLE_PROJECT_USERNAME'] = nil
+    ENV['CIRCLE_SHA1'] = nil
+    ENV['CIRCLECI'] = nil
+    ENV['CODECOV_ENV'] = nil
+    ENV['CODECOV_SLUG'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+    ENV['CODECOV_URL'] = nil
+    ENV['COMMIT'] = nil
+    ENV['DRONE'] = nil
+    ENV['DRONE_BRANCH'] = nil
+    ENV['DRONE_BUILD_URL'] = nil
+    ENV['DRONE_COMMIT'] = nil
+    ENV['ghprbActualCommit'] = nil
+    ENV['ghprbPullId'] = nil
+    ENV['ghprbSourceBranch'] = nil
+    ENV['GIT_BRANCH'] = nil
+    ENV['GIT_COMMIT'] = nil
+    ENV['JENKINS_URL'] = nil
+    ENV['MAGNUM'] = nil
+    ENV['PULL_REQUEST'] = nil
+    ENV['REPO_NAME'] = nil
+    ENV['REVISION'] = nil
+    ENV['SEMAPHORE'] = nil
+    ENV['SEMAPHORE_BUILD_NUMBER'] = nil
+    ENV['SEMAPHORE_REPO_SLUG'] = nil
+    ENV['SHIPPABLE'] = nil
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
-    ENV['TRAVIS_JOB_NUMBER'] = REALENV["TRAVIS_JOB_NUMBER"]
-    ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
-    ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
-    ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
+    ENV['TRAVIS_JOB_NUMBER'] = REALENV["TRAVIS_JOB_NUMBER"]
     ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
-    ENV['CODECOV_TOKEN'] = nil
-    ENV['CI_NAME'] = nil
-    ENV['CIRCLECI'] = nil
-    ENV['SEMAPHORE'] = nil
-    ENV['DRONE'] = nil
-    ENV["APPVEYOR"] = nil
-    ENV["JENKINS_URL"] = nil
-    ENV["SHIPPABLE"] = nil
-    ENV["WERCKER_GIT_BRANCH"] = nil
+    ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
+    ENV['WERCKER_GIT_BRANCH'] = nil
+    ENV['WERCKER_GIT_COMMIT'] = nil
+    ENV['WERCKER_GIT_OWNER'] = nil
+    ENV['WERCKER_GIT_REPOSITORY'] = nil
+    ENV['WERCKER_MAIN_PIPELINE_STARTED'] = nil
+    ENV['WORKSPACE'] = nil
   end
   def test_git
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
@@ -113,6 +162,38 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
+    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+  end
+  def test_jenkins
+    ENV['JENKINS_URL'] = 'true'
+    ENV['ghprbSourceBranch'] = 'master'
+    ENV['BUILD_NUMBER'] = '1'
+    ENV['ghprbActualCommit'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['BUILD_URL'] = 'https://jenkins'
+    ENV['ghprbPullId'] = '1'
+    result = upload
+    assert_equal("jenkins", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("1", result['params'][:pr])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("https://jenkins", result['params'][:build_url])
+    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+  end
+  def test_jenkins_2
+    ENV['JENKINS_URL'] = 'true'
+    ENV['GIT_BRANCH'] = 'master'
+    ENV['BUILD_NUMBER'] = '1'
+    ENV['GIT_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['BUILD_URL'] = 'https://jenkins'
+    result = upload
+    assert_equal("jenkins", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("https://jenkins", result['params'][:build_url])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_shippable
