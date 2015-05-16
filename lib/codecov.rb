@@ -5,6 +5,8 @@ require 'net/http'
 class SimpleCov::Formatter::Codecov
   VERSION = "0.0.8"
   def format(result)
+    disable_net_blockers
+
     # =================
     # Build JSON Report
     # =================
@@ -240,4 +242,18 @@ class SimpleCov::Formatter::Codecov
   def shortened_filename(file)
     file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
   end
+
+  def disable_net_blockers
+    if defined?(WebMock) &&
+      allow = WebMock::Config.instance.allow || []
+      WebMock::Config.instance.allow = [*allow].push (ENV['CODECOV_URL'] || "https://codecov.io")
+    end
+
+    if defined?(VCR)
+      VCR.send(VCR.version.major < 2 ? :config : :configure) do |c|
+        c.ignore_hosts API_HOST
+      end
+    end
+  end
+
 end
