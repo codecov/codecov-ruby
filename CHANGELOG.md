@@ -1,3 +1,6 @@
+### `0.0.8`
+- added more jenkins environment references
+
 ### `0.0.7`
 - added GitLab CI Runner support
 
