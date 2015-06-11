@@ -18,7 +18,6 @@ class SimpleCov::Formatter::Codecov
     report.update(result_to_codecov(result))
 
     json = report.to_json
-    IO.write('tmp.json', json)
 
     # ==============
     # CI Environment
