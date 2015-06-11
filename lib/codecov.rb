@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.8"
+  VERSION = "0.0.9"
   def format(result)
     disable_net_blockers
 
@@ -13,7 +13,7 @@ class SimpleCov::Formatter::Codecov
     report = {
       "meta" => {
         "version" => "codecov-ruby/v"+SimpleCov::Formatter::Codecov::VERSION,
-      },
+      }
     }
     report.update(result_to_codecov(result))
 
