@@ -1,3 +1,6 @@
+### `0.0.10`
+- fix AppVeyor for public repos
+
 ### `0.0.9`
 - remove tmp.json creation
 

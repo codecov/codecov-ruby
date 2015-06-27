@@ -54,8 +54,10 @@ class TestCodecov < Test::Unit::TestCase
   def teardown
     # needed for sending this projects coverage
     ENV['APPVEYOR'] = nil
+    ENV['APPVEYOR_ACCOUNT_NAME'] = nil
     ENV['APPVEYOR_BUILD_VERSION'] = nil
     ENV['APPVEYOR_JOB_ID'] = nil
+    ENV['APPVEYOR_PROJECT_SLUG'] = nil
     ENV['APPVEYOR_REPO_BRANCH'] = nil
     ENV['APPVEYOR_REPO_COMMIT'] = nil
     ENV['APPVEYOR_REPO_NAME'] = nil
@@ -222,6 +224,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV["APPVEYOR"] = 'True'
     ENV["APPVEYOR_REPO_BRANCH"] = 'master'
     ENV['APPVEYOR_JOB_ID'] = 'build'
+    ENV['APPVEYOR_ACCOUNT_NAME'] = 'owner'
+    ENV['APPVEYOR_PROJECT_SLUG'] = 'repo'
     ENV['APPVEYOR_BUILD_VERSION'] = 'job'
     ENV["APPVEYOR_REPO_NAME"] = 'owner/repo'
     ENV["APPVEYOR_REPO_COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
@@ -233,7 +237,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])
     assert_equal("build", result['params'][:build])
-    assert_equal("job", result['params'][:job])
+    assert_equal("owner/repo/job", result['params'][:job])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_circleci
