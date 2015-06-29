@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.10"
+  VERSION = "0.0.11"
   def format(result)
     disable_net_blockers
 
@@ -87,6 +87,7 @@ class SimpleCov::Formatter::Codecov
         params[:service] = "appveyor"
         params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
         params[:build] = ENV['APPVEYOR_JOB_ID']
+        params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
         params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
         params[:owner] = ENV['APPVEYOR_REPO_NAME'].split('/')[0]
         params[:repo] = ENV['APPVEYOR_REPO_NAME'].split('/')[1]

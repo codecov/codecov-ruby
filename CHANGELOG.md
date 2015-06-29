@@ -1,3 +1,6 @@
+### `0.0.11`
+- send AppVeyor pr# with reports
+
 ### `0.0.10`
 - fix AppVeyor for public repos
 
