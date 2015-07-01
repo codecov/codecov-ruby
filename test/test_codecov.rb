@@ -55,10 +55,10 @@ class TestCodecov < Test::Unit::TestCase
     # needed for sending this projects coverage
     ENV['APPVEYOR'] = nil
     ENV['APPVEYOR_ACCOUNT_NAME'] = nil
-    ENV['APPVEYOR_PULL_REQUEST_NUMBER'] = nil
     ENV['APPVEYOR_BUILD_VERSION'] = nil
     ENV['APPVEYOR_JOB_ID'] = nil
     ENV['APPVEYOR_PROJECT_SLUG'] = nil
+    ENV['APPVEYOR_PULL_REQUEST_NUMBER'] = nil
     ENV['APPVEYOR_REPO_BRANCH'] = nil
     ENV['APPVEYOR_REPO_COMMIT'] = nil
     ENV['APPVEYOR_REPO_NAME'] = nil
@@ -111,6 +111,13 @@ class TestCodecov < Test::Unit::TestCase
     ENV['SEMAPHORE_BUILD_NUMBER'] = nil
     ENV['SEMAPHORE_REPO_SLUG'] = nil
     ENV['SHIPPABLE'] = nil
+    ENV['SNAP_BRANCH'] = nil
+    ENV['SNAP_CI'] = nil
+    ENV['SNAP_COMMIT'] = nil
+    ENV['SNAP_PIPELINE_COUNTER'] = nil
+    ENV['SNAP_PULL_REQUEST_NUMBER'] = nil
+    ENV['SNAP_UPSTREAM_BRANCH'] = nil
+    ENV['SNAP_UPSTREAM_COMMIT'] = nil
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
@@ -162,6 +169,20 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
     assert_equal("codeship", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+  end
+  def test_snap
+    ENV['CI'] = 'true'
+    ENV['SNAP_CI'] = 'true'
+    ENV['SNAP_BRANCH'] = 'master'
+    ENV['SNAP_PIPELINE_COUNTER'] = '1'
+    ENV['SNAP_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    result = upload
+    assert_equal("snap", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
