@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.11"
+  VERSION = "0.0.12"
   def format(result)
     disable_net_blockers
 
@@ -261,7 +261,7 @@ class SimpleCov::Formatter::Codecov
 
     if defined?(VCR)
       VCR.send(VCR.version.major < 2 ? :config : :configure) do |c|
-        c.ignore_hosts API_HOST
+        c.ignore_hosts ENV['CODECOV_URL'] || "https://codecov.io"
       end
     end
   end
