@@ -84,6 +84,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CI_SERVER_NAME'] = nil
     ENV['CIRCLE_BRANCH'] = nil
     ENV['CIRCLE_BUILD_NUM'] = nil
+    ENV['CIRCLE_NODE_INDEX'] = nil
+    ENV['CIRCLE_PR_NUMBER'] = nil
     ENV['CIRCLE_PROJECT_REPONAME'] = nil
     ENV['CIRCLE_PROJECT_USERNAME'] = nil
     ENV['CIRCLE_SHA1'] = nil
@@ -269,6 +271,8 @@ class TestCodecov < Test::Unit::TestCase
     ENV['CIRCLECI'] = 'true'
     ENV['CIRCLE_BRANCH'] = "master"
     ENV['CIRCLE_BUILD_NUM'] = "1"
+    ENV['CIRCLE_NODE_INDEX'] = "2"
+    ENV['CIRCLE_PR_NUMBER'] = "3"
     ENV['CIRCLE_PROJECT_USERNAME'] = "owner"
     ENV['CIRCLE_PROJECT_REPONAME'] = "repo"
     ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
@@ -276,7 +280,8 @@ class TestCodecov < Test::Unit::TestCase
     result = upload
     assert_equal("circleci", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
+    assert_equal("1.2", result['params'][:build])
+    assert_equal("3", result['params'][:pr])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])

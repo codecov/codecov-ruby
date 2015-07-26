@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.0.12"
+  VERSION = "0.1.0"
   def format(result)
     disable_net_blockers
 
@@ -53,9 +53,10 @@ class SimpleCov::Formatter::Codecov
     elsif ENV['CI'] == "true" and ENV['CIRCLECI'] == 'true'
         # https://circleci.com/docs/environment-variables
         params[:service] = 'circleci'
-        params[:build] = ENV['CIRCLE_BUILD_NUM']
+        params[:build] = ENV['CIRCLE_BUILD_NUM'] + '.' + ENV['CIRCLE_NODE_INDEX']
         params[:owner] = ENV['CIRCLE_PROJECT_USERNAME']
         params[:repo] = ENV['CIRCLE_PROJECT_REPONAME']
+        params[:pr] = ENV['CIRCLE_PR_NUMBER']
         params[:branch] = ENV['CIRCLE_BRANCH']
         params[:commit] = ENV['CIRCLE_SHA1']
 

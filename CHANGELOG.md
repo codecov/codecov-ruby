@@ -1,3 +1,6 @@
+### `0.1.0`
+- added more CircleCI env
+
 ### `0.0.11`
 - send AppVeyor pr# with reports
 
