@@ -188,7 +188,7 @@ class SimpleCov::Formatter::Codecov
     report['params'] = params
     report['query'] = uri.query
 
-    net_blockers(:reset)
+    net_blockers(:on)
 
     # return json data
     report
@@ -256,8 +256,18 @@ class SimpleCov::Formatter::Codecov
     file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
   end
 
+
+  # Toggle VCR and WebMock on or off
+  #
+  # @param switch Toggle switch for Net Blockers.
+  # @return [Boolean]
   def net_blockers(switch)
-    throw 'Only :on or :off' unless switch.in? [:reset, :off]
+    throw 'Only :on or :off' unless [:on, :off].include? switch
+
+    if defined?(VCR)
+      @vcr_enabled ||= VCR.turned_on?
+      VCR.send "turn_#{switch}!".to_sym if @vcr_enabled
+    end
 
     if defined?(WebMock)
       @webmock_enabled ||= WebMock::HttpLibAdapters::HttpGemAdapter.enabled?
@@ -270,10 +280,8 @@ class SimpleCov::Formatter::Codecov
       WebMock.send "#{action}_net_connect!".to_sym if @webmock_enabled
     end
 
-    if defined?(VCR)
-      @vcr_enabled ||= VCR.turned_on?
-      VCR.send "turn_#{switch}!".to_sym if @vcr_enabled
-    end
+    return true
+
   end
 
 end
