@@ -270,14 +270,15 @@ class SimpleCov::Formatter::Codecov
     end
 
     if defined?(WebMock)
-      @webmock_enabled ||= WebMock::HttpLibAdapters::HttpGemAdapter.enabled?
+      # WebMock on by default
+      # VCR depends on WebMock 1.8.11; no method to check whether enabled.
       action = case switch
       when :on
         'disable'
       when :off
         'allow'
       end
-      WebMock.send "#{action}_net_connect!".to_sym if @webmock_enabled
+      WebMock.send "#{action}_net_connect!".to_sym
     end
 
     return true
