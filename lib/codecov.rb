@@ -5,7 +5,7 @@ require 'net/http'
 class SimpleCov::Formatter::Codecov
   VERSION = "0.1.0"
   def format(result)
-    disable_net_blockers
+    net_blockers(:off)
 
     # =================
     # Build JSON Report
@@ -188,6 +188,8 @@ class SimpleCov::Formatter::Codecov
     report['params'] = params
     report['query'] = uri.query
 
+    net_blockers(:reset)
+
     # return json data
     report
   end
@@ -254,16 +256,23 @@ class SimpleCov::Formatter::Codecov
     file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
   end
 
-  def disable_net_blockers
-    if defined?(WebMock) &&
-      allow = WebMock::Config.instance.allow || []
-      WebMock::Config.instance.allow = [*allow].push (ENV['CODECOV_URL'] || "https://codecov.io")
+  def net_blockers(switch)
+    throw 'Only :on or :off' unless switch.in? [:reset, :off]
+
+    if defined?(WebMock)
+      @webmock_enabled ||= WebMock::HttpLibAdapters::HttpGemAdapter.enabled?
+      action = case switch
+      when :on
+        'disable'
+      when :off
+        'allow'
+      end
+      WebMock.send "#{action}_net_connect!".to_sym if @webmock_enabled
     end
 
     if defined?(VCR)
-      VCR.send(VCR.version.major < 2 ? :config : :configure) do |c|
-        c.ignore_hosts ENV['CODECOV_URL'] || "https://codecov.io"
-      end
+      @vcr_enabled ||= VCR.turned_on?
+      VCR.send "turn_#{switch}!".to_sym if @vcr_enabled
     end
   end
 
