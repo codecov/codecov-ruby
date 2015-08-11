@@ -67,7 +67,7 @@ class SimpleCov::Formatter::Codecov
         params[:service] = 'semaphore'
         params[:branch] = ENV['BRANCH_NAME']
         params[:commit] = ENV['REVISION']
-        params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
+        params[:build] = ENV['SEMAPHORE_BUILD_NUMBER'] + '.' + ENV['SEMAPHORE_CURRENT_THREAD']
         params[:owner] = ENV['SEMAPHORE_REPO_SLUG'].split('/')[0]
         params[:repo] = ENV['SEMAPHORE_REPO_SLUG'].split('/')[1]
 

@@ -111,6 +111,7 @@ class TestCodecov < Test::Unit::TestCase
     ENV['REVISION'] = nil
     ENV['SEMAPHORE'] = nil
     ENV['SEMAPHORE_BUILD_NUMBER'] = nil
+    ENV['SEMAPHORE_CURRENT_THREAD'] = nil
     ENV['SEMAPHORE_REPO_SLUG'] = nil
     ENV['SHIPPABLE'] = nil
     ENV['SNAP_BRANCH'] = nil
@@ -293,12 +294,13 @@ class TestCodecov < Test::Unit::TestCase
     ENV['BRANCH_NAME'] = "master"
     ENV['SEMAPHORE_REPO_SLUG'] = 'owner/repo'
     ENV['SEMAPHORE_BUILD_NUMBER'] = "1"
+    ENV['SEMAPHORE_CURRENT_THREAD'] = "2"
     ENV['REVISION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
     assert_equal("semaphore", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
+    assert_equal("1.2", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner", result['params'][:owner])
     assert_equal("repo", result['params'][:repo])
