@@ -1,3 +1,7 @@
+### `0.1.1`
+- fix #6, thanks @justmatt
+- add semaphore thread number
+
 ### `0.1.0`
 - added more CircleCI env
 
