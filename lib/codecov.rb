@@ -33,8 +33,7 @@ class SimpleCov::Formatter::Codecov
         params[:branch] = ENV['TRAVIS_BRANCH']
         params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
         params[:job] = ENV['TRAVIS_JOB_ID']
-        params[:owner] = ENV['TRAVIS_REPO_SLUG'].split('/')[0]
-        params[:repo] = ENV['TRAVIS_REPO_SLUG'].split('/')[1]
+        params[:slug] = ENV['TRAVIS_REPO_SLUG']
         params[:build] = ENV['TRAVIS_JOB_NUMBER']
         params[:commit] = ENV['TRAVIS_COMMIT']
 
@@ -54,8 +53,7 @@ class SimpleCov::Formatter::Codecov
         # https://circleci.com/docs/environment-variables
         params[:service] = 'circleci'
         params[:build] = ENV['CIRCLE_BUILD_NUM'] + '.' + ENV['CIRCLE_NODE_INDEX']
-        params[:owner] = ENV['CIRCLE_PROJECT_USERNAME']
-        params[:repo] = ENV['CIRCLE_PROJECT_REPONAME']
+        params[:slug] = ENV['CIRCLE_PROJECT_USERNAME'] + '/' + ENV['CIRCLE_PROJECT_REPONAME']
         params[:pr] = ENV['CIRCLE_PR_NUMBER']
         params[:branch] = ENV['CIRCLE_BRANCH']
         params[:commit] = ENV['CIRCLE_SHA1']
@@ -68,8 +66,7 @@ class SimpleCov::Formatter::Codecov
         params[:branch] = ENV['BRANCH_NAME']
         params[:commit] = ENV['REVISION']
         params[:build] = ENV['SEMAPHORE_BUILD_NUMBER'] + '.' + ENV['SEMAPHORE_CURRENT_THREAD']
-        params[:owner] = ENV['SEMAPHORE_REPO_SLUG'].split('/')[0]
-        params[:repo] = ENV['SEMAPHORE_REPO_SLUG'].split('/')[1]
+        params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
     # Snap CI
     # -------
@@ -87,7 +84,7 @@ class SimpleCov::Formatter::Codecov
         # https://semaphoreapp.com/docs/available-environment-variables.html
         params[:service] = 'drone.io'
         params[:branch] = ENV['DRONE_BRANCH']
-        params[:commit] = ENV['DRONE_COMMIT']
+        params[:commit] = `git rev-parse HEAD`.strip
         params[:build] = ENV['DRONE_BUILD_NUMBER']
         params[:build_url] = ENV['DRONE_BUILD_URL']
 
@@ -100,8 +97,7 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['APPVEYOR_JOB_ID']
         params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
         params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
-        params[:owner] = ENV['APPVEYOR_REPO_NAME'].split('/')[0]
-        params[:repo] = ENV['APPVEYOR_REPO_NAME'].split('/')[1]
+        params[:slug] = ENV['APPVEYOR_REPO_NAME']
         params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
 
     # Wercker
@@ -111,8 +107,7 @@ class SimpleCov::Formatter::Codecov
         params[:service] = "wercker"
         params[:branch] = ENV['WERCKER_GIT_BRANCH']
         params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
-        params[:owner] = ENV['WERCKER_GIT_OWNER']
-        params[:repo] = ENV['WERCKER_GIT_REPOSITORY']
+        params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
         params[:commit] = ENV['WERCKER_GIT_COMMIT']
 
     # Jenkins
@@ -137,8 +132,7 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['BUILD_NUMBER']
         params[:build_url] = ENV['BUILD_URL']
         params[:pull_request] = ENV['PULL_REQUEST']
-        params[:owner] = ENV['REPO_NAME'].split('/')[0]
-        params[:repo] = ENV['REPO_NAME'].split('/')[1]
+        params[:slug] = ENV['REPO_NAME']
         params[:commit] = ENV['COMMIT']
 
     # GitLab CI
@@ -160,6 +154,11 @@ class SimpleCov::Formatter::Codecov
         params[:branch] = branch != 'HEAD' ? branch : 'master'
         params[:commit] = `git rev-parse HEAD`.strip
 
+    end
+
+    slug = ENV['CODECOV_SLUG']
+    if slug != nil
+        params[:slug] = slug
     end
 
     # =================

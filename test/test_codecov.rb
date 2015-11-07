@@ -156,8 +156,7 @@ class TestCodecov < Test::Unit::TestCase
     result = upload
     assert_equal("travis", result['params'][:service])
     assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
-    assert_equal("codecov", result['params'][:owner])
-    assert_equal("ci-repo", result['params'][:repo])
+    assert_equal("codecov/ci-repo", result['params'][:slug])
     assert_equal("1", result['params'][:build])
     assert_equal("33116958", result['params'][:job])
     assert_equal('false', result['params'][:pull_request])
@@ -240,8 +239,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("1", result['params'][:build])
     assert_equal('http://shippable.com/...', result['params'][:build_url])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_appveyor
@@ -260,8 +258,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("appveyor", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal("1", result['params'][:pr])
     assert_equal("build", result['params'][:build])
     assert_equal("owner/repo/job", result['params'][:job])
@@ -284,8 +281,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("1.2", result['params'][:build])
     assert_equal("3", result['params'][:pr])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_semaphore
@@ -302,8 +298,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1.2", result['params'][:build])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_drone
@@ -312,13 +307,15 @@ class TestCodecov < Test::Unit::TestCase
     ENV['DRONE_BRANCH'] = "master"
     ENV['DRONE_BUILD_NUMBER'] = "1"
     ENV['DRONE_BUILD_URL'] = "https://drone.io/..."
-    ENV['DRONE_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['DRONE_COMMIT'] = "1123566"
+    ENV['CODECOV_SLUG'] = "codecov/ci-repo"
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
     result = upload
     assert_equal("drone.io", result['params'][:service])
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("https://drone.io/...", result['params'][:build_url])
+    assert_equal("codecov/ci-repo", result['params'][:slug])
     assert_equal("master", result['params'][:branch])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
@@ -335,8 +332,7 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
-    assert_equal("owner", result['params'][:owner])
-    assert_equal("repo", result['params'][:repo])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_gitlab
