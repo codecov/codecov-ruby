@@ -145,15 +145,16 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['CI_BUILD_ID']
         params[:slug] = ENV['CI_BUILD_REPO'].split('/', 4)[-1].sub('.git', '')
         params[:commit] = ENV['CI_BUILD_REF']
+    end
 
-    # git
-    # ---
-    else
+    if params[:branch] == nil
         # find branch, commit, repo from git command
         branch = `git rev-parse --abbrev-ref HEAD`.strip
         params[:branch] = branch != 'HEAD' ? branch : 'master'
-        params[:commit] = `git rev-parse HEAD`.strip
+    end
 
+    if params[:commit] == nil
+        params[:commit] = `git rev-parse HEAD`.strip
     end
 
     slug = ENV['CODECOV_SLUG']
