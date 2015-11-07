@@ -173,7 +173,11 @@ class SimpleCov::Formatter::Codecov
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = url.match(/^https/) != nil
 
-    req = Net::HTTP::Post.new(uri.path + "?" + uri.query, {'Content-Type' => 'application/json'})
+    req = Net::HTTP::Post.new(uri.path + "?" + uri.query,
+                              {
+                                'Content-Type' => 'application/json',
+                                'Accept' => 'application/json'
+                              })
     req.body = json
 
     # make resquest
