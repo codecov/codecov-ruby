@@ -1,3 +1,8 @@
+### `0.1.2`
+- add slug argument
+- use slug for uploading
+- add Accept to uploads
+
 ### `0.1.1`
 - fix #6, thanks @justmatt
 - add semaphore thread number
