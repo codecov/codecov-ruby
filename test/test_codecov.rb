@@ -68,6 +68,12 @@ class TestCodecov < Test::Unit::TestCase
     ENV['BUILD_NUMBER'] = nil
     ENV['BUILD_NUMBER'] = nil
     ENV['BUILD_URL'] = nil
+    ENV['BUILDKITE'] = nil
+    ENV['BUILDKITE_BRANCH'] = nil
+    ENV['BUILDKITE_BUILD_NUMBER'] = nil
+    ENV['BUILDKITE_BUILD_URL'] = nil
+    ENV['BUILDKITE_PROJECT_SLUG'] = nil
+    ENV['BUILDKITE_COMMIT'] = nil
     ENV['CI'] = "true"
     ENV['CI_BRANCH'] = nil
     ENV['CI_BUILD_ID'] = nil
@@ -188,6 +194,23 @@ class TestCodecov < Test::Unit::TestCase
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
+    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+  end
+  def test_buildkite
+    ENV['CI'] = 'true'
+    ENV['BUILDKITE'] = 'true'
+    ENV['BUILDKITE_BRANCH'] = 'master'
+    ENV['BUILDKITE_BUILD_NUMBER'] = '1'
+    ENV['BUILDKITE_BUILD_URL'] = 'http'
+    ENV['BUILDKITE_PROJECT_SLUG'] = 'owner/repo'
+    ENV['BUILDKITE_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    result = upload
+    assert_equal("buildkite", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
   def test_jenkins

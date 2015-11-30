@@ -1,3 +1,6 @@
+### `0.1.3`
+- add buildkite
+
 ### `0.1.2`
 - add slug argument
 - use slug for uploading
