@@ -10,8 +10,5 @@ if ENV['CI'] == 'true'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
-require 'test/unit'
+require 'minitest/autorun'
 require 'mocha/setup'
-
-class Test::Unit::TestCase
-end
