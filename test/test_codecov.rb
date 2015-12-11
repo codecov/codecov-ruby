@@ -200,7 +200,7 @@ class TestCodecov < Minitest::Test
     ENV['BUILDKITE'] = 'true'
     ENV['BUILDKITE_BRANCH'] = 'master'
     ENV['BUILDKITE_BUILD_NUMBER'] = '1'
-    ENV['BUILDKITE_BUILD_URL'] = 'http'
+    ENV['BUILDKITE_BUILD_URL'] = 'http://demo'
     ENV['BUILDKITE_PROJECT_SLUG'] = 'owner/repo'
     ENV['BUILDKITE_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
