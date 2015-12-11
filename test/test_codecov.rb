@@ -1,7 +1,7 @@
 require 'helper'
 
 
-class TestCodecov < Test::Unit::TestCase
+class TestCodecov < Minitest::Test
   REALENV = {
     "TRAVIS_BRANCH" => ENV["TRAVIS_BRANCH"],
     "TRAVIS_COMMIT" => ENV["TRAVIS_COMMIT"],
@@ -9,7 +9,6 @@ class TestCodecov < Test::Unit::TestCase
     "TRAVIS_JOB_NUMBER" => ENV['TRAVIS_JOB_NUMBER'],
     "TRAVIS_PULL_REQUEST" => ENV["TRAVIS_PULL_REQUEST"],
     "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"],
-    "TRAVIS_REPO_SLUG" => ENV["TRAVIS_REPO_SLUG"],
   }
   def url
     return ENV['CODECOV_URL'] || "https://codecov.io"
