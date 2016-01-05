@@ -372,4 +372,18 @@ class TestCodecov < Minitest::Test
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
   end
+
+  def test_filenames_are_shortened_correctly
+    formatter = SimpleCov::Formatter::Codecov.new
+    result = stub('SimpleCov::Result', files: [
+      stub_file('/path/lib/something.rb', []),
+      stub_file('/path/path/lib/path_somefile.rb', []),
+    ])
+    SimpleCov.stubs(:root).returns('/path')
+    data = formatter.format(result)
+    assert_equal(data['coverage'].to_json, {
+      'lib/something.rb' => [nil],
+      'path/lib/path_somefile.rb' => [nil]
+    }.to_json)
+  end
 end
