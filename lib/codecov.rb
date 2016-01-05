@@ -268,7 +268,7 @@ class SimpleCov::Formatter::Codecov
   # @param file [SimeplCov::SourceFile] The file to use.
   # @return [String]
   def shortened_filename(file)
-    file.filename.gsub(SimpleCov.root, '.').gsub(/^\.\//, '')
+    file.filename.gsub(/^#{SimpleCov.root}/, '.').gsub(/^\.\//, '')
   end
 
 
