@@ -41,6 +41,11 @@ end
 ### CI Companies Supported
 Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, and Gitlab CI. Otherwise fallbacks on `git`.
 
+### Caveat
+
+1. There are known issues when `Simplecov.track_files` is enabled. We recommend that you require all code files in your tests so that Simplecov can provide Codecov with properly mapped coverage report metrics. [codecov/support#133]( https://github.com/codecov/support/issues/133)
+
+
 ### Enterprise
 For companies using Codecov Enterprise you will need to specify the following parameters.
 ```sh
