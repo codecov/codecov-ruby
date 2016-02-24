@@ -30,11 +30,11 @@ class TestCodecov < Minitest::Test
   end
   def upload
     formatter = SimpleCov::Formatter::Codecov.new
+    toplvl = `git rev-parse --show-toplevel`.strip
     result = stub('SimpleCov::Result', files: [
-      stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
-      stub_file('/path/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil]),
+      stub_file(toplvl + '/lib/something.rb', [1, 0, 0, nil, 1, nil]),
+      stub_file(toplvl + '/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil]),
     ])
-    SimpleCov.stubs(:root).returns('/path')
     data = formatter.format(result)
     puts data['params']
     assert_equal(data['result']['uploaded'], true)
