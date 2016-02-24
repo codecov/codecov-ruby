@@ -268,10 +268,7 @@ class SimpleCov::Formatter::Codecov
   # @param file [SimeplCov::SourceFile] The file to use.
   # @return [String]
   def shortened_filename(file)
-    if defined?(@toplvl)
-      @toplvl = `git rev-parse --show-toplevel`.strip
-    end
-    file.filename.gsub(/^#{@toplvl}/, '.').gsub(/^\.\//, '')
+    file.filename.gsub(/^#{`git rev-parse --show-toplevel`.strip}/, '').gsub(/^\.?\//, '')
   end
 
 
