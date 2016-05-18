@@ -156,6 +156,24 @@ class SimpleCov::Formatter::Codecov
         params[:build] = ENV['CI_BUILD_ID']
         params[:slug] = ENV['CI_BUILD_REPO'].split('/', 4)[-1].sub('.git', '')
         params[:commit] = ENV['CI_BUILD_REF']
+
+    # Teamcity
+    # ---------
+    elsif ENV['CI_SERVER_NAME'] == 'TeamCity'
+      # https://confluence.jetbrains.com/display/TCD8/Predefined+Build+Parameters
+      # Teamcity does not automatically make build parameters available as environment variables.
+      # Add the following environment parameters to the build configuration
+      # env.TEAMCITY_BUILD_BRANCH = %teamcity.build.branch%
+      # env.TEAMCITY_BUILD_ID = %teamcity.build.id%
+      # env.TEAMCITY_BUILD_URL = %teamcity.serverUrl%/viewLog.html?buildId=%teamcity.build.id%
+      # env.TEAMCITY_BUILD_COMMIT = %system.build.vcs.number%
+      # env.TEAMCITY_BUILD_REPOSITORY = %vcsroot.<YOUR TEAMCITY VCS NAME>.url%
+      params[:service] = 'teamcity'
+      params[:branch] = ENV['TEAMCITY_BUILD_BRANCH']
+      params[:build] = ENV['TEAMCITY_BUILD_ID']
+      params[:build_url] = ENV['TEAMCITY_BUILD_URL']
+      params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
+      params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
     end
 
     if params[:branch] == nil
