@@ -141,9 +141,9 @@ class TestCodecov < Minitest::Test
     ENV['WORKSPACE'] = nil
   end
   def test_git
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
-    assert_equal("473c8c5b-10ee-4d83-86c6-bfd72a185a27", result['params']['token'])
+    assert_equal("f881216b-b5c0-4eb1-8f21-b51887d1d506", result['params']['token'])
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
     assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
@@ -173,13 +173,13 @@ class TestCodecov < Minitest::Test
     ENV['CI_BRANCH'] = 'master'
     ENV['CI_BUILD_NUMBER'] = '1'
     ENV['CI_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("codeship", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_snap
     ENV['CI'] = 'true'
@@ -187,13 +187,13 @@ class TestCodecov < Minitest::Test
     ENV['SNAP_BRANCH'] = 'master'
     ENV['SNAP_PIPELINE_COUNTER'] = '1'
     ENV['SNAP_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("snap", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_buildkite
     ENV['CI'] = 'true'
@@ -203,21 +203,21 @@ class TestCodecov < Minitest::Test
     ENV['BUILDKITE_BUILD_URL'] = 'http://demo'
     ENV['BUILDKITE_PROJECT_SLUG'] = 'owner/repo'
     ENV['BUILDKITE_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("buildkite", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_jenkins
     ENV['JENKINS_URL'] = 'true'
     ENV['ghprbSourceBranch'] = 'master'
     ENV['BUILD_NUMBER'] = '1'
     ENV['ghprbActualCommit'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     ENV['BUILD_URL'] = 'https://jenkins'
     ENV['ghprbPullId'] = '1'
     result = upload
@@ -227,14 +227,14 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:pr])
     assert_equal("master", result['params'][:branch])
     assert_equal("https://jenkins", result['params'][:build_url])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_jenkins_2
     ENV['JENKINS_URL'] = 'true'
     ENV['GIT_BRANCH'] = 'master'
     ENV['BUILD_NUMBER'] = '1'
     ENV['GIT_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     ENV['BUILD_URL'] = 'https://jenkins'
     result = upload
     assert_equal("jenkins", result['params'][:service])
@@ -242,7 +242,7 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("https://jenkins", result['params'][:build_url])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_shippable
     ENV['CI'] = "true"
@@ -253,7 +253,7 @@ class TestCodecov < Minitest::Test
     ENV["PULL_REQUEST"] = 'false'
     ENV["REPO_NAME"] = 'owner/repo'
     ENV["COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV["CODECOV_TOKEN"] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("shippable", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
@@ -262,7 +262,7 @@ class TestCodecov < Minitest::Test
     assert_equal('http://shippable.com/...', result['params'][:build_url])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_appveyor
     ENV["CI"] = 'True'
@@ -275,7 +275,7 @@ class TestCodecov < Minitest::Test
     ENV['APPVEYOR_BUILD_VERSION'] = 'job'
     ENV["APPVEYOR_REPO_NAME"] = 'owner/repo'
     ENV["APPVEYOR_REPO_COMMIT"] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV["CODECOV_TOKEN"] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV["CODECOV_TOKEN"] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("appveyor", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
@@ -284,7 +284,7 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:pr])
     assert_equal("build", result['params'][:build])
     assert_equal("owner/repo/job", result['params'][:job])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_circleci
     ENV['CI'] = 'true'
@@ -296,7 +296,7 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLE_PROJECT_USERNAME'] = "owner"
     ENV['CIRCLE_PROJECT_REPONAME'] = "repo"
     ENV['CIRCLE_SHA1'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("circleci", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
@@ -304,7 +304,7 @@ class TestCodecov < Minitest::Test
     assert_equal("3", result['params'][:pr])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_semaphore
     ENV['CI'] = 'true'
@@ -314,14 +314,14 @@ class TestCodecov < Minitest::Test
     ENV['SEMAPHORE_BUILD_NUMBER'] = "1"
     ENV['SEMAPHORE_CURRENT_THREAD'] = "2"
     ENV['REVISION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("semaphore", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1.2", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_drone
     ENV['CI'] = "true"
@@ -331,7 +331,7 @@ class TestCodecov < Minitest::Test
     ENV['DRONE_BUILD_URL'] = "https://drone.io/..."
     ENV['DRONE_COMMIT'] = "1123566"
     ENV['CODECOV_SLUG'] = "codecov/ci-repo"
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("drone.io", result['params'][:service])
     assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
@@ -339,7 +339,7 @@ class TestCodecov < Minitest::Test
     assert_equal("https://drone.io/...", result['params'][:build_url])
     assert_equal("codecov/ci-repo", result['params'][:slug])
     assert_equal("master", result['params'][:branch])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_wercker
     ENV['CI'] = "true"
@@ -348,14 +348,14 @@ class TestCodecov < Minitest::Test
     ENV['WERCKER_GIT_OWNER'] = "owner"
     ENV['WERCKER_GIT_REPOSITORY'] = "repo"
     ENV['WERCKER_GIT_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("wercker", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_gitlab
     ENV['CI_SERVER_NAME'] = "GitLab CI"
@@ -363,14 +363,14 @@ class TestCodecov < Minitest::Test
     ENV['CI_BUILD_ID'] = "1"
     ENV['CI_BUILD_REPO'] = "https://gitlab.com/owner/repo.git"
     ENV['CI_BUILD_REF'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
-    ENV['CODECOV_TOKEN'] = '473c8c5b-10ee-4d83-86c6-bfd72a185a27'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("gitlab", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
-    assert_equal('473c8c5b-10ee-4d83-86c6-bfd72a185a27', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
   def test_filenames_are_shortened_correctly
