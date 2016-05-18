@@ -7,6 +7,8 @@ class SimpleCov::Formatter::Codecov
   def format(result)
     net_blockers(:off)
 
+    @toplevel ||= `git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD`.strip
+
     # =================
     # Build JSON Report
     # =================
@@ -95,7 +97,7 @@ class SimpleCov::Formatter::Codecov
         # https://semaphoreapp.com/docs/available-environment-variables.html
         params[:service] = 'drone.io'
         params[:branch] = ENV['DRONE_BRANCH']
-        params[:commit] = `git rev-parse HEAD`.strip
+        params[:commit] ||= `git rev-parse HEAD`.strip
         params[:build] = ENV['DRONE_BUILD_NUMBER']
         params[:build_url] = ENV['DRONE_BUILD_URL']
 
@@ -160,12 +162,12 @@ class SimpleCov::Formatter::Codecov
 
     if params[:branch] == nil
         # find branch, commit, repo from git command
-        branch = `git rev-parse --abbrev-ref HEAD`.strip
+        branch ||= `git rev-parse --abbrev-ref HEAD`.strip
         params[:branch] = branch != 'HEAD' ? branch : 'master'
     end
 
     if params[:commit] == nil
-        params[:commit] = `git rev-parse HEAD`.strip
+        params[:commit] ||= `git rev-parse HEAD`.strip
     end
 
     slug = ENV['CODECOV_SLUG']
@@ -268,7 +270,7 @@ class SimpleCov::Formatter::Codecov
   # @param file [SimeplCov::SourceFile] The file to use.
   # @return [String]
   def shortened_filename(file)
-    file.filename.gsub(/^#{`git rev-parse --show-toplevel`.strip}/, '').gsub(/^\.?\//, '')
+    file.filename.gsub(/^#{@toplevel}/, '').gsub(/^\.?\//, '')
   end
 
 
