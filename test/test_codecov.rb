@@ -69,6 +69,7 @@ class TestCodecov < Minitest::Test
     ENV['BUILD_URL'] = nil
     ENV['BUILDKITE'] = nil
     ENV['BUILDKITE_BRANCH'] = nil
+    ENV['BUILDKITE_JOB_ID'] = nil
     ENV['BUILDKITE_BUILD_NUMBER'] = nil
     ENV['BUILDKITE_BUILD_URL'] = nil
     ENV['BUILDKITE_PROJECT_SLUG'] = nil
@@ -200,6 +201,7 @@ class TestCodecov < Minitest::Test
     ENV['BUILDKITE'] = 'true'
     ENV['BUILDKITE_BRANCH'] = 'master'
     ENV['BUILDKITE_BUILD_NUMBER'] = '1'
+    ENV['BUILDKITE_JOB_ID'] = '2'
     ENV['BUILDKITE_BUILD_URL'] = 'http://demo'
     ENV['BUILDKITE_PROJECT_SLUG'] = 'owner/repo'
     ENV['BUILDKITE_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
@@ -207,7 +209,7 @@ class TestCodecov < Minitest::Test
     result = upload
     assert_equal("buildkite", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
+    assert_equal("1.2", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])

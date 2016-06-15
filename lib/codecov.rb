@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.4"
+  VERSION = "0.1.5"
   def format(result)
     net_blockers(:off)
 
@@ -64,7 +64,7 @@ class SimpleCov::Formatter::Codecov
       # https://buildkite.com/docs/guides/environment-variables
       params[:service] = "buildkite"
       params[:branch] = ENV['BUILDKITE_BRANCH']
-      params[:build] = ENV['BUILDKITE_BUILD_NUMBER']
+      params[:build] = ENV['BUILDKITE_BUILD_NUMBER'] + '.' + ENV['BUILDKITE_JOB_ID']
       params[:build_url] = ENV['BUILDKITE_BUILD_URL']
       params[:slug] = ENV['BUILDKITE_PROJECT_SLUG']
       params[:commit] = ENV['BUILDKITE_COMMIT']
