@@ -298,8 +298,12 @@ class SimpleCov::Formatter::Codecov
     throw 'Only :on or :off' unless [:on, :off].include? switch
 
     if defined?(VCR)
-      @vcr_enabled ||= VCR.turned_on?
-      VCR.send "turn_#{switch}!".to_sym if @vcr_enabled
+      case switch
+      when :on
+        VCR.turn_on!
+      when :off
+        VCR.turn_off!(:ignore_cassettes => true)
+      end
     end
 
     if defined?(WebMock)
