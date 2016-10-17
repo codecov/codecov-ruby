@@ -158,7 +158,7 @@ class TestCodecov < Minitest::Test
     ENV['TRAVIS_PULL_REQUEST'] = "false"
     ENV['TRAVIS_JOB_NUMBER'] = "1"
     ENV['TRAVIS_REPO_SLUG'] = "codecov/ci-repo"
-    ENV['CODECOV_TOKEN'] = ''
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("travis", result['params'][:service])
     assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
@@ -166,7 +166,7 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:build])
     assert_equal("33116958", result['params'][:job])
     assert_equal('false', result['params'][:pull_request])
-    assert_equal('', result['params']['token'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_codeship
     ENV['CI'] = 'true'
