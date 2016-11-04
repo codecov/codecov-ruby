@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.6"
+  VERSION = "0.1.7"
   def format(result)
     net_blockers(:off)
 
@@ -46,6 +46,16 @@ class SimpleCov::Formatter::Codecov
         params[:commit] = ENV['CI_COMMIT_ID']
         params[:build] = ENV['CI_BUILD_NUMBER']
         params[:build_url] = ENV['CI_BUILD_URL']
+
+    # Solano
+    # --------
+    elsif ENV['TDDIUM'] == "true"
+        # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
+        params[:service] = 'solano'
+        params[:branch] = ENV['TDDIUM_CURRENT_BRANCH']
+        params[:commit] = ENV['TDDIUM_CURRENT_COMMIT']
+        params[:build] = ENV['TDDIUM_TID']
+        params[:pr] = ENV['TDDIUM_PR_ID']
 
     # Circle CI
     # ---------
