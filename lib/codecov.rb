@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.7"
+  VERSION = "0.1.8"
   def format(result)
     net_blockers(:off)
 
@@ -23,7 +23,10 @@ class SimpleCov::Formatter::Codecov
     # CI Environment
     # ==============
     # add params
-    params = {"token" => ENV['CODECOV_TOKEN']}
+    params = {
+      "token" => ENV['CODECOV_TOKEN'],
+      "flags" => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
+    }
 
     # Travis CI
     # ---------
