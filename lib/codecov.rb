@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.8"
+  VERSION = "0.1.9"
   def format(result)
     net_blockers(:off)
 
