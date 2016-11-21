@@ -322,13 +322,12 @@ class SimpleCov::Formatter::Codecov
     if defined?(WebMock)
       # WebMock on by default
       # VCR depends on WebMock 1.8.11; no method to check whether enabled.
-      action = case switch
+      case switch
       when :on
-        'disable'
+        WebMock.enable!
       when :off
-        'allow'
+        WebMock.disable!
       end
-      WebMock.send "#{action}_net_connect!".to_sym
     end
 
     return true
