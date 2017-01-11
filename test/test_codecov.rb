@@ -360,7 +360,7 @@ class TestCodecov < Minitest::Test
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_gitlab
-    ENV['CI_SERVER_NAME'] = "GitLab CI"
+    ENV['GITLAB_CI'] = "true"
     ENV['CI_BUILD_REF_NAME'] = "master"
     ENV['CI_BUILD_ID'] = "1"
     ENV['CI_BUILD_REPO'] = "https://gitlab.com/owner/repo.git"
