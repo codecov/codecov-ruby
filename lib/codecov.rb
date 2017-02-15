@@ -161,7 +161,7 @@ class SimpleCov::Formatter::Codecov
 
     # GitLab CI
     # ---------
-    elsif ENV['CI_SERVER_NAME'] == 'GitLab CI'
+    elsif ENV.key?('GITLAB_CI')
         # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
         # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
         params[:service] = 'gitlab'
