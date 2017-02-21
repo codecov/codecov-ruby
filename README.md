@@ -1,8 +1,4 @@
 codecov-ruby [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.svg?branch=master)](http://travis-ci.org/codecov/codecov-ruby) [![codecov.io](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
-=======
-| [https://codecov.io/][1] | [@codecov][2] | [hello@codecov.io][3] |
-| ------------------------ | ------------- | --------------------- |
-=======
 
 ## Usage
 
@@ -25,7 +21,7 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov
 > In your CI Environment Variables *(not needed for [https://travis-ci.org/](https://travis-ci.org/))*
 
 ```sh
-CODECOV_TOKEN="<your repo token>"
+CODECOV_TOKEN="your repo token"
 ```
 Find you repo token on your repo page at [codecov.io][1]. Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or AppVeyor CI.
 
@@ -45,6 +41,7 @@ Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker,
 
 1. There are known issues when `Simplecov.track_files` is enabled. We recommend that you require all code files in your tests so that Simplecov can provide Codecov with properly mapped coverage report metrics. [codecov/support#133]( https://github.com/codecov/support/issues/133)
 
+2. Codecov, by default, ignored files that are not tested. Learn more at https://docs.codecov.io/docs/ruby
 
 ### Enterprise
 For companies using Codecov Enterprise you will need to specify the following parameters.
@@ -56,9 +53,3 @@ CODECOV_TOKEN="repository token or global token"
 
 
 [1]: https://codecov.io/
-[2]: https://twitter.com/codecov
-[3]: mailto:hello@codecov.io
-
-## Copyright
-
-> Copyright 2014 codecov

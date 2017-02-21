@@ -209,7 +209,8 @@ class TestCodecov < Minitest::Test
     result = upload
     assert_equal("buildkite", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1.2", result['params'][:build])
+    assert_equal("1", result['params'][:build])
+    assert_equal("2", result['params'][:job])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
@@ -302,7 +303,8 @@ class TestCodecov < Minitest::Test
     result = upload
     assert_equal("circleci", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1.2", result['params'][:build])
+    assert_equal("1", result['params'][:build])
+    assert_equal("2", result['params'][:job])
     assert_equal("3", result['params'][:pr])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
@@ -320,7 +322,8 @@ class TestCodecov < Minitest::Test
     result = upload
     assert_equal("semaphore", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1.2", result['params'][:build])
+    assert_equal("1", result['params'][:build])
+    assert_equal("2", result['params'][:job])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
@@ -360,7 +363,7 @@ class TestCodecov < Minitest::Test
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_gitlab
-    ENV['CI_SERVER_NAME'] = "GitLab CI"
+    ENV['GITLAB_CI'] = "true"
     ENV['CI_BUILD_REF_NAME'] = "master"
     ENV['CI_BUILD_ID'] = "1"
     ENV['CI_BUILD_REPO'] = "https://gitlab.com/owner/repo.git"
