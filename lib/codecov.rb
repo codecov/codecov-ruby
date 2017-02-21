@@ -39,6 +39,7 @@ class SimpleCov::Formatter::Codecov
         params[:slug] = ENV['TRAVIS_REPO_SLUG']
         params[:build] = ENV['TRAVIS_JOB_NUMBER']
         params[:commit] = ENV['TRAVIS_COMMIT']
+        params[:env] = ENV['TRAVIS_RUBY_VERSION']
 
     # Codeship
     # --------
@@ -65,8 +66,13 @@ class SimpleCov::Formatter::Codecov
     elsif ENV['CI'] == "true" and ENV['CIRCLECI'] == 'true'
         # https://circleci.com/docs/environment-variables
         params[:service] = 'circleci'
-        params[:build] = ENV['CIRCLE_BUILD_NUM'] + '.' + ENV['CIRCLE_NODE_INDEX']
-        params[:slug] = ENV['CIRCLE_PROJECT_USERNAME'] + '/' + ENV['CIRCLE_PROJECT_REPONAME']
+        params[:build] = ENV['CIRCLE_BUILD_NUM']
+        params[:job] = ENV['CIRCLE_NODE_INDEX']
+        if ENV['CIRCLE_PROJECT_REPONAME'] != nil
+          params[:slug] = ENV['CIRCLE_PROJECT_USERNAME'] + '/' + ENV['CIRCLE_PROJECT_REPONAME']
+        else
+          params[:slug] = ENV['CIRCLE_REPOSITORY_URL'].gsub(/^.*:/, '').gsub(/\.git$/, '')
+        end
         params[:pr] = ENV['CIRCLE_PR_NUMBER']
         params[:branch] = ENV['CIRCLE_BRANCH']
         params[:commit] = ENV['CIRCLE_SHA1']
@@ -77,7 +83,8 @@ class SimpleCov::Formatter::Codecov
       # https://buildkite.com/docs/guides/environment-variables
       params[:service] = "buildkite"
       params[:branch] = ENV['BUILDKITE_BRANCH']
-      params[:build] = ENV['BUILDKITE_BUILD_NUMBER'] + '.' + ENV['BUILDKITE_JOB_ID']
+      params[:build] = ENV['BUILDKITE_BUILD_NUMBER']
+      params[:job] = ENV['BUILDKITE_JOB_ID']
       params[:build_url] = ENV['BUILDKITE_BUILD_URL']
       params[:slug] = ENV['BUILDKITE_PROJECT_SLUG']
       params[:commit] = ENV['BUILDKITE_COMMIT']
@@ -89,7 +96,8 @@ class SimpleCov::Formatter::Codecov
         params[:service] = 'semaphore'
         params[:branch] = ENV['BRANCH_NAME']
         params[:commit] = ENV['REVISION']
-        params[:build] = ENV['SEMAPHORE_BUILD_NUMBER'] + '.' + ENV['SEMAPHORE_CURRENT_THREAD']
+        params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
+        params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
         params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
     # Snap CI
@@ -99,6 +107,7 @@ class SimpleCov::Formatter::Codecov
         params[:service] = 'snap'
         params[:branch] = ENV['SNAP_BRANCH'] || ENV['SNAP_UPSTREAM_BRANCH']
         params[:commit] = ENV['SNAP_COMMIT'] || ENV['SNAP_UPSTREAM_COMMIT']
+        params[:job] = ENV['SNAP_STAGE_NAME']
         params[:build] = ENV['SNAP_PIPELINE_COUNTER']
         params[:pr] = ENV['SNAP_PULL_REQUEST_NUMBER']
 
@@ -108,9 +117,11 @@ class SimpleCov::Formatter::Codecov
         # https://semaphoreapp.com/docs/available-environment-variables.html
         params[:service] = 'drone.io'
         params[:branch] = ENV['DRONE_BRANCH']
-        params[:commit] = `git rev-parse HEAD`.strip
+        params[:job] = ENV['DRONE_JOB_NUMBER']
         params[:build] = ENV['DRONE_BUILD_NUMBER']
-        params[:build_url] = ENV['DRONE_BUILD_URL']
+        params[:build_url] = ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
+        params[:pr] = ENV['DRONE_PULL_REQUEST']
+        params[:tag] = ENV['DRONE_TAG']
 
     # Appveyor
     # --------
@@ -202,6 +213,10 @@ class SimpleCov::Formatter::Codecov
     slug = ENV['CODECOV_SLUG']
     if slug != nil
         params[:slug] = slug
+    end
+
+    if params[:pr] != nil
+      params[:pr] = params[:pr].sub('#', '')
     end
 
     # =================
