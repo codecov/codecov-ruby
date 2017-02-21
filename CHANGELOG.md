@@ -1,3 +1,7 @@
+### `0.1.10`
+- update numerous ci environments
+- dont fail if cannot upload to codecov
+
 ### `0.1.3`
 - add buildkite
 
