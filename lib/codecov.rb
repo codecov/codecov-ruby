@@ -173,13 +173,14 @@ class SimpleCov::Formatter::Codecov
     # GitLab CI
     # ---------
     elsif ENV['GITLAB_CI'] != nil
-        # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
-        # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
-        params[:service] = 'gitlab'
-        params[:branch] = ENV['CI_BUILD_REF_NAME']
-        params[:build] = ENV['CI_BUILD_ID']
-        params[:slug] = ENV['CI_BUILD_REPO'].split('/', 4)[-1].sub('.git', '')
-        params[:commit] = ENV['CI_BUILD_REF']
+      # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
+      # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+      # GitLab Runner v9 renamed some environment variables, so we check both old and new variable names.
+      params[:service] = 'gitlab'
+      params[:branch] = ENV['CI_BUILD_REF_NAME'] || ENV['CI_COMMIT_REF_NAME']
+      params[:build] = ENV['CI_BUILD_ID'] || ENV['CI_JOB_ID']
+      params[:slug] = (ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']).split('/', 4)[-1].sub('.git', '')
+      params[:commit] = ENV['CI_BUILD_REF'] || ENV['CI_COMMIT_SHA']
 
     # Teamcity
     # ---------
