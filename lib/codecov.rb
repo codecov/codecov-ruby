@@ -113,13 +113,14 @@ class SimpleCov::Formatter::Codecov
 
     # drone.io
     # --------
-    elsif ENV['CI'] == "true" and ENV['DRONE'] == "true"
+    elsif (ENV['CI'] == "true" or ENV['CI'] == "drone") and ENV['DRONE'] == "true"
         # https://semaphoreapp.com/docs/available-environment-variables.html
         params[:service] = 'drone.io'
         params[:branch] = ENV['DRONE_BRANCH']
+        params[:commit] = ENV['DRONE_COMMIT_SHA']
         params[:job] = ENV['DRONE_JOB_NUMBER']
         params[:build] = ENV['DRONE_BUILD_NUMBER']
-        params[:build_url] = ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
+        params[:build_url] = ENV['DRONE_BUILD_LINK'] || ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
         params[:pr] = ENV['DRONE_PULL_REQUEST']
         params[:tag] = ENV['DRONE_TAG']
 
