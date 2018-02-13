@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name               = "codecov"
-  s.version            = "0.1.10"
+  s.version            = "0.1.11"
   s.platform           = Gem::Platform::RUBY
   s.authors            = ["codecov"]
   s.email              = ["hello@codecov.io"]
@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage           = %q{https://github.com/codecov/codecov-ruby}
   s.summary            = %q{hosted code coverage ruby/rails reporter}
   s.rubyforge_project  = "codecov"
+  s.license            = "MIT"
   s.files              = ["lib/codecov.rb"]
   s.test_files         = ["test/test_codecov.rb"]
   s.require_paths      = ["lib"]
