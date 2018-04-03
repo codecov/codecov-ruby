@@ -111,6 +111,9 @@ class TestCodecov < Minitest::Test
     ENV['GIT_BRANCH'] = nil
     ENV['GIT_COMMIT'] = nil
     ENV['GITLAB_CI'] = nil
+    ENV['HEROKU_TEST_RUN_ID'] = nil
+    ENV['HEROKU_TEST_RUN_BRANCH'] = nil
+    ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] = nil
     ENV['JENKINS_URL'] = nil
     ENV['MAGNUM'] = nil
     ENV['PULL_REQUEST'] = nil
@@ -392,6 +395,19 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_heroku
+    ENV['HEROKU_TEST_RUN_ID'] = "454f5dc9-afa4-433f-bb28-84678a00fd98"
+    ENV['HEROKU_TEST_RUN_BRANCH'] = "master"
+    ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+    assert_equal("heroku", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("454f5dc9-afa4-433f-bb28-84678a00fd98", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
