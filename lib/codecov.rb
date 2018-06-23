@@ -200,6 +200,18 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['TEAMCITY_BUILD_URL']
       params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
       params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
+
+    # Bitrise
+    # ---------
+    elsif ENV['CI'] == 'true' and ENV['BITRISE_IO'] == 'true'
+      # http://devcenter.bitrise.io/faq/available-environment-variables/
+      params[:service] = 'bitrise'
+      params[:branch] = ENV['BITRISE_GIT_BRANCH']
+      params[:pull_request] = ENV['BITRISE_PULL_REQUEST']
+      params[:build] = ENV['BITRISE_BUILD_NUMBER']
+      params[:build_url] = ENV['BITRISE_BUILD_URL']
+      params[:commit] = ENV['BITRISE_GIT_COMMIT']
+      params[:slug] = ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] + '/' + ENV['BITRISEIO_GIT_REPOSITORY_SLUG']
     end
 
     if params[:branch] == nil
