@@ -207,7 +207,7 @@ class SimpleCov::Formatter::Codecov
       # http://devcenter.bitrise.io/faq/available-environment-variables/
       params[:service] = 'bitrise'
       params[:branch] = ENV['BITRISE_GIT_BRANCH']
-      params[:pull_request] = ENV['BITRISE_PULL_REQUEST']
+      params[:pr] = ENV['BITRISE_PULL_REQUEST']
       params[:build] = ENV['BITRISE_BUILD_NUMBER']
       params[:build_url] = ENV['BITRISE_BUILD_URL']
       params[:commit] = ENV['BITRISE_GIT_COMMIT']
