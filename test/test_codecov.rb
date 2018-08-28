@@ -116,6 +116,7 @@ class TestCodecov < Minitest::Test
     ENV['ghprbActualCommit'] = nil
     ENV['ghprbPullId'] = nil
     ENV['ghprbSourceBranch'] = nil
+    ENV['GITLAB_CI'] = nil
     ENV['GIT_BRANCH'] = nil
     ENV['GIT_COMMIT'] = nil
     ENV['JENKINS_URL'] = nil
