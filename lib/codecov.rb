@@ -200,6 +200,17 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['TEAMCITY_BUILD_URL']
       params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
       params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
+
+    # AWS CodeBuild
+    # ---------
+    elsif ENV['CODEBUILD_BUILD_ARN'] != nil
+      # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+      params[:service] = 'custom'
+      params[:branch] = ''
+      params[:build] = ENV['CODEBUILD_BUILD_ID']
+      params[:build_url] = ENV['CODEBUILD_LOG_PATH']
+      params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] || ENV['CODEBUILD_SOURCE_VERSION']
+      params[:slug] = ENV['CODEBUILD_BUILD_ARN'].split(':')[5]
     end
 
     if params[:branch] == nil
