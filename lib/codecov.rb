@@ -203,7 +203,7 @@ class SimpleCov::Formatter::Codecov
 
     # AWS CodeBuild
     # ---------
-    elsif ENV['CODEBUILD_BUILD_ARN'] != nil
+    elsif ENV['CODEBUILD_BUILD_ID']
       # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
       params[:service] = 'custom'
       params[:branch] = ''
