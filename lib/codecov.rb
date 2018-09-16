@@ -206,7 +206,7 @@ class SimpleCov::Formatter::Codecov
     elsif ENV['CODEBUILD_BUILD_ID']
       # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
       params[:service] = 'custom'
-      params[:branch] = ''
+      params[:branch] = ENV['GIT_BRANCH'] || ''
       params[:build] = ENV['CODEBUILD_BUILD_ID']
       params[:build_url] = "https://console.aws.amazon.com/codebuild/home?region=#{ENV['AWS_DEFAULT_REGION']}#/builds/#{ENV['CODEBUILD_BUILD_ID']}/view/new"
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] || ENV['CODEBUILD_SOURCE_VERSION']
