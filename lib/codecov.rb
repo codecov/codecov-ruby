@@ -208,7 +208,7 @@ class SimpleCov::Formatter::Codecov
       params[:service] = 'custom'
       params[:branch] = ''
       params[:build] = ENV['CODEBUILD_BUILD_ID']
-      params[:build_url] = ENV['CODEBUILD_LOG_PATH']
+      params[:build_url] = "https://console.aws.amazon.com/codebuild/home?region=#{ENV['AWS_DEFAULT_REGION']}#/builds/#{ENV['CODEBUILD_BUILD_ID']}/view/new"
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] || ENV['CODEBUILD_SOURCE_VERSION']
       params[:slug] = ENV['CODEBUILD_BUILD_ARN'].split(':')[5]
     end
