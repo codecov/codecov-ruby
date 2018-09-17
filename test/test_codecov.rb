@@ -416,8 +416,7 @@ class TestCodecov < Minitest::Test
     assert_equal("custom", result['params'][:service])
     assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
     assert_equal("codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE", result['params'][:build])
-    assert_equal("https://example.com/logstream", result['params'][:build_url])
-    # assert_equal("https://console.aws.amazon.com/codebuild/home?region=us-east-1#/builds/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE/view/new", result['params'][:build_url])
+    assert_equal("https://console.aws.amazon.com/codebuild/home?region=#/builds/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE/view/new", result['params'][:build_url])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
