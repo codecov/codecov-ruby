@@ -184,20 +184,6 @@ class TestCodecov < Minitest::Test
     assert_equal("master", result['params'][:branch])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
-  def test_snap
-    ENV['CI'] = 'true'
-    ENV['SNAP_CI'] = 'true'
-    ENV['SNAP_BRANCH'] = 'master'
-    ENV['SNAP_PIPELINE_COUNTER'] = '1'
-    ENV['SNAP_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
-    result = upload
-    assert_equal("snap", result['params'][:service])
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
-    assert_equal("master", result['params'][:branch])
-    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
-  end
   def test_buildkite
     ENV['CI'] = 'true'
     ENV['BUILDKITE'] = 'true'
