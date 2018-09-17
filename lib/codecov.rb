@@ -100,17 +100,6 @@ class SimpleCov::Formatter::Codecov
         params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
         params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
-    # Snap CI
-    # -------
-    elsif ENV['CI'] == "true" and ENV['SNAP_CI'] == "true"
-        # https://docs.snap-ci.com/environment-variables/
-        params[:service] = 'snap'
-        params[:branch] = ENV['SNAP_BRANCH'] || ENV['SNAP_UPSTREAM_BRANCH']
-        params[:commit] = ENV['SNAP_COMMIT'] || ENV['SNAP_UPSTREAM_COMMIT']
-        params[:job] = ENV['SNAP_STAGE_NAME']
-        params[:build] = ENV['SNAP_PIPELINE_COUNTER']
-        params[:pr] = ENV['SNAP_PULL_REQUEST_NUMBER']
-
     # drone.io
     # --------
     elsif (ENV['CI'] == "true" or ENV['CI'] == "drone") and ENV['DRONE'] == "true"
