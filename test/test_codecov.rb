@@ -49,6 +49,7 @@ class TestCodecov < Minitest::Test
   def setup
     ENV['CI'] = nil
     ENV['TRAVIS'] = nil
+    ENV['GITLAB_CI'] = nil
   end
   def teardown
     # needed for sending this projects coverage
@@ -61,6 +62,7 @@ class TestCodecov < Minitest::Test
     ENV['APPVEYOR_REPO_BRANCH'] = nil
     ENV['APPVEYOR_REPO_COMMIT'] = nil
     ENV['APPVEYOR_REPO_NAME'] = nil
+    ENV['AWS_REGION'] = nil
     ENV['BRANCH'] = nil
     ENV['BRANCH_NAME'] = nil
     ENV['BUILD_ID'] = nil
@@ -96,6 +98,12 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLE_PROJECT_USERNAME'] = nil
     ENV['CIRCLE_SHA1'] = nil
     ENV['CIRCLECI'] = nil
+    ENV['CODEBUILD_BUILD_ARN'] = nil
+    ENV['CODEBUILD_BUILD_ID'] = nil
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = nil
+    ENV['CODEBUILD_SOURCE_VERSION'] = nil
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = nil
+    ENV['CODEBUILD_LOG_PATH'] = nil
     ENV['CODECOV_ENV'] = nil
     ENV['CODECOV_SLUG'] = nil
     ENV['CODECOV_TOKEN'] = nil
@@ -108,6 +116,7 @@ class TestCodecov < Minitest::Test
     ENV['ghprbActualCommit'] = nil
     ENV['ghprbPullId'] = nil
     ENV['ghprbSourceBranch'] = nil
+    ENV['GITLAB_CI'] = nil
     ENV['GIT_BRANCH'] = nil
     ENV['GIT_COMMIT'] = nil
     ENV['JENKINS_URL'] = nil
@@ -177,20 +186,6 @@ class TestCodecov < Minitest::Test
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("codeship", result['params'][:service])
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
-    assert_equal("master", result['params'][:branch])
-    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
-  end
-  def test_snap
-    ENV['CI'] = 'true'
-    ENV['SNAP_CI'] = 'true'
-    ENV['SNAP_BRANCH'] = 'master'
-    ENV['SNAP_PIPELINE_COUNTER'] = '1'
-    ENV['SNAP_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
-    result = upload
-    assert_equal("snap", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
@@ -375,6 +370,40 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_codebuild
+    ENV['AWS_REGION'] = 'us-east-1'
+    ENV['CODEBUILD_BUILD_ARN'] = "arn:aws:codebuild:region-ID:account-ID:build/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE"
+    ENV['CODEBUILD_BUILD_ID'] = "codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE"
+    ENV['CODEBUILD_INITIATOR'] = "MyUserName"
+    ENV['CODEBUILD_LOG_PATH'] = "https://example.com/logstream"
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = nil
+    ENV['CODEBUILD_SOURCE_VERSION'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = "s3://bucket/key"
+    ENV['CODECOV_TOKEN'] = "f881216b-b5c0-4eb1-8f21-b51887d1d506"
+    result = upload
+    assert_equal("custom", result['params'][:service])
+    assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
+    assert_equal("codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE", result['params'][:build])
+    assert_equal("https://example.com/logstream", result['params'][:build_url])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_codebuild_codepipeline
+    ENV['AWS_REGION'] = "us-east-1"
+    ENV['CODEBUILD_BUILD_ARN'] = "arn:aws:codebuild:region-ID:account-ID:build/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE"
+    ENV['CODEBUILD_BUILD_ID'] = "codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE"
+    ENV['CODEBUILD_INITIATOR'] = "codepipeline/basics-development-WebPipeline-159BMH0SGZMFE"
+    ENV['CODEBUILD_LOG_PATH'] = "https://example.com/logstream"
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
+    ENV['CODEBUILD_SOURCE_VERSION'] = "arn:aws:s3:::bucket/prefix/source/Q8KSWlD.zip"
+    ENV['CODECOV_TOKEN'] = "f881216b-b5c0-4eb1-8f21-b51887d1d506"
+    result = upload
+    assert_equal("custom", result['params'][:service])
+    assert_equal("c739768fcac68144a3a6d82305b9c4106934d31a", result['params'][:commit])
+    assert_equal("codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE", result['params'][:build])
+    assert_equal("https://example.com/logstream", result['params'][:build_url])
+    # assert_equal("https://console.aws.amazon.com/codebuild/home?region=us-east-1#/builds/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE/view/new", result['params'][:build_url])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 

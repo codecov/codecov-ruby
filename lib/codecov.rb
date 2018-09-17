@@ -100,17 +100,6 @@ class SimpleCov::Formatter::Codecov
         params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
         params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
-    # Snap CI
-    # -------
-    elsif ENV['CI'] == "true" and ENV['SNAP_CI'] == "true"
-        # https://docs.snap-ci.com/environment-variables/
-        params[:service] = 'snap'
-        params[:branch] = ENV['SNAP_BRANCH'] || ENV['SNAP_UPSTREAM_BRANCH']
-        params[:commit] = ENV['SNAP_COMMIT'] || ENV['SNAP_UPSTREAM_COMMIT']
-        params[:job] = ENV['SNAP_STAGE_NAME']
-        params[:build] = ENV['SNAP_PIPELINE_COUNTER']
-        params[:pr] = ENV['SNAP_PULL_REQUEST_NUMBER']
-
     # drone.io
     # --------
     elsif (ENV['CI'] == "true" or ENV['CI'] == "drone") and ENV['DRONE'] == "true"
@@ -200,6 +189,17 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['TEAMCITY_BUILD_URL']
       params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
       params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
+
+    # AWS CodeBuild
+    # ---------
+    elsif ENV['CODEBUILD_BUILD_ID']
+      # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+      params[:service] = 'custom'
+      params[:branch] = ENV['GIT_BRANCH'] || ''
+      params[:build] = ENV['CODEBUILD_BUILD_ID']
+      params[:build_url] = "https://console.aws.amazon.com/codebuild/home?region=#{ENV['AWS_DEFAULT_REGION']}#/builds/#{ENV['CODEBUILD_BUILD_ID']}/view/new"
+      params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] || ENV['CODEBUILD_SOURCE_VERSION']
+      params[:slug] = ENV['CODEBUILD_BUILD_ARN'].split(':')[5]
     end
 
     if params[:branch] == nil

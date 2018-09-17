@@ -1,4 +1,4 @@
-lang: ruby
+language: ruby
 sudo: false
 notifications:
   email: false
@@ -6,7 +6,7 @@ script:
   - bundle exec rake
 rvm:
   - 1.9.3
-  - 2.0.0
-  - 2.1
+  - 2.4
+  - 2.5.1
   - jruby
-  - rbx-2
+  - rbx-3
