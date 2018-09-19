@@ -180,7 +180,8 @@ class SimpleCov::Formatter::Codecov
       params[:service] = 'gitlab'
       params[:branch] = ENV['CI_BUILD_REF_NAME'] || ENV['CI_COMMIT_REF_NAME']
       params[:build] = ENV['CI_BUILD_ID'] || ENV['CI_JOB_ID']
-      params[:slug] = (ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']).split('/', 4)[-1].sub('.git', '')
+      slug = ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']
+      params[:slug] = slug.split('/', 4)[-1].sub('.git', '') if slug
       params[:commit] = ENV['CI_BUILD_REF'] || ENV['CI_COMMIT_SHA']
 
     # Teamcity
