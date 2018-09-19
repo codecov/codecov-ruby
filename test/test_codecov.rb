@@ -378,6 +378,22 @@ class TestCodecov < Minitest::Test
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
+  def test_teamcity
+    ENV['CI_SERVER_NAME'] = "TeamCity"
+    ENV['TEAMCITY_BUILD_BRANCH'] = "master"
+    ENV['TEAMCITY_BUILD_ID'] = "1"
+    ENV['TEAMCITY_BUILD_URL'] = 'http://teamcity/...'
+    ENV['TEAMCITY_BUILD_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['TEAMCITY_BUILD_REPOSITORY'] = "https://github.com/owner/repo.git"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("teamcity", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
   def test_azure_pipelines
     ENV['TF_BUILD'] = "1"
     ENV['BUILD_SOURCEBRANCH'] = "master"
