@@ -110,6 +110,7 @@ class TestCodecov < Minitest::Test
     ENV['ghprbSourceBranch'] = nil
     ENV['GIT_BRANCH'] = nil
     ENV['GIT_COMMIT'] = nil
+    ENV['GITLAB_CI'] = nil
     ENV['JENKINS_URL'] = nil
     ENV['MAGNUM'] = nil
     ENV['PULL_REQUEST'] = nil
@@ -127,6 +128,7 @@ class TestCodecov < Minitest::Test
     ENV['SNAP_PULL_REQUEST_NUMBER'] = nil
     ENV['SNAP_UPSTREAM_BRANCH'] = nil
     ENV['SNAP_UPSTREAM_COMMIT'] = nil
+    ENV['TF_BUILD'] = nil
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
@@ -371,6 +373,40 @@ class TestCodecov < Minitest::Test
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("gitlab", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_teamcity
+    ENV['CI_SERVER_NAME'] = "TeamCity"
+    ENV['TEAMCITY_BUILD_BRANCH'] = "master"
+    ENV['TEAMCITY_BUILD_ID'] = "1"
+    ENV['TEAMCITY_BUILD_URL'] = 'http://teamcity/...'
+    ENV['TEAMCITY_BUILD_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['TEAMCITY_BUILD_REPOSITORY'] = "https://github.com/owner/repo.git"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("teamcity", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_azure_pipelines
+    ENV['TF_BUILD'] = "1"
+    ENV['BUILD_SOURCEBRANCH'] = "master"
+    ENV['SYSTEM_JOBID'] = '92a2fa25-f940-5df6-a185-81eb9ae2031d'
+    ENV['BUILD_BUILDID'] = "1"
+    ENV['SYSTEM_TEAMFOUNDATIONSERVERURI'] = 'https://dev.azure.com/codecov/'
+    ENV['SYSTEM_TEAMPROJECT'] = 'repo'
+    ENV['BUILD_SOURCEVERSION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['BUILD_REPOSITORY_ID'] = 'owner/repo'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("azure_pipelines", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])

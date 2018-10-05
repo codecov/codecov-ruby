@@ -180,7 +180,8 @@ class SimpleCov::Formatter::Codecov
       params[:service] = 'gitlab'
       params[:branch] = ENV['CI_BUILD_REF_NAME'] || ENV['CI_COMMIT_REF_NAME']
       params[:build] = ENV['CI_BUILD_ID'] || ENV['CI_JOB_ID']
-      params[:slug] = (ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']).split('/', 4)[-1].sub('.git', '')
+      slug = ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']
+      params[:slug] = slug.split('/', 4)[-1].sub('.git', '') if slug
       params[:commit] = ENV['CI_BUILD_REF'] || ENV['CI_COMMIT_SHA']
 
     # Teamcity
@@ -200,6 +201,18 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['TEAMCITY_BUILD_URL']
       params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
       params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
+
+    # Azure Pipelines
+    # ---------
+    elsif ENV['TF_BUILD'] != nil
+      params[:service] = 'azure_pipelines'
+      params[:branch] = ENV['BUILD_SOURCEBRANCH']
+      params[:pull_request] = ENV['SYSTEM_PULLREQUEST_PULLREQUESTNUMBER']
+      params[:job] = ENV['SYSTEM_JOBID']
+      params[:build] = ENV['BUILD_BUILDID']
+      params[:build_url] = "#{ENV['SYSTEM_TEAMFOUNDATIONSERVERURI']}/#{ENV['SYSTEM_TEAMPROJECT']}/_build/results?buildId=#{ENV['BUILD_BUILDID']}"
+      params[:commit] = ENV['BUILD_SOURCEVERSION']
+      params[:slug] = ENV['BUILD_REPOSITORY_ID']
     end
 
     if params[:branch] == nil
