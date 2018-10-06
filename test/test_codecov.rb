@@ -121,13 +121,6 @@ class TestCodecov < Minitest::Test
     ENV['SEMAPHORE_CURRENT_THREAD'] = nil
     ENV['SEMAPHORE_REPO_SLUG'] = nil
     ENV['SHIPPABLE'] = nil
-    ENV['SNAP_BRANCH'] = nil
-    ENV['SNAP_CI'] = nil
-    ENV['SNAP_COMMIT'] = nil
-    ENV['SNAP_PIPELINE_COUNTER'] = nil
-    ENV['SNAP_PULL_REQUEST_NUMBER'] = nil
-    ENV['SNAP_UPSTREAM_BRANCH'] = nil
-    ENV['SNAP_UPSTREAM_COMMIT'] = nil
     ENV['TF_BUILD'] = nil
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
