@@ -202,6 +202,14 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = "#{ENV['SYSTEM_TEAMFOUNDATIONSERVERURI']}/#{ENV['SYSTEM_TEAMPROJECT']}/_build/results?buildId=#{ENV['BUILD_BUILDID']}"
       params[:commit] = ENV['BUILD_SOURCEVERSION']
       params[:slug] = ENV['BUILD_REPOSITORY_ID']
+
+    # Heroku CI
+    # ---------
+    elsif ENV['HEROKU_TEST_RUN_ID']
+      params[:service] = 'heroku'
+      params[:branch] = ENV['HEROKU_TEST_RUN_BRANCH']
+      params[:build] = ENV['HEROKU_TEST_RUN_ID']
+      params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
     end
 
     if params[:branch] == nil
