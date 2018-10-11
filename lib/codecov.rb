@@ -9,7 +9,7 @@ module SimpleCov
 end
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.12"
+  VERSION = "0.1.13"
   def format(result)
     net_blockers(:off)
 
