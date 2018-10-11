@@ -1,8 +1,11 @@
 # encoding: utf-8
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "codecov"
 
 Gem::Specification.new do |s|
   s.name               = "codecov"
-  s.version            = "0.1.11"
+  s.version            = SimpleCov::Formatter::Codecov::VERSION
   s.platform           = Gem::Platform::RUBY
   s.authors            = ["codecov"]
   s.email              = ["hello@codecov.io"]

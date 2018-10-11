@@ -2,6 +2,12 @@ require 'uri'
 require 'json'
 require 'net/http'
 
+# Define constants to work before requiring simplecov
+module SimpleCov
+  module Formatter
+  end
+end
+
 class SimpleCov::Formatter::Codecov
   VERSION = "0.1.12"
   def format(result)
