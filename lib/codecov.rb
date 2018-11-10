@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.11"
+  VERSION = "0.1.12"
   def format(result)
     net_blockers(:off)
 
@@ -100,17 +100,6 @@ class SimpleCov::Formatter::Codecov
         params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
         params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
-    # Snap CI
-    # -------
-    elsif ENV['CI'] == "true" and ENV['SNAP_CI'] == "true"
-        # https://docs.snap-ci.com/environment-variables/
-        params[:service] = 'snap'
-        params[:branch] = ENV['SNAP_BRANCH'] || ENV['SNAP_UPSTREAM_BRANCH']
-        params[:commit] = ENV['SNAP_COMMIT'] || ENV['SNAP_UPSTREAM_COMMIT']
-        params[:job] = ENV['SNAP_STAGE_NAME']
-        params[:build] = ENV['SNAP_PIPELINE_COUNTER']
-        params[:pr] = ENV['SNAP_PULL_REQUEST_NUMBER']
-
     # drone.io
     # --------
     elsif (ENV['CI'] == "true" or ENV['CI'] == "drone") and ENV['DRONE'] == "true"
@@ -180,7 +169,8 @@ class SimpleCov::Formatter::Codecov
       params[:service] = 'gitlab'
       params[:branch] = ENV['CI_BUILD_REF_NAME'] || ENV['CI_COMMIT_REF_NAME']
       params[:build] = ENV['CI_BUILD_ID'] || ENV['CI_JOB_ID']
-      params[:slug] = (ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']).split('/', 4)[-1].sub('.git', '')
+      slug = ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']
+      params[:slug] = slug.split('/', 4)[-1].sub('.git', '') if slug
       params[:commit] = ENV['CI_BUILD_REF'] || ENV['CI_COMMIT_SHA']
 
     # Teamcity
@@ -212,6 +202,26 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['BITRISE_BUILD_URL']
       params[:commit] = ENV['BITRISE_GIT_COMMIT']
       params[:slug] = ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] + '/' + ENV['BITRISEIO_GIT_REPOSITORY_SLUG']
+
+    # Azure Pipelines
+    # ---------
+    elsif ENV['TF_BUILD'] != nil
+      params[:service] = 'azure_pipelines'
+      params[:branch] = ENV['BUILD_SOURCEBRANCH']
+      params[:pull_request] = ENV['SYSTEM_PULLREQUEST_PULLREQUESTNUMBER']
+      params[:job] = ENV['SYSTEM_JOBID']
+      params[:build] = ENV['BUILD_BUILDID']
+      params[:build_url] = "#{ENV['SYSTEM_TEAMFOUNDATIONSERVERURI']}/#{ENV['SYSTEM_TEAMPROJECT']}/_build/results?buildId=#{ENV['BUILD_BUILDID']}"
+      params[:commit] = ENV['BUILD_SOURCEVERSION']
+      params[:slug] = ENV['BUILD_REPOSITORY_ID']
+
+    # Heroku CI
+    # ---------
+    elsif ENV['HEROKU_TEST_RUN_ID']
+      params[:service] = 'heroku'
+      params[:branch] = ENV['HEROKU_TEST_RUN_BRANCH']
+      params[:build] = ENV['HEROKU_TEST_RUN_ID']
+      params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
     end
 
     if params[:branch] == nil

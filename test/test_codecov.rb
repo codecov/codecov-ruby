@@ -118,6 +118,10 @@ class TestCodecov < Minitest::Test
     ENV['ghprbSourceBranch'] = nil
     ENV['GIT_BRANCH'] = nil
     ENV['GIT_COMMIT'] = nil
+    ENV['GITLAB_CI'] = nil
+    ENV['HEROKU_TEST_RUN_ID'] = nil
+    ENV['HEROKU_TEST_RUN_BRANCH'] = nil
+    ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] = nil
     ENV['JENKINS_URL'] = nil
     ENV['MAGNUM'] = nil
     ENV['PULL_REQUEST'] = nil
@@ -128,13 +132,7 @@ class TestCodecov < Minitest::Test
     ENV['SEMAPHORE_CURRENT_THREAD'] = nil
     ENV['SEMAPHORE_REPO_SLUG'] = nil
     ENV['SHIPPABLE'] = nil
-    ENV['SNAP_BRANCH'] = nil
-    ENV['SNAP_CI'] = nil
-    ENV['SNAP_COMMIT'] = nil
-    ENV['SNAP_PIPELINE_COUNTER'] = nil
-    ENV['SNAP_PULL_REQUEST_NUMBER'] = nil
-    ENV['SNAP_UPSTREAM_BRANCH'] = nil
-    ENV['SNAP_UPSTREAM_COMMIT'] = nil
+    ENV['TF_BUILD'] = nil
     ENV['TRAVIS'] = "true"
     ENV['TRAVIS_BRANCH'] = REALENV["TRAVIS_BRANCH"]
     ENV['TRAVIS_COMMIT'] = REALENV["TRAVIS_COMMIT"]
@@ -185,20 +183,6 @@ class TestCodecov < Minitest::Test
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal("codeship", result['params'][:service])
-    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
-    assert_equal("1", result['params'][:build])
-    assert_equal("master", result['params'][:branch])
-    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
-  end
-  def test_snap
-    ENV['CI'] = 'true'
-    ENV['SNAP_CI'] = 'true'
-    ENV['SNAP_BRANCH'] = 'master'
-    ENV['SNAP_PIPELINE_COUNTER'] = '1'
-    ENV['SNAP_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
-    result = upload
-    assert_equal("snap", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("1", result['params'][:build])
     assert_equal("master", result['params'][:branch])
@@ -404,6 +388,54 @@ class TestCodecov < Minitest::Test
     assert_equal("2", result['params'][:pr])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+  end
+  def test_teamcity
+    ENV['CI_SERVER_NAME'] = "TeamCity"
+    ENV['TEAMCITY_BUILD_BRANCH'] = "master"
+    ENV['TEAMCITY_BUILD_ID'] = "1"
+    ENV['TEAMCITY_BUILD_URL'] = 'http://teamcity/...'
+    ENV['TEAMCITY_BUILD_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['TEAMCITY_BUILD_REPOSITORY'] = "https://github.com/owner/repo.git"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("teamcity", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_azure_pipelines
+    skip "azure_pipelines is not recognized as a CI provider by codecov now"
+
+    ENV['TF_BUILD'] = "1"
+    ENV['BUILD_SOURCEBRANCH'] = "master"
+    ENV['SYSTEM_JOBID'] = '92a2fa25-f940-5df6-a185-81eb9ae2031d'
+    ENV['BUILD_BUILDID'] = "1"
+    ENV['SYSTEM_TEAMFOUNDATIONSERVERURI'] = 'https://dev.azure.com/codecov/'
+    ENV['SYSTEM_TEAMPROJECT'] = 'repo'
+    ENV['BUILD_SOURCEVERSION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['BUILD_REPOSITORY_ID'] = 'owner/repo'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("azure_pipelines", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("1", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_heroku
+    ENV['HEROKU_TEST_RUN_ID'] = "454f5dc9-afa4-433f-bb28-84678a00fd98"
+    ENV['HEROKU_TEST_RUN_BRANCH'] = "master"
+    ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+    assert_equal("heroku", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("454f5dc9-afa4-433f-bb28-84678a00fd98", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
