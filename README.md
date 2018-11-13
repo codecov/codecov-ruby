@@ -35,7 +35,7 @@ end
 ```
 
 ### CI Companies Supported
-Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, Gitlab CI, and Buildkite. Otherwise fallbacks on `git`.
+Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, Gitlab CI, Buildkite and Bitrise. Otherwise fallbacks on `git`.
 
 ### Caveat
 

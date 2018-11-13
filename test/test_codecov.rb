@@ -61,6 +61,14 @@ class TestCodecov < Minitest::Test
     ENV['APPVEYOR_REPO_BRANCH'] = nil
     ENV['APPVEYOR_REPO_COMMIT'] = nil
     ENV['APPVEYOR_REPO_NAME'] = nil
+    ENV['BITRISE_BUILD_NUMBER'] = nil
+    ENV['BITRISE_BUILD_URL'] = nil
+    ENV['BITRISE_GIT_BRANCH'] = nil
+    ENV['BITRISE_GIT_COMMIT'] = nil
+    ENV['BITRISE_IO'] = nil
+    ENV['BITRISE_PULL_REQUEST'] = nil
+    ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] = nil
+    ENV['BITRISEIO_GIT_REPOSITORY_SLUG'] = nil
     ENV['BRANCH'] = nil
     ENV['BRANCH_NAME'] = nil
     ENV['BUILD_ID'] = nil
@@ -360,6 +368,26 @@ class TestCodecov < Minitest::Test
     assert_equal("master", result['params'][:branch])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_bitrise
+    ENV['CI'] = 'true'
+    ENV['BITRISE_IO'] = "true"
+    ENV['BITRISE_BUILD_NUMBER'] = "1"
+    ENV['BITRISE_BUILD_URL'] = "https://app.bitrise.io/build/123"
+    ENV['BITRISE_GIT_BRANCH'] = "master"
+    ENV['BITRISE_PULL_REQUEST'] = "2"
+    ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] = "owner"
+    ENV['BITRISEIO_GIT_REPOSITORY_SLUG'] = "repo"
+    ENV['BITRISE_GIT_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("bitrise", result['params'][:service])
+    assert_equal("1", result['params'][:build])
+    assert_equal("https://app.bitrise.io/build/123", result['params'][:build_url])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("2", result['params'][:pr])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
   end
   def test_teamcity
     ENV['CI_SERVER_NAME'] = "TeamCity"
