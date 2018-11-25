@@ -38,7 +38,10 @@ class SimpleCov::Formatter::Codecov
         params[:job] = ENV['TRAVIS_JOB_ID']
         params[:slug] = ENV['TRAVIS_REPO_SLUG']
         params[:build] = ENV['TRAVIS_JOB_NUMBER']
-        params[:commit] = ENV['TRAVIS_COMMIT']
+        params[:commit] = ENV['TRAVIS_PULL_REQUEST_SHA']
+        if params[:commit].to_s.empty?
+          params[:commit] = ENV['TRAVIS_COMMIT']
+        end
         params[:env] = ENV['TRAVIS_RUBY_VERSION']
 
     # Codeship
