@@ -8,6 +8,7 @@ class TestCodecov < Minitest::Test
     "TRAVIS_REPO_SLUG" => ENV['TRAVIS_REPO_SLUG'],
     "TRAVIS_JOB_NUMBER" => ENV['TRAVIS_JOB_NUMBER'],
     "TRAVIS_PULL_REQUEST" => ENV["TRAVIS_PULL_REQUEST"],
+    "TRAVIS_PULL_REQUEST_SHA" => ENV["TRAVIS_PULL_REQUEST_SHA"],
     "TRAVIS_JOB_ID" => ENV["TRAVIS_JOB_ID"],
   }
   def url
@@ -139,6 +140,7 @@ class TestCodecov < Minitest::Test
     ENV['TRAVIS_JOB_ID'] = REALENV["TRAVIS_JOB_ID"]
     ENV['TRAVIS_JOB_NUMBER'] = REALENV["TRAVIS_JOB_NUMBER"]
     ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
+    ENV['TRAVIS_PULL_REQUEST_SHA'] = REALENV["TRAVIS_PULL_REQUEST_SHA"]
     ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
     ENV['WERCKER_GIT_BRANCH'] = nil
     ENV['WERCKER_GIT_COMMIT'] = nil
@@ -162,6 +164,7 @@ class TestCodecov < Minitest::Test
     ENV['TRAVIS_COMMIT'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
     ENV['TRAVIS_JOB_ID'] = "33116958"
     ENV['TRAVIS_PULL_REQUEST'] = "false"
+    ENV['TRAVIS_PULL_REQUEST_SHA'] = ""
     ENV['TRAVIS_JOB_NUMBER'] = "1"
     ENV['TRAVIS_REPO_SLUG'] = "codecov/ci-repo"
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
@@ -172,6 +175,26 @@ class TestCodecov < Minitest::Test
     assert_equal("1", result['params'][:build])
     assert_equal("33116958", result['params'][:job])
     assert_equal('false', result['params'][:pull_request])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_travis_pr
+    ENV['CI'] = 'true'
+    ENV['TRAVIS'] = "true"
+    ENV['TRAVIS_BRANCH'] = "master"
+    ENV['TRAVIS_COMMIT'] = "c739768fcac68144a3a6d82305b9c4106934d31a"
+    ENV['TRAVIS_JOB_ID'] = "33116958"
+    ENV['TRAVIS_PULL_REQUEST'] = "16"
+    ENV['TRAVIS_PULL_REQUEST_SHA'] = "d5e7f1e40142d40463f1374c5e1bb4301b5f709c"
+    ENV['TRAVIS_JOB_NUMBER'] = "1"
+    ENV['TRAVIS_REPO_SLUG'] = "codecov/ci-repo"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal("travis", result['params'][:service])
+    assert_equal("d5e7f1e40142d40463f1374c5e1bb4301b5f709c", result['params'][:commit])
+    assert_equal("codecov/ci-repo", result['params'][:slug])
+    assert_equal("1", result['params'][:build])
+    assert_equal("33116958", result['params'][:job])
+    assert_equal('16', result['params'][:pull_request])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_codeship
