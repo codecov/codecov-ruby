@@ -1,14 +1,14 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'simplecov'
+require 'simplecov-cobertura'
 SimpleCov.start 'rails' do
   add_filter "/test/"
 end
 require 'codecov'
-if ENV['CI'] == 'true'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+
 
 require 'minitest/autorun'
 require 'mocha/setup'
