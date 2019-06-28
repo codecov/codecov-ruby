@@ -285,9 +285,17 @@ class SimpleCov::Formatter::Codecov
       puts err
     end
 
+    puts output_message(result)
   end
 
-  private
+  # A message similar to the final line printed by the default SimpleCov::Formatter::HTMLFormatter.
+  # Adapted from https://github.com/colszowka/simplecov-html/blob/9ec41504ab139fabfaddfc786dfdab5d6aca0bab/lib/simplecov-html.rb#L28.
+  #
+  # @param result [SimpleCov::Result] The coverage data to process.
+  # @return [String]
+  def output_message(result)
+    "Coverage report generated for #{result.command_name}. #{result.covered_lines} / #{result.total_lines} LOC (#{result.covered_percent.round(2)}%) covered."
+  end
 
   # Format SimpleCov coverage data for the Codecov.io API.
   #
