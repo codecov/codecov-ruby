@@ -150,7 +150,6 @@ class TestCodecov < Minitest::Test
     ENV['WERCKER_GIT_REPOSITORY'] = nil
     ENV['WERCKER_MAIN_PIPELINE_STARTED'] = nil
     ENV['WORKSPACE'] = nil
-    ENV
   end
   def test_git
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
