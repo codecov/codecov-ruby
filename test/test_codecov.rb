@@ -61,6 +61,9 @@ class TestCodecov < Minitest::Test
     ENV['APPVEYOR_REPO_BRANCH'] = nil
     ENV['APPVEYOR_REPO_COMMIT'] = nil
     ENV['APPVEYOR_REPO_NAME'] = nil
+    ENV['BITBUCKET_BRANCH'] = nil
+    ENV['BITBUCKET_BUILD_NUMBER'] = nil
+    ENV['BITBUCKET_COMMIT'] = nil
     ENV['BITRISE_BUILD_NUMBER'] = nil
     ENV['BITRISE_BUILD_URL'] = nil
     ENV['BITRISE_GIT_BRANCH'] = nil
@@ -140,12 +143,14 @@ class TestCodecov < Minitest::Test
     ENV['TRAVIS_JOB_NUMBER'] = REALENV["TRAVIS_JOB_NUMBER"]
     ENV['TRAVIS_PULL_REQUEST'] = REALENV["TRAVIS_PULL_REQUEST"]
     ENV['TRAVIS_REPO_SLUG'] = REALENV["TRAVIS_REPO_SLUG"]
+    ENV['VCS_COMMIT_ID'] = nil
     ENV['WERCKER_GIT_BRANCH'] = nil
     ENV['WERCKER_GIT_COMMIT'] = nil
     ENV['WERCKER_GIT_OWNER'] = nil
     ENV['WERCKER_GIT_REPOSITORY'] = nil
     ENV['WERCKER_MAIN_PIPELINE_STARTED'] = nil
     ENV['WORKSPACE'] = nil
+    ENV
   end
   def test_git
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
@@ -435,6 +440,35 @@ class TestCodecov < Minitest::Test
     assert_equal("heroku", result['params'][:service])
     assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
     assert_equal("454f5dc9-afa4-433f-bb28-84678a00fd98", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_bitbucket_pr
+    ENV['CI'] = 'true'
+    ENV['BITBUCKET_BUILD_NUMBER'] = "100"
+    ENV['BITBUCKET_BRANCH'] = "master"
+    ENV['BITBUCKET_COMMIT'] = "743b04806ea67"
+    ENV['VCS_COMMIT_ID'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+    assert_equal("bitbucket", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("100", result['params'][:build])
+    assert_equal("master", result['params'][:branch])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+  def test_bitbucket
+    ENV['CI'] = 'true'
+    ENV['BITBUCKET_BUILD_NUMBER'] = "100"
+    ENV['BITBUCKET_BRANCH'] = "master"
+    ENV['BITBUCKET_COMMIT'] = "743b04806ea677403aa2ff26c6bdeb85005de658"
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+    assert_equal("bitbucket", result['params'][:service])
+    assert_equal("743b04806ea677403aa2ff26c6bdeb85005de658", result['params'][:commit])
+    assert_equal("100", result['params'][:build])
     assert_equal("master", result['params'][:branch])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
