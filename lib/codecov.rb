@@ -215,6 +215,14 @@ class SimpleCov::Formatter::Codecov
       params[:commit] = ENV['BUILD_SOURCEVERSION']
       params[:slug] = ENV['BUILD_REPOSITORY_ID']
 
+    elsif ENV['CI'] == 'true' and ENV['BITBUCKET_BRANCH'] != nil
+      # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
+      params[:service] = 'bitbucket'
+      params[:branch] = ENV['BITBUCKET_BRANCH']
+      # BITBUCKET_COMMIT does not always provide full commit sha due to a bug https://jira.atlassian.com/browse/BCLOUD-19393#
+      params[:commit] = (ENV['BITBUCKET_COMMIT'].length < 40 ? nil : ENV['BITBUCKET_COMMIT'])
+      params[:build] = ENV['BITBUCKET_BUILD_NUMBER']
+
     # Heroku CI
     # ---------
     elsif ENV['HEROKU_TEST_RUN_ID']
@@ -230,7 +238,10 @@ class SimpleCov::Formatter::Codecov
         params[:branch] = branch != 'HEAD' ? branch : 'master'
     end
 
-    if params[:commit] == nil
+    if ENV["VCS_COMMIT_ID"] != nil
+      params[:commit] = ENV["VCS_COMMIT_ID"]
+
+    elsif params[:commit] == nil
         params[:commit] = `git rev-parse HEAD`.strip
     end
 
