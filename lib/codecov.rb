@@ -266,6 +266,7 @@ class SimpleCov::Formatter::Codecov
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = url.match(/^https/) != nil
 
+    retries = 0
     begin
       req = Net::HTTP::Post.new(uri.path + "?" + uri.query,
                                 {
@@ -292,8 +293,13 @@ class SimpleCov::Formatter::Codecov
       report
 
     rescue StandardError => err
+      retries +=1
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts err
+      if retries <= 3
+        puts "retry ##{retries}"
+        retry
+      end
     end
 
   end
