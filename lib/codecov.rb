@@ -298,6 +298,7 @@ class SimpleCov::Formatter::Codecov
       puts err
       if retries <= 3
         puts "retry ##{retries}"
+        sleep rand(5..15)
         retry
       end
     end
