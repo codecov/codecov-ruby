@@ -1,6 +1,7 @@
 require 'uri'
 require 'json'
 require 'net/http'
+require 'simplecov'
 
 class SimpleCov::Formatter::Codecov
   VERSION = "0.1.15"
