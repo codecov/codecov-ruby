@@ -4,7 +4,7 @@ require 'net/http'
 require 'simplecov'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.15"
+  VERSION = "0.1.16"
   def format(result)
     net_blockers(:off)
 
