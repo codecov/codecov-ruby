@@ -42,6 +42,16 @@ class SimpleCov::Formatter::Codecov
         params[:commit] = ENV['TRAVIS_COMMIT']
         params[:env] = ENV['TRAVIS_RUBY_VERSION']
 
+    # Github Actions
+    # ---------
+    elsif ENV['GITHUB_ACTIONS'] == "true"
+        # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
+        params[:service] = "github"
+        params[:branch] = ENV['GITHUB_REF'].sub('refs/heads/', '')
+        params[:slug] = ENV['GITHUB_REPOSITORY']
+        params[:build] = ENV['GITHUB_ACTION']
+        params[:commit] = ENV['GITHUB_SHA']
+
     # Codeship
     # --------
     elsif ENV['CI'] == "true" and ENV['CI_NAME'] == 'codeship'
