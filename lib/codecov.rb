@@ -6,6 +6,8 @@ require 'simplecov'
 class SimpleCov::Formatter::Codecov
   VERSION = "0.1.16"
   def format(result)
+    return result if ENV['TEST_ENV_NUMBER'] || (defined?(ParallelTests) && ParallelTests.number_of_running_processes > 1)
+
     net_blockers(:off)
 
     # =================

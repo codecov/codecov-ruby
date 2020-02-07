@@ -485,4 +485,16 @@ class TestCodecov < Minitest::Test
       'path/lib/path_somefile.rb' => [nil]
     }.to_json)
   end
+
+  INVALID_FORMAT_ARGUMENT = 'would-otherwise-fail'
+
+  def test_do_nothing_for_parallel_test_env
+    formatter = SimpleCov::Formatter::Codecov.new
+    ENV['TEST_ENV_NUMBER'] = '1'
+    assert_equal(formatter.format(INVALID_FORMAT_ARGUMENT), INVALID_FORMAT_ARGUMENT)
+  ensure
+    ENV['TEST_ENV_NUMBER'] = nil
+  end
+
+  # TODO - write tests for other ParallelTests behavior -- don't want to expand the testing gem footprint w/o consensus...
 end
