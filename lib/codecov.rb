@@ -231,6 +231,18 @@ class SimpleCov::Formatter::Codecov
       params[:branch] = ENV['HEROKU_TEST_RUN_BRANCH']
       params[:build] = ENV['HEROKU_TEST_RUN_ID']
       params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
+
+    # AWS CodeBuild
+    # -------------
+    elsif ENV['CODEBUILD_CI'] == 'true'
+      # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+      params[:service] = 'codebuild'
+      params[:branch]  = detect_codebuild_branch_name()
+      params[:build]   = ENV['CODEBUILD_BUILD_ID']
+      params[:commit]  = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
+      params[:job]     = ENV['CODEBUILD_BUILD_ID']
+      params[:slug]    = detect_codebuild_repo_slug()
+      params[:pr]      = detect_codebuild_pr_number()
     end
 
     if params[:branch] == nil
@@ -361,6 +373,35 @@ class SimpleCov::Formatter::Codecov
     file.filename.gsub(/^#{SimpleCov.root}/, '.').gsub(/^\.\//, '')
   end
 
+  # Get CodeBuild branch name
+  #
+  # @return [String]
+  def detect_codebuild_branch_name()
+    if ENV['CODEBUILD_WEBHOOK_HEAD_REF']
+      return ENV['CODEBUILD_WEBHOOK_HEAD_REF'].gsub(/^refs\/heads\//, "")
+    end
+    puts 'Cannot detect branch name'
+  end
+
+  # Get CodeBuild pull request number
+  #
+  # @return [String]
+  def detect_codebuild_pr_number()
+    if ENV['CODEBUILD_SOURCE_VERSION']
+      return ENV['CODEBUILD_SOURCE_VERSION'].gsub(/^pr\//, "")
+    end
+    puts 'Cannot detect PR number'
+  end
+
+  # Get CodeBuild source repo url
+  #
+  # @return [String]
+  def detect_codebuild_repo_slug()
+    if ENV['CODEBUILD_SOURCE_REPO_URL']
+      return ENV['CODEBUILD_SOURCE_REPO_URL'].gsub(/^(.*)github\.com\//, "").gsub(/\.git$/, "")
+    end
+    puts 'Cannot detect repository slug'
+  end
 
   # Toggle VCR and WebMock on or off
   #
