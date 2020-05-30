@@ -410,8 +410,6 @@ class TestCodecov < Minitest::Test
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
   def test_azure_pipelines
-    skip "azure_pipelines is not recognized as a CI provider by codecov now"
-
     ENV['TF_BUILD'] = "1"
     ENV['BUILD_SOURCEBRANCH'] = "master"
     ENV['SYSTEM_JOBID'] = '92a2fa25-f940-5df6-a185-81eb9ae2031d'
