@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 require 'rubygems'
 require 'rake/testtask'
@@ -10,4 +12,4 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-task :default => :test
+task default: :test
