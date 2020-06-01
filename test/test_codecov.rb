@@ -40,6 +40,7 @@ class TestCodecov < Minitest::Test
                   ])
     SimpleCov.stubs(:root).returns('/path')
     data = formatter.format(result)
+    puts data
     puts data['params']
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], 'Coverage reports upload successfully')
@@ -247,6 +248,7 @@ class TestCodecov < Minitest::Test
     ENV['GIT_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     ENV['BUILD_URL'] = 'https://jenkins'
+    puts 'TEST JENKINS 2'
     result = upload
     assert_equal('jenkins', result['params'][:service])
     assert_equal('743b04806ea677403aa2ff26c6bdeb85005de658', result['params'][:commit])

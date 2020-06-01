@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.description        = 'hosted code coverage'
   s.homepage           = 'https://github.com/codecov/codecov-ruby'
   s.summary            = 'hosted code coverage ruby/rails reporter'
-  s.rubyforge_project  = 'codecov'
   s.license            = 'MIT'
   s.files              = ['lib/codecov.rb']
   s.test_files         = ['test/test_codecov.rb']

@@ -272,10 +272,12 @@ class SimpleCov::Formatter::Codecov
                                   'Accept' => 'application/json'
                                 })
 
+      puts json
       req.body = json
 
       # make resquest
       response = https.request(req)
+      puts response
 
       # print to output
       puts response.body
