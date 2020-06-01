@@ -266,11 +266,14 @@ class SimpleCov::Formatter::Codecov
     https.use_ssl = !url.match(/^https/).nil?
 
     begin
+      puts ENV
+      puts 'start'
       req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
                                 {
                                   'Content-Type' => 'application/json',
                                   'Accept' => 'application/json'
                                 })
+      puts 'stop'
 
       puts json
       req.body = json
