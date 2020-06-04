@@ -257,7 +257,7 @@ class SimpleCov::Formatter::Codecov
     # Build URL Request
     # =================
     url = ENV['CODECOV_URL'] || 'https://codecov.io'
-    uri = URI.parse(url.chomp('/') + '/upload/v1')
+    uri = URI.parse(url.chomp('/') + '/upload/v4')
 
     uri.query = URI.encode_www_form(params)
 
