@@ -265,39 +265,31 @@ class SimpleCov::Formatter::Codecov
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
 
+    req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
+                              {
+                                'Content-Type' => 'application/json',
+                                'Accept' => 'application/json'
+                              })
+    req.body = json
+
+    # make request
     begin
-      puts ENV
-      req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
-                                {
-                                  'Content-Type' => 'application/json',
-                                  'Accept' => 'application/json'
-                                })
-
-      puts json
-      req.body = json
-
-      # make request
-      puts 'start'
       response = https.request(req)
-      puts 'stop'
-      puts response
-
-      # print to output
-      puts response.body
-
-      # join the response to report
-      report['result'] = JSON.parse(response.body)
-      report['params'] = params
-      report['query'] = uri.query
-
-      net_blockers(:on)
-
-      # return json data
-      report
     rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts e
+      return
     end
+
+    # join the response to report
+    report['result'] = JSON.parse(response.body)
+    report['params'] = params
+    report['query'] = uri.query
+
+    net_blockers(:on)
+
+    # return json data
+    report
   end
 
   private
