@@ -281,6 +281,9 @@ class SimpleCov::Formatter::Codecov
       return
     end
 
+    # print to output
+    puts response.body
+
     # join the response to report
     report['result'] = JSON.parse(response.body)
     report['params'] = params
