@@ -261,9 +261,6 @@ class SimpleCov::Formatter::Codecov
 
     uri.query = URI.encode_www_form(params)
 
-    puts 'THE URI'
-    puts uri
-
     # get https
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
@@ -278,6 +275,10 @@ class SimpleCov::Formatter::Codecov
     # make request
     begin
       response = https.request(req)
+    rescue TimeoutEror => e
+      puts 'Error uploading coverage reports to Codecov. Will retry'
+      puts e
+      return
     rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts e
