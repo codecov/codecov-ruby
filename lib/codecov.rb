@@ -275,10 +275,10 @@ class SimpleCov::Formatter::Codecov
     # make request
     begin
       response = https.request(req)
-    rescue TimeoutEror => e
+    rescue TimeoutError => e
       puts 'Error uploading coverage reports to Codecov. Will retry'
       puts e
-      return
+      retry
     rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts e
