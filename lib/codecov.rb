@@ -271,12 +271,21 @@ class SimpleCov::Formatter::Codecov
                                 'Accept' => 'application/json'
                               })
     req.body = json
+    retries = 3
 
     # make request
     begin
       response = https.request(req)
     rescue TimeoutError => e
-      puts 'Error uploading coverage reports to Codecov. Will retry'
+      retries -= 1
+
+      if retries.zero?
+        puts 'Timeout error uploading coverage reports to Codecov. Out of retries.'
+        puts e
+        return
+      end
+
+      puts 'Timeout error uploading coverage reports to Codecov. Retrying...'
       puts e
       retry
     rescue StandardError => e
