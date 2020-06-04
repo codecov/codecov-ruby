@@ -261,6 +261,9 @@ class SimpleCov::Formatter::Codecov
 
     uri.query = URI.encode_www_form(params)
 
+    puts 'THE URI'
+    puts uri
+
     # get https
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
