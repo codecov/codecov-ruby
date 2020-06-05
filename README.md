@@ -5,7 +5,7 @@ codecov-ruby [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.
 > Add to your `Gemfile`
 
 ```ruby
-gem 'codecov', :require => false, :group => :test
+gem 'codecov', require: false, group: 'test'
 ```
 
 > Add to the top of your `tests/helper.rb` file
