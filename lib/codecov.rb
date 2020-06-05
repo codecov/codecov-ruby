@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'json'
 require 'net/http'
 require 'simplecov'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = "0.1.16"
+  VERSION = '0.1.16'
   def format(result)
     net_blockers(:off)
 
@@ -12,8 +14,8 @@ class SimpleCov::Formatter::Codecov
     # Build JSON Report
     # =================
     report = {
-      "meta" => {
-        "version" => "codecov-ruby/v"+SimpleCov::Formatter::Codecov::VERSION,
+      'meta' => {
+        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
       }
     }
     report.update(result_to_codecov(result))
@@ -25,64 +27,64 @@ class SimpleCov::Formatter::Codecov
     # ==============
     # add params
     params = {
-      "token" => ENV['CODECOV_TOKEN'],
-      "flags" => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
+      'token' => ENV['CODECOV_TOKEN'],
+      'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
     }
 
     # Travis CI
     # ---------
-    if ENV['CI'] == "true" and ENV['TRAVIS'] == "true"
-        # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-        params[:service] = "travis"
-        params[:branch] = ENV['TRAVIS_BRANCH']
-        params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
-        params[:job] = ENV['TRAVIS_JOB_ID']
-        params[:slug] = ENV['TRAVIS_REPO_SLUG']
-        params[:build] = ENV['TRAVIS_JOB_NUMBER']
-        params[:commit] = ENV['TRAVIS_COMMIT']
-        params[:env] = ENV['TRAVIS_RUBY_VERSION']
+    if (ENV['CI'] == 'true') && (ENV['TRAVIS'] == 'true')
+      # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
+      params[:service] = 'travis'
+      params[:branch] = ENV['TRAVIS_BRANCH']
+      params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
+      params[:job] = ENV['TRAVIS_JOB_ID']
+      params[:slug] = ENV['TRAVIS_REPO_SLUG']
+      params[:build] = ENV['TRAVIS_JOB_NUMBER']
+      params[:commit] = ENV['TRAVIS_COMMIT']
+      params[:env] = ENV['TRAVIS_RUBY_VERSION']
 
     # Codeship
     # --------
-    elsif ENV['CI'] == "true" and ENV['CI_NAME'] == 'codeship'
-        # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
-        params[:service] = 'codeship'
-        params[:branch] = ENV['CI_BRANCH']
-        params[:commit] = ENV['CI_COMMIT_ID']
-        params[:build] = ENV['CI_BUILD_NUMBER']
-        params[:build_url] = ENV['CI_BUILD_URL']
+    elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
+      # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+      params[:service] = 'codeship'
+      params[:branch] = ENV['CI_BRANCH']
+      params[:commit] = ENV['CI_COMMIT_ID']
+      params[:build] = ENV['CI_BUILD_NUMBER']
+      params[:build_url] = ENV['CI_BUILD_URL']
 
     # Solano
     # --------
-    elsif ENV['TDDIUM'] == "true"
-        # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
-        params[:service] = 'solano'
-        params[:branch] = ENV['TDDIUM_CURRENT_BRANCH']
-        params[:commit] = ENV['TDDIUM_CURRENT_COMMIT']
-        params[:build] = ENV['TDDIUM_TID']
-        params[:pr] = ENV['TDDIUM_PR_ID']
+    elsif ENV['TDDIUM'] == 'true'
+      # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
+      params[:service] = 'solano'
+      params[:branch] = ENV['TDDIUM_CURRENT_BRANCH']
+      params[:commit] = ENV['TDDIUM_CURRENT_COMMIT']
+      params[:build] = ENV['TDDIUM_TID']
+      params[:pr] = ENV['TDDIUM_PR_ID']
 
     # Circle CI
     # ---------
-    elsif ENV['CI'] == "true" and ENV['CIRCLECI'] == 'true'
-        # https://circleci.com/docs/environment-variables
-        params[:service] = 'circleci'
-        params[:build] = ENV['CIRCLE_BUILD_NUM']
-        params[:job] = ENV['CIRCLE_NODE_INDEX']
-        if ENV['CIRCLE_PROJECT_REPONAME'] != nil
-          params[:slug] = ENV['CIRCLE_PROJECT_USERNAME'] + '/' + ENV['CIRCLE_PROJECT_REPONAME']
-        else
-          params[:slug] = ENV['CIRCLE_REPOSITORY_URL'].gsub(/^.*:/, '').gsub(/\.git$/, '')
-        end
-        params[:pr] = ENV['CIRCLE_PR_NUMBER']
-        params[:branch] = ENV['CIRCLE_BRANCH']
-        params[:commit] = ENV['CIRCLE_SHA1']
+    elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
+      # https://circleci.com/docs/environment-variables
+      params[:service] = 'circleci'
+      params[:build] = ENV['CIRCLE_BUILD_NUM']
+      params[:job] = ENV['CIRCLE_NODE_INDEX']
+      params[:slug] = if !ENV['CIRCLE_PROJECT_REPONAME'].nil?
+                        ENV['CIRCLE_PROJECT_USERNAME'] + '/' + ENV['CIRCLE_PROJECT_REPONAME']
+                      else
+                        ENV['CIRCLE_REPOSITORY_URL'].gsub(/^.*:/, '').gsub(/\.git$/, '')
+                      end
+      params[:pr] = ENV['CIRCLE_PR_NUMBER']
+      params[:branch] = ENV['CIRCLE_BRANCH']
+      params[:commit] = ENV['CIRCLE_SHA1']
 
     # Buildkite
     # ---------
-    elsif ENV['CI'] == "true" and ENV['BUILDKITE'] == "true"
+    elsif (ENV['CI'] == 'true') && (ENV['BUILDKITE'] == 'true')
       # https://buildkite.com/docs/guides/environment-variables
-      params[:service] = "buildkite"
+      params[:service] = 'buildkite'
       params[:branch] = ENV['BUILDKITE_BRANCH']
       params[:build] = ENV['BUILDKITE_BUILD_NUMBER']
       params[:job] = ENV['BUILDKITE_JOB_ID']
@@ -92,78 +94,78 @@ class SimpleCov::Formatter::Codecov
 
     # Semaphore
     # ---------
-    elsif ENV['CI'] == "true" and ENV['SEMAPHORE'] == "true"
-        # https://semaphoreapp.com/docs/available-environment-variables.html
-        params[:service] = 'semaphore'
-        params[:branch] = ENV['BRANCH_NAME']
-        params[:commit] = ENV['REVISION']
-        params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
-        params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
-        params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
+    elsif (ENV['CI'] == 'true') && (ENV['SEMAPHORE'] == 'true')
+      # https://semaphoreapp.com/docs/available-environment-variables.html
+      params[:service] = 'semaphore'
+      params[:branch] = ENV['BRANCH_NAME']
+      params[:commit] = ENV['REVISION']
+      params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
+      params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
+      params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
 
     # drone.io
     # --------
-    elsif (ENV['CI'] == "true" or ENV['CI'] == "drone") and ENV['DRONE'] == "true"
-        # https://semaphoreapp.com/docs/available-environment-variables.html
-        params[:service] = 'drone.io'
-        params[:branch] = ENV['DRONE_BRANCH']
-        params[:commit] = ENV['DRONE_COMMIT_SHA']
-        params[:job] = ENV['DRONE_JOB_NUMBER']
-        params[:build] = ENV['DRONE_BUILD_NUMBER']
-        params[:build_url] = ENV['DRONE_BUILD_LINK'] || ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
-        params[:pr] = ENV['DRONE_PULL_REQUEST']
-        params[:tag] = ENV['DRONE_TAG']
+    elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
+      # https://semaphoreapp.com/docs/available-environment-variables.html
+      params[:service] = 'drone.io'
+      params[:branch] = ENV['DRONE_BRANCH']
+      params[:commit] = ENV['DRONE_COMMIT_SHA']
+      params[:job] = ENV['DRONE_JOB_NUMBER']
+      params[:build] = ENV['DRONE_BUILD_NUMBER']
+      params[:build_url] = ENV['DRONE_BUILD_LINK'] || ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
+      params[:pr] = ENV['DRONE_PULL_REQUEST']
+      params[:tag] = ENV['DRONE_TAG']
 
     # Appveyor
     # --------
-    elsif ENV['CI'] == "True" and ENV['APPVEYOR'] == 'True'
-        # http://www.appveyor.com/docs/environment-variables
-        params[:service] = "appveyor"
-        params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
-        params[:build] = ENV['APPVEYOR_JOB_ID']
-        params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
-        params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
-        params[:slug] = ENV['APPVEYOR_REPO_NAME']
-        params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
+    elsif (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
+      # http://www.appveyor.com/docs/environment-variables
+      params[:service] = 'appveyor'
+      params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
+      params[:build] = ENV['APPVEYOR_JOB_ID']
+      params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
+      params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
+      params[:slug] = ENV['APPVEYOR_REPO_NAME']
+      params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
 
     # Wercker
     # -------
-    elsif ENV['CI'] == "true" and ENV['WERCKER_GIT_BRANCH'] != nil
-        # http://devcenter.wercker.com/articles/steps/variables.html
-        params[:service] = "wercker"
-        params[:branch] = ENV['WERCKER_GIT_BRANCH']
-        params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
-        params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
-        params[:commit] = ENV['WERCKER_GIT_COMMIT']
+    elsif (ENV['CI'] == 'true') && !ENV['WERCKER_GIT_BRANCH'].nil?
+      # http://devcenter.wercker.com/articles/steps/variables.html
+      params[:service] = 'wercker'
+      params[:branch] = ENV['WERCKER_GIT_BRANCH']
+      params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
+      params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
+      params[:commit] = ENV['WERCKER_GIT_COMMIT']
 
     # Jenkins
     # --------
-    elsif ENV['JENKINS_URL'] != nil
-        # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
-        # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
-        params[:service] = 'jenkins'
-        params[:branch] = ENV['ghprbSourceBranch'] || ENV['GIT_BRANCH']
-        params[:commit] = ENV['ghprbActualCommit'] || ENV['GIT_COMMIT']
-        params[:pr] = ENV['ghprbPullId']
-        params[:build] = ENV['BUILD_NUMBER']
-        params[:root] = ENV['WORKSPACE']
-        params[:build_url] = ENV['BUILD_URL']
+    elsif !ENV['JENKINS_URL'].nil?
+      # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+      # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
+      params[:service] = 'jenkins'
+      params[:branch] = ENV['ghprbSourceBranch'] || ENV['GIT_BRANCH']
+      params[:commit] = ENV['ghprbActualCommit'] || ENV['GIT_COMMIT']
+      params[:pr] = ENV['ghprbPullId']
+      params[:build] = ENV['BUILD_NUMBER']
+      params[:root] = ENV['WORKSPACE']
+      params[:build_url] = ENV['BUILD_URL']
 
     # Shippable
     # ---------
-    elsif ENV['CI'] == 'true' and ENV['SHIPPABLE'] == "true"
-        # http://docs.shippable.com/en/latest/config.html#common-environment-variables
-        params[:service] = 'shippable'
-        params[:branch] = ENV['BRANCH']
-        params[:build] = ENV['BUILD_NUMBER']
-        params[:build_url] = ENV['BUILD_URL']
-        params[:pull_request] = ENV['PULL_REQUEST']
-        params[:slug] = ENV['REPO_NAME']
-        params[:commit] = ENV['COMMIT']
+    elsif (ENV['CI'] == 'true') && (ENV['SHIPPABLE'] == 'true')
+      # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+      params[:service] = 'shippable'
+      params[:branch] = ENV['BRANCH']
+      params[:build] = ENV['BUILD_NUMBER']
+      params[:build_url] = ENV['BUILD_URL']
+      params[:pull_request] = ENV['PULL_REQUEST']
+      params[:slug] = ENV['REPO_NAME']
+      params[:commit] = ENV['COMMIT']
 
     # GitLab CI
     # ---------
-    elsif ENV['GITLAB_CI'] != nil
+    elsif !ENV['GITLAB_CI'].nil?
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
       # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
       # GitLab Runner v9 renamed some environment variables, so we check both old and new variable names.
@@ -194,7 +196,7 @@ class SimpleCov::Formatter::Codecov
 
     # Bitrise
     # ---------
-    elsif ENV['CI'] == 'true' and ENV['BITRISE_IO'] == 'true'
+    elsif (ENV['CI'] == 'true') && (ENV['BITRISE_IO'] == 'true')
       # http://devcenter.bitrise.io/faq/available-environment-variables/
       params[:service] = 'bitrise'
       params[:branch] = ENV['BITRISE_GIT_BRANCH']
@@ -206,7 +208,7 @@ class SimpleCov::Formatter::Codecov
 
     # Azure Pipelines
     # ---------
-    elsif ENV['TF_BUILD'] != nil
+    elsif !ENV['TF_BUILD'].nil?
       params[:service] = 'azure_pipelines'
       params[:branch] = ENV['BUILD_SOURCEBRANCH']
       params[:pull_request] = ENV['SYSTEM_PULLREQUEST_PULLREQUESTNUMBER']
@@ -216,7 +218,7 @@ class SimpleCov::Formatter::Codecov
       params[:commit] = ENV['BUILD_SOURCEVERSION']
       params[:slug] = ENV['BUILD_REPOSITORY_ID']
 
-    elsif ENV['CI'] == 'true' and ENV['BITBUCKET_BRANCH'] != nil
+    elsif (ENV['CI'] == 'true') && !ENV['BITBUCKET_BRANCH'].nil?
       # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
       params[:service] = 'bitbucket'
       params[:branch] = ENV['BITBUCKET_BRANCH']
@@ -233,70 +235,77 @@ class SimpleCov::Formatter::Codecov
       params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
     end
 
-    if params[:branch] == nil
-        # find branch, commit, repo from git command
-        branch = `git rev-parse --abbrev-ref HEAD`.strip
-        params[:branch] = branch != 'HEAD' ? branch : 'master'
+    if params[:branch].nil?
+      # find branch, commit, repo from git command
+      branch = `git rev-parse --abbrev-ref HEAD`.strip
+      params[:branch] = branch != 'HEAD' ? branch : 'master'
     end
 
-    if ENV["VCS_COMMIT_ID"] != nil
-      params[:commit] = ENV["VCS_COMMIT_ID"]
+    if !ENV['VCS_COMMIT_ID'].nil?
+      params[:commit] = ENV['VCS_COMMIT_ID']
 
-    elsif params[:commit] == nil
-        params[:commit] = `git rev-parse HEAD`.strip
+    elsif params[:commit].nil?
+      params[:commit] = `git rev-parse HEAD`.strip
     end
 
     slug = ENV['CODECOV_SLUG']
-    if slug != nil
-        params[:slug] = slug
-    end
+    params[:slug] = slug unless slug.nil?
 
-    if params[:pr] != nil
-      params[:pr] = params[:pr].sub('#', '')
-    end
+    params[:pr] = params[:pr].sub('#', '') unless params[:pr].nil?
 
     # =================
     # Build URL Request
     # =================
-    url = ENV['CODECOV_URL'] || "https://codecov.io"
-    uri = URI.parse(url.chomp('/') + "/upload/v1")
+    url = ENV['CODECOV_URL'] || 'https://codecov.io'
+    uri = URI.parse(url.chomp('/') + '/upload/v1')
 
     uri.query = URI.encode_www_form(params)
 
     # get https
     https = Net::HTTP.new(uri.host, uri.port)
-    https.use_ssl = url.match(/^https/) != nil
+    https.use_ssl = !url.match(/^https/).nil?
 
+    req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
+                              {
+                                'Content-Type' => 'application/json',
+                                'Accept' => 'application/json'
+                              })
+    req.body = json
+    retries = 3
+
+    # make request
     begin
-      req = Net::HTTP::Post.new(uri.path + "?" + uri.query,
-                                {
-                                  'Content-Type' => 'application/json',
-                                  'Accept' => 'application/json'
-                                })
-
-      req.body = json
-
-      # make resquest
       response = https.request(req)
+    rescue TimeoutError => e
+      retries -= 1
 
-      # print to output
-      puts response.body
+      if retries.zero?
+        puts 'Timeout error uploading coverage reports to Codecov. Out of retries.'
+        puts e
+        return
+      end
 
-      # join the response to report
-      report['result'] = JSON.parse(response.body)
-      report['params'] = params
-      report['query'] = uri.query
-
-      net_blockers(:on)
-
-      # return json data
-      report
-
-    rescue StandardError => err
+      puts 'Timeout error uploading coverage reports to Codecov. Retrying...'
+      puts e
+      retry
+    rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
-      puts err
+      puts e
+      return
     end
 
+    # print to output
+    puts response.body
+
+    # join the response to report
+    report['result'] = JSON.parse(response.body)
+    report['params'] = params
+    report['query'] = uri.query
+
+    net_blockers(:on)
+
+    # return json data
+    report
   end
 
   private
@@ -308,7 +317,7 @@ class SimpleCov::Formatter::Codecov
   def result_to_codecov(result)
     {
       'coverage' => result_to_codecov_coverage(result),
-      'messages' => result_to_codecov_messages(result),
+      'messages' => result_to_codecov_messages(result)
     }
   end
 
@@ -317,9 +326,8 @@ class SimpleCov::Formatter::Codecov
   # @param result [SimpleCov::Result] The coverage data to process.
   # @return [Hash<String, Array>]
   def result_to_codecov_coverage(result)
-    result.files.inject({}) do |memo, file|
+    result.files.each_with_object({}) do |file, memo|
       memo[shortened_filename(file)] = file_to_codecov(file)
-      memo
     end
   end
 
@@ -328,12 +336,10 @@ class SimpleCov::Formatter::Codecov
   # @param result [SimpleCov::Result] The coverage data to process.
   # @return [Hash<String, Hash>]
   def result_to_codecov_messages(result)
-    result.files.inject({}) do |memo, file|
-      memo[shortened_filename(file)] = file.lines.inject({}) do |lines_memo, line|
+    result.files.each_with_object({}) do |file, memo|
+      memo[shortened_filename(file)] = file.lines.each_with_object({}) do |line, lines_memo|
         lines_memo[line.line_number.to_s] = 'skipped' if line.skipped?
-        lines_memo
       end
-      memo
     end
   end
 
@@ -358,23 +364,22 @@ class SimpleCov::Formatter::Codecov
   # @param file [SimeplCov::SourceFile] The file to use.
   # @return [String]
   def shortened_filename(file)
-    file.filename.gsub(/^#{SimpleCov.root}/, '.').gsub(/^\.\//, '')
+    file.filename.gsub(/^#{SimpleCov.root}/, '.').gsub(%r{^\./}, '')
   end
-
 
   # Toggle VCR and WebMock on or off
   #
   # @param switch Toggle switch for Net Blockers.
   # @return [Boolean]
   def net_blockers(switch)
-    throw 'Only :on or :off' unless [:on, :off].include? switch
+    throw 'Only :on or :off' unless %i[on off].include? switch
 
     if defined?(VCR)
       case switch
       when :on
         VCR.turn_on!
       when :off
-        VCR.turn_off!(:ignore_cassettes => true)
+        VCR.turn_off!(ignore_cassettes: true)
       end
     end
 
@@ -389,8 +394,6 @@ class SimpleCov::Formatter::Codecov
       end
     end
 
-    return true
-
+    true
   end
-
 end
