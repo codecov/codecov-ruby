@@ -6,7 +6,7 @@ require 'net/http'
 require 'simplecov'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.16'
+  VERSION = '0.1.17'
 
   ### CIs
   RECOGNIZED_CIS = [
