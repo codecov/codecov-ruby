@@ -6,67 +6,135 @@ require 'net/http'
 require 'simplecov'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.16'
-  def format(result)
-    net_blockers(:off)
+  VERSION = '0.1.17'
 
-    # =================
-    # Build JSON Report
-    # =================
-    report = {
-      'meta' => {
-        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
-      }
-    }
-    report.update(result_to_codecov(result))
+  ### CIs
+  RECOGNIZED_CIS = [
+    APPVEYOR = 'Appveyor CI',
+    AZUREPIPELINES = 'Azure Pipelines',
+    BITBUCKET = 'Bitbucket',
+    BITRISE = 'Bitrise CI',
+    BUILDKITE = 'Buildkite CI',
+    CIRCLE = 'Circle CI',
+    CODESHIP = 'Codeship CI',
+    DRONEIO = 'Drone CI',
+    GITLAB = 'GitLab CI',
+    HEROKU = 'Heroku CI',
+    JENKINS = 'Jenkins CI',
+    SEMAPHORE = 'Semaphore CI',
+    SHIPPABLE = 'Shippable',
+    SOLANO = 'Solano CI',
+    TEAMCITY = 'TeamCity CI',
+    TRAVIS = 'Travis CI',
+    WERCKER = 'Wercker CI'
+  ]
 
-    json = report.to_json
+  def display_header
+    puts [
+      '',
+      '  _____          _',
+      ' / ____|        | |',
+      '| |     ___   __| | ___  ___ _____   __',
+      '| |    / _ \\ / _\` |/ _ \\/ __/ _ \\ \\ / /',
+      '| |___| (_) | (_| |  __/ (_| (_) \\ V /',
+      ' \\_____\\___/ \\__,_|\\___|\\___\\___/ \\_/',
+      "                               Ruby-#{VERSION}",
+      ''
+    ].join("\n")
+  end
 
-    # ==============
-    # CI Environment
-    # ==============
-    # add params
+  def detect_ci
+    case
+    when (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
+      return APPVEYOR
+    when !ENV['TF_BUILD'].nil?
+      return AZUREPIPELINES
+    when (ENV['CI'] == 'true') && !ENV['BITBUCKET_BRANCH'].nil?
+      return BITBUCKET
+    when (ENV['CI'] == 'true') && (ENV['BITRISE_IO'] == 'true')
+      return BITRISE
+    when (ENV['CI'] == 'true') && (ENV['BUILDKITE'] == 'true')
+      return BUILDKITE
+    when (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
+      return CIRCLE
+    when (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
+      return CODESHIP
+    when ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
+      return DRONEIO
+    when !ENV['GITLAB_CI'].nil?
+      return GITLAB
+    when ENV['HEROKU_TEST_RUN_ID']
+      return HEROKU
+    when !ENV['JENKINS_URL'].nil?
+      return JENKINS
+    when (ENV['CI'] == 'true') && (ENV['SEMAPHORE'] == 'true')
+      return SEMAPHORE
+    when (ENV['CI'] == 'true') && (ENV['SHIPPABLE'] == 'true')
+      return SHIPPABLE
+    when ENV['TDDIUM'] == 'true'
+      return SOLANO
+    when ENV['CI_SERVER_NAME'] == 'TeamCity'
+      return TEAMCITY
+    when (ENV['CI'] == 'true') && (ENV['TRAVIS'] == 'true')
+      return TRAVIS
+    when (ENV['CI'] == 'true') && !ENV['WERCKER_GIT_BRANCH'].nil?
+      return WERCKER
+    end
+  end
+
+  def build_params(ci)
+    puts 'x> No CI provider detected.' if RECOGNIZED_CIS.include?(ci)
+
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
     }
 
-    # Travis CI
-    # ---------
-    if (ENV['CI'] == 'true') && (ENV['TRAVIS'] == 'true')
-      # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-      params[:service] = 'travis'
-      params[:branch] = ENV['TRAVIS_BRANCH']
-      params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
-      params[:job] = ENV['TRAVIS_JOB_ID']
-      params[:slug] = ENV['TRAVIS_REPO_SLUG']
-      params[:build] = ENV['TRAVIS_JOB_NUMBER']
-      params[:commit] = ENV['TRAVIS_COMMIT']
-      params[:env] = ENV['TRAVIS_RUBY_VERSION']
-
-    # Codeship
-    # --------
-    elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
-      # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
-      params[:service] = 'codeship'
-      params[:branch] = ENV['CI_BRANCH']
-      params[:commit] = ENV['CI_COMMIT_ID']
-      params[:build] = ENV['CI_BUILD_NUMBER']
-      params[:build_url] = ENV['CI_BUILD_URL']
-
-    # Solano
-    # --------
-    elsif ENV['TDDIUM'] == 'true'
-      # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
-      params[:service] = 'solano'
-      params[:branch] = ENV['TDDIUM_CURRENT_BRANCH']
-      params[:commit] = ENV['TDDIUM_CURRENT_COMMIT']
-      params[:build] = ENV['TDDIUM_TID']
-      params[:pr] = ENV['TDDIUM_PR_ID']
-
-    # Circle CI
-    # ---------
-    elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
+    case ci
+    when APPVEYOR
+      # http://www.appveyor.com/docs/environment-variables
+      params[:service] = 'appveyor'
+      params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
+      params[:build] = ENV['APPVEYOR_JOB_ID']
+      params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
+      params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
+      params[:slug] = ENV['APPVEYOR_REPO_NAME']
+      params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
+    when AZUREPIPELINES
+      params[:service] = 'azure_pipelines'
+      params[:branch] = ENV['BUILD_SOURCEBRANCH']
+      params[:pull_request] = ENV['SYSTEM_PULLREQUEST_PULLREQUESTNUMBER']
+      params[:job] = ENV['SYSTEM_JOBID']
+      params[:build] = ENV['BUILD_BUILDID']
+      params[:build_url] = "#{ENV['SYSTEM_TEAMFOUNDATIONSERVERURI']}/#{ENV['SYSTEM_TEAMPROJECT']}/_build/results?buildId=#{ENV['BUILD_BUILDID']}"
+      params[:commit] = ENV['BUILD_SOURCEVERSION']
+      params[:slug] = ENV['BUILD_REPOSITORY_ID']
+    when BITBUCKET
+      # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
+      params[:service] = 'bitbucket'
+      params[:branch] = ENV['BITBUCKET_BRANCH']
+      # BITBUCKET_COMMIT does not always provide full commit sha due to a bug https://jira.atlassian.com/browse/BCLOUD-19393#
+      params[:commit] = (ENV['BITBUCKET_COMMIT'].length < 40 ? nil : ENV['BITBUCKET_COMMIT'])
+      params[:build] = ENV['BITBUCKET_BUILD_NUMBER']
+    when BITRISE
+      # http://devcenter.bitrise.io/faq/available-environment-variables/
+      params[:service] = 'bitrise'
+      params[:branch] = ENV['BITRISE_GIT_BRANCH']
+      params[:pr] = ENV['BITRISE_PULL_REQUEST']
+      params[:build] = ENV['BITRISE_BUILD_NUMBER']
+      params[:build_url] = ENV['BITRISE_BUILD_URL']
+      params[:commit] = ENV['BITRISE_GIT_COMMIT']
+      params[:slug] = ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] + '/' + ENV['BITRISEIO_GIT_REPOSITORY_SLUG']
+    when BUILDKITE
+      # https://buildkite.com/docs/guides/environment-variables
+      params[:service] = 'buildkite'
+      params[:branch] = ENV['BUILDKITE_BRANCH']
+      params[:build] = ENV['BUILDKITE_BUILD_NUMBER']
+      params[:job] = ENV['BUILDKITE_JOB_ID']
+      params[:build_url] = ENV['BUILDKITE_BUILD_URL']
+      params[:slug] = ENV['BUILDKITE_PROJECT_SLUG']
+      params[:commit] = ENV['BUILDKITE_COMMIT']
+    when CIRCLE
       # https://circleci.com/docs/environment-variables
       params[:service] = 'circleci'
       params[:build] = ENV['CIRCLE_BUILD_NUM']
@@ -79,33 +147,14 @@ class SimpleCov::Formatter::Codecov
       params[:pr] = ENV['CIRCLE_PR_NUMBER']
       params[:branch] = ENV['CIRCLE_BRANCH']
       params[:commit] = ENV['CIRCLE_SHA1']
-
-    # Buildkite
-    # ---------
-    elsif (ENV['CI'] == 'true') && (ENV['BUILDKITE'] == 'true')
-      # https://buildkite.com/docs/guides/environment-variables
-      params[:service] = 'buildkite'
-      params[:branch] = ENV['BUILDKITE_BRANCH']
-      params[:build] = ENV['BUILDKITE_BUILD_NUMBER']
-      params[:job] = ENV['BUILDKITE_JOB_ID']
-      params[:build_url] = ENV['BUILDKITE_BUILD_URL']
-      params[:slug] = ENV['BUILDKITE_PROJECT_SLUG']
-      params[:commit] = ENV['BUILDKITE_COMMIT']
-
-    # Semaphore
-    # ---------
-    elsif (ENV['CI'] == 'true') && (ENV['SEMAPHORE'] == 'true')
-      # https://semaphoreapp.com/docs/available-environment-variables.html
-      params[:service] = 'semaphore'
-      params[:branch] = ENV['BRANCH_NAME']
-      params[:commit] = ENV['REVISION']
-      params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
-      params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
-      params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
-
-    # drone.io
-    # --------
-    elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
+    when CODESHIP
+      # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+      params[:service] = 'codeship'
+      params[:branch] = ENV['CI_BRANCH']
+      params[:commit] = ENV['CI_COMMIT_ID']
+      params[:build] = ENV['CI_BUILD_NUMBER']
+      params[:build_url] = ENV['CI_BUILD_URL']
+    when DRONEIO
       # https://semaphoreapp.com/docs/available-environment-variables.html
       params[:service] = 'drone.io'
       params[:branch] = ENV['DRONE_BRANCH']
@@ -115,57 +164,7 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['DRONE_BUILD_LINK'] || ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
       params[:pr] = ENV['DRONE_PULL_REQUEST']
       params[:tag] = ENV['DRONE_TAG']
-
-    # Appveyor
-    # --------
-    elsif (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
-      # http://www.appveyor.com/docs/environment-variables
-      params[:service] = 'appveyor'
-      params[:branch] = ENV['APPVEYOR_REPO_BRANCH']
-      params[:build] = ENV['APPVEYOR_JOB_ID']
-      params[:pr] = ENV['APPVEYOR_PULL_REQUEST_NUMBER']
-      params[:job] = ENV['APPVEYOR_ACCOUNT_NAME'] + '/' + ENV['APPVEYOR_PROJECT_SLUG'] + '/' + ENV['APPVEYOR_BUILD_VERSION']
-      params[:slug] = ENV['APPVEYOR_REPO_NAME']
-      params[:commit] = ENV['APPVEYOR_REPO_COMMIT']
-
-    # Wercker
-    # -------
-    elsif (ENV['CI'] == 'true') && !ENV['WERCKER_GIT_BRANCH'].nil?
-      # http://devcenter.wercker.com/articles/steps/variables.html
-      params[:service] = 'wercker'
-      params[:branch] = ENV['WERCKER_GIT_BRANCH']
-      params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
-      params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
-      params[:commit] = ENV['WERCKER_GIT_COMMIT']
-
-    # Jenkins
-    # --------
-    elsif !ENV['JENKINS_URL'].nil?
-      # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
-      # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
-      params[:service] = 'jenkins'
-      params[:branch] = ENV['ghprbSourceBranch'] || ENV['GIT_BRANCH']
-      params[:commit] = ENV['ghprbActualCommit'] || ENV['GIT_COMMIT']
-      params[:pr] = ENV['ghprbPullId']
-      params[:build] = ENV['BUILD_NUMBER']
-      params[:root] = ENV['WORKSPACE']
-      params[:build_url] = ENV['BUILD_URL']
-
-    # Shippable
-    # ---------
-    elsif (ENV['CI'] == 'true') && (ENV['SHIPPABLE'] == 'true')
-      # http://docs.shippable.com/en/latest/config.html#common-environment-variables
-      params[:service] = 'shippable'
-      params[:branch] = ENV['BRANCH']
-      params[:build] = ENV['BUILD_NUMBER']
-      params[:build_url] = ENV['BUILD_URL']
-      params[:pull_request] = ENV['PULL_REQUEST']
-      params[:slug] = ENV['REPO_NAME']
-      params[:commit] = ENV['COMMIT']
-
-    # GitLab CI
-    # ---------
-    elsif !ENV['GITLAB_CI'].nil?
+    when GITLAB
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
       # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
       # GitLab Runner v9 renamed some environment variables, so we check both old and new variable names.
@@ -175,10 +174,46 @@ class SimpleCov::Formatter::Codecov
       slug = ENV['CI_BUILD_REPO'] || ENV['CI_REPOSITORY_URL']
       params[:slug] = slug.split('/', 4)[-1].sub('.git', '') if slug
       params[:commit] = ENV['CI_BUILD_REF'] || ENV['CI_COMMIT_SHA']
-
-    # Teamcity
-    # ---------
-    elsif ENV['CI_SERVER_NAME'] == 'TeamCity'
+    when HEROKU
+      params[:service] = 'heroku'
+      params[:branch] = ENV['HEROKU_TEST_RUN_BRANCH']
+      params[:build] = ENV['HEROKU_TEST_RUN_ID']
+      params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
+    when JENKINS
+      # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+      # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
+      params[:service] = 'jenkins'
+      params[:branch] = ENV['ghprbSourceBranch'] || ENV['GIT_BRANCH']
+      params[:commit] = ENV['ghprbActualCommit'] || ENV['GIT_COMMIT']
+      params[:pr] = ENV['ghprbPullId']
+      params[:build] = ENV['BUILD_NUMBER']
+      params[:root] = ENV['WORKSPACE']
+      params[:build_url] = ENV['BUILD_URL']
+    when SEMAPHORE
+      # https://semaphoreapp.com/docs/available-environment-variables.html
+      params[:service] = 'semaphore'
+      params[:branch] = ENV['BRANCH_NAME']
+      params[:commit] = ENV['REVISION']
+      params[:build] = ENV['SEMAPHORE_BUILD_NUMBER']
+      params[:job] = ENV['SEMAPHORE_CURRENT_THREAD']
+      params[:slug] = ENV['SEMAPHORE_REPO_SLUG']
+    when SHIPPABLE
+      # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+      params[:service] = 'shippable'
+      params[:branch] = ENV['BRANCH']
+      params[:build] = ENV['BUILD_NUMBER']
+      params[:build_url] = ENV['BUILD_URL']
+      params[:pull_request] = ENV['PULL_REQUEST']
+      params[:slug] = ENV['REPO_NAME']
+      params[:commit] = ENV['COMMIT']
+    when SOLANO
+      # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
+      params[:service] = 'solano'
+      params[:branch] = ENV['TDDIUM_CURRENT_BRANCH']
+      params[:commit] = ENV['TDDIUM_CURRENT_COMMIT']
+      params[:build] = ENV['TDDIUM_TID']
+      params[:pr] = ENV['TDDIUM_PR_ID']
+    when TEAMCITY
       # https://confluence.jetbrains.com/display/TCD8/Predefined+Build+Parameters
       # Teamcity does not automatically make build parameters available as environment variables.
       # Add the following environment parameters to the build configuration
@@ -193,46 +228,23 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['TEAMCITY_BUILD_URL']
       params[:commit] = ENV['TEAMCITY_BUILD_COMMIT']
       params[:slug] = ENV['TEAMCITY_BUILD_REPOSITORY'].split('/', 4)[-1].sub('.git', '')
-
-    # Bitrise
-    # ---------
-    elsif (ENV['CI'] == 'true') && (ENV['BITRISE_IO'] == 'true')
-      # http://devcenter.bitrise.io/faq/available-environment-variables/
-      params[:service] = 'bitrise'
-      params[:branch] = ENV['BITRISE_GIT_BRANCH']
-      params[:pr] = ENV['BITRISE_PULL_REQUEST']
-      params[:build] = ENV['BITRISE_BUILD_NUMBER']
-      params[:build_url] = ENV['BITRISE_BUILD_URL']
-      params[:commit] = ENV['BITRISE_GIT_COMMIT']
-      params[:slug] = ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] + '/' + ENV['BITRISEIO_GIT_REPOSITORY_SLUG']
-
-    # Azure Pipelines
-    # ---------
-    elsif !ENV['TF_BUILD'].nil?
-      params[:service] = 'azure_pipelines'
-      params[:branch] = ENV['BUILD_SOURCEBRANCH']
-      params[:pull_request] = ENV['SYSTEM_PULLREQUEST_PULLREQUESTNUMBER']
-      params[:job] = ENV['SYSTEM_JOBID']
-      params[:build] = ENV['BUILD_BUILDID']
-      params[:build_url] = "#{ENV['SYSTEM_TEAMFOUNDATIONSERVERURI']}/#{ENV['SYSTEM_TEAMPROJECT']}/_build/results?buildId=#{ENV['BUILD_BUILDID']}"
-      params[:commit] = ENV['BUILD_SOURCEVERSION']
-      params[:slug] = ENV['BUILD_REPOSITORY_ID']
-
-    elsif (ENV['CI'] == 'true') && !ENV['BITBUCKET_BRANCH'].nil?
-      # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
-      params[:service] = 'bitbucket'
-      params[:branch] = ENV['BITBUCKET_BRANCH']
-      # BITBUCKET_COMMIT does not always provide full commit sha due to a bug https://jira.atlassian.com/browse/BCLOUD-19393#
-      params[:commit] = (ENV['BITBUCKET_COMMIT'].length < 40 ? nil : ENV['BITBUCKET_COMMIT'])
-      params[:build] = ENV['BITBUCKET_BUILD_NUMBER']
-
-    # Heroku CI
-    # ---------
-    elsif ENV['HEROKU_TEST_RUN_ID']
-      params[:service] = 'heroku'
-      params[:branch] = ENV['HEROKU_TEST_RUN_BRANCH']
-      params[:build] = ENV['HEROKU_TEST_RUN_ID']
-      params[:commit] = ENV['HEROKU_TEST_RUN_COMMIT_VERSION']
+    when TRAVIS
+      # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
+      params[:service] = 'travis'
+      params[:branch] = ENV['TRAVIS_BRANCH']
+      params[:pull_request] = ENV['TRAVIS_PULL_REQUEST']
+      params[:job] = ENV['TRAVIS_JOB_ID']
+      params[:slug] = ENV['TRAVIS_REPO_SLUG']
+      params[:build] = ENV['TRAVIS_JOB_NUMBER']
+      params[:commit] = ENV['TRAVIS_COMMIT']
+      params[:env] = ENV['TRAVIS_RUBY_VERSION']
+    when WERCKER
+      # http://devcenter.wercker.com/articles/steps/variables.html
+      params[:service] = 'wercker'
+      params[:branch] = ENV['WERCKER_GIT_BRANCH']
+      params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
+      params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
+      params[:commit] = ENV['WERCKER_GIT_COMMIT']
     end
 
     if params[:branch].nil?
@@ -253,27 +265,12 @@ class SimpleCov::Formatter::Codecov
 
     params[:pr] = params[:pr].sub('#', '') unless params[:pr].nil?
 
-    # =================
-    # Build URL Request
-    # =================
-    url = ENV['CODECOV_URL'] || 'https://codecov.io'
-    uri = URI.parse(url.chomp('/') + '/upload/v1')
+    params
+  end
 
-    uri.query = URI.encode_www_form(params)
-
-    # get https
-    https = Net::HTTP.new(uri.host, uri.port)
-    https.use_ssl = !url.match(/^https/).nil?
-
-    req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
-                              {
-                                'Content-Type' => 'application/json',
-                                'Accept' => 'application/json'
-                              })
-    req.body = json
+  def upload_to_codecov(req, https)
+    puts '    -> Pinging Codecov'
     retries = 3
-
-    # make request
     begin
       response = https.request(req)
     rescue TimeoutError => e
@@ -282,7 +279,7 @@ class SimpleCov::Formatter::Codecov
       if retries.zero?
         puts 'Timeout error uploading coverage reports to Codecov. Out of retries.'
         puts e
-        return
+        return response
       end
 
       puts 'Timeout error uploading coverage reports to Codecov. Retrying...'
@@ -291,10 +288,48 @@ class SimpleCov::Formatter::Codecov
     rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts e
-      return
+      return response
     end
 
-    # print to output
+    response
+  end
+
+  def format(result)
+    net_blockers(:off)
+
+    display_header
+    ci = detect_ci
+    puts "==> #{ci} detected"
+
+    report = {
+      'meta' => {
+        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
+      }
+    }
+    report.update(result_to_codecov(result))
+    json = report.to_json
+
+    # Build URL Request
+    url = ENV['CODECOV_URL'] || 'https://codecov.io'
+    uri = URI.parse(url.chomp('/') + '/upload/v1')
+
+    params = build_params(ci)
+    params_secret_token = params.clone
+    params_secret_token['token'] = 'secret'
+    uri.query = URI.encode_www_form(params)
+    req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
+                              {
+                                'Content-Type' => 'application/json',
+                                'Accept' => 'application/json'
+                              })
+    req.body = json
+
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = !url.match(/^https/).nil?
+
+    # make request
+    puts "#{uri.path}?#{URI.encode_www_form(params_secret_token)}"
+    response = upload_to_codecov(req, https)
     puts response.body
 
     # join the response to report
