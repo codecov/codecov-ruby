@@ -4,6 +4,9 @@ require 'uri'
 require 'json'
 require 'net/http'
 require 'simplecov'
+require 'colorize'
+require 'tempfile'
+require 'zlib'
 
 class SimpleCov::Formatter::Codecov
   VERSION = '0.1.17'
@@ -27,7 +30,7 @@ class SimpleCov::Formatter::Codecov
     TEAMCITY = 'TeamCity CI',
     TRAVIS = 'Travis CI',
     WERCKER = 'Wercker CI'
-  ]
+  ].freeze
 
   def display_header
     puts [
@@ -35,56 +38,61 @@ class SimpleCov::Formatter::Codecov
       '  _____          _',
       ' / ____|        | |',
       '| |     ___   __| | ___  ___ _____   __',
-      '| |    / _ \\ / _\` |/ _ \\/ __/ _ \\ \\ / /',
-      '| |___| (_) | (_| |  __/ (_| (_) \\ V /',
-      ' \\_____\\___/ \\__,_|\\___|\\___\\___/ \\_/',
+      '| |    / _ \ / _\`|/ _ \/ __/ _ \ \ / /',
+      '| |___| (_) | (_| |  __/ (_| (_) \ V /',
+      ' \_____\___/ \__,_|\___|\___\___/ \_/',
       "                               Ruby-#{VERSION}",
       ''
     ].join("\n")
   end
 
   def detect_ci
-    case
-    when (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
-      return APPVEYOR
-    when !ENV['TF_BUILD'].nil?
-      return AZUREPIPELINES
-    when (ENV['CI'] == 'true') && !ENV['BITBUCKET_BRANCH'].nil?
-      return BITBUCKET
-    when (ENV['CI'] == 'true') && (ENV['BITRISE_IO'] == 'true')
-      return BITRISE
-    when (ENV['CI'] == 'true') && (ENV['BUILDKITE'] == 'true')
-      return BUILDKITE
-    when (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
-      return CIRCLE
-    when (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
-      return CODESHIP
-    when ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
-      return DRONEIO
-    when !ENV['GITLAB_CI'].nil?
-      return GITLAB
-    when ENV['HEROKU_TEST_RUN_ID']
-      return HEROKU
-    when !ENV['JENKINS_URL'].nil?
-      return JENKINS
-    when (ENV['CI'] == 'true') && (ENV['SEMAPHORE'] == 'true')
-      return SEMAPHORE
-    when (ENV['CI'] == 'true') && (ENV['SHIPPABLE'] == 'true')
-      return SHIPPABLE
-    when ENV['TDDIUM'] == 'true'
-      return SOLANO
-    when ENV['CI_SERVER_NAME'] == 'TeamCity'
-      return TEAMCITY
-    when (ENV['CI'] == 'true') && (ENV['TRAVIS'] == 'true')
-      return TRAVIS
-    when (ENV['CI'] == 'true') && !ENV['WERCKER_GIT_BRANCH'].nil?
-      return WERCKER
+    ci = if (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
+           APPVEYOR
+         elsif !ENV['TF_BUILD'].nil?
+           AZUREPIPELINES
+         elsif (ENV['CI'] == 'true') && !ENV['BITBUCKET_BRANCH'].nil?
+           BITBUCKET
+         elsif (ENV['CI'] == 'true') && (ENV['BITRISE_IO'] == 'true')
+           BITRISE
+         elsif (ENV['CI'] == 'true') && (ENV['BUILDKITE'] == 'true')
+           BUILDKITE
+         elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
+           CIRCLE
+         elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
+           CODESHIP
+         elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
+           DRONEIO
+         elsif !ENV['GITLAB_CI'].nil?
+           GITLAB
+         elsif ENV['HEROKU_TEST_RUN_ID']
+           HEROKU
+         elsif !ENV['JENKINS_URL'].nil?
+           JENKINS
+         elsif (ENV['CI'] == 'true') && (ENV['SEMAPHORE'] == 'true')
+           SEMAPHORE
+         elsif (ENV['CI'] == 'true') && (ENV['SHIPPABLE'] == 'true')
+           SHIPPABLE
+         elsif ENV['TDDIUM'] == 'true'
+           SOLANO
+         elsif ENV['CI_SERVER_NAME'] == 'TeamCity'
+           TEAMCITY
+         elsif (ENV['CI'] == 'true') && (ENV['TRAVIS'] == 'true')
+           TRAVIS
+         elsif (ENV['CI'] == 'true') && !ENV['WERCKER_GIT_BRANCH'].nil?
+           WERCKER
+         end
+
+    if !RECOGNIZED_CIS.include?(ci)
+      puts ['x>'.red, 'No CI provider detected.'].join(' ')
+    else
+      puts "==> #{ci} detected"
     end
+
+    ci
   end
 
   def build_params(ci)
-    puts 'x> No CI provider detected.' if RECOGNIZED_CIS.include?(ci)
-
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
@@ -268,8 +276,7 @@ class SimpleCov::Formatter::Codecov
     params
   end
 
-  def upload_to_codecov(req, https)
-    puts '    -> Pinging Codecov'
+  def retry_request(req, https)
     retries = 3
     begin
       response = https.request(req)
@@ -294,52 +301,89 @@ class SimpleCov::Formatter::Codecov
     response
   end
 
+  def create_report(report)
+    result = {
+      'meta' => {
+        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
+      }
+    }
+    result.update(result_to_codecov(report))
+    result
+  end
+
+  def gzip_report(report)
+    puts ['==>'.green, 'Gzipping contents'].join(' ')
+
+    file = Tempfile.new
+    Zlib::GzipWriter.open(file.path) do |gz|
+      gz.write report
+    end
+    file.rewind
+    gzipped_report = file.read
+    file.close
+
+    gzipped_report
+  end
+
+  def upload_to_codecov(ci, report)
+    url = ENV['CODECOV_URL'] || 'https://codecov.io'
+
+    params = build_params(ci)
+    params_secret_token = params.clone
+    params_secret_token['token'] = 'secret'
+
+    query = URI.encode_www_form(params)
+    query_without_token = URI.encode_www_form(params_secret_token)
+
+    gzipped_report = gzip_report(report)
+
+    report['params'] = params
+    report['query'] = query
+
+    puts ['==>'.green, 'Uploading reports'].join(' ')
+    puts "    url:   #{url}"
+    puts "    query: #{query_without_token}"
+
+    upload_to_v2(url, gzipped_report, query, query_without_token)
+  end
+
+  def upload_to_v2(url, report, query, query_without_token)
+    uri = URI.parse(url.chomp('/') + '/upload/v2')
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = !url.match(/^https/).nil?
+
+    puts ['-> '.green, 'Uploading to Codecov'].join(' ')
+    puts "#{url}/#{uri.path}?#{query_without_token}"
+
+    req = Net::HTTP::Post.new(
+      "#{uri.path}?#{query}",
+      {
+        'X-Reduced-Redundancy' => 'false',
+        'Content-Type' => 'text/plain'
+      }
+    )
+    req.body = report
+    retry_request(req, https)
+  end
+
+  def handle_report_response(report)
+    if report['result']['uploaded']
+      puts "    View reports at #{report['result']['url']}"
+    else
+      puts '    X> Failed to upload coverage reports'.red
+    end
+  end
+
   def format(result)
     net_blockers(:off)
 
     display_header
     ci = detect_ci
-    puts "==> #{ci} detected"
-
-    report = {
-      'meta' => {
-        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
-      }
-    }
-    report.update(result_to_codecov(result))
-    json = report.to_json
-
-    # Build URL Request
-    url = ENV['CODECOV_URL'] || 'https://codecov.io'
-    uri = URI.parse(url.chomp('/') + '/upload/v1')
-
-    params = build_params(ci)
-    params_secret_token = params.clone
-    params_secret_token['token'] = 'secret'
-    uri.query = URI.encode_www_form(params)
-    req = Net::HTTP::Post.new(uri.path + '?' + uri.query,
-                              {
-                                'Content-Type' => 'application/json',
-                                'Accept' => 'application/json'
-                              })
-    req.body = json
-
-    https = Net::HTTP.new(uri.host, uri.port)
-    https.use_ssl = !url.match(/^https/).nil?
-
-    # make request
-    puts "#{uri.path}?#{URI.encode_www_form(params_secret_token)}"
-    response = upload_to_codecov(req, https)
-    puts response.body
-
-    # join the response to report
+    report = create_report(result)
+    response = upload_to_codecov(ci, report)
     report['result'] = JSON.parse(response.body)
-    report['params'] = params
-    report['query'] = uri.query
-
+    handle_report_response(report)
     net_blockers(:on)
-
-    # return json data
     report
   end
 
