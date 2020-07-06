@@ -497,6 +497,8 @@ class TestCodecov < Minitest::Test
   end
 
   def test_filenames_are_shortened_correctly
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', []),
@@ -504,6 +506,8 @@ class TestCodecov < Minitest::Test
                   ])
     SimpleCov.stubs(:root).returns('/path')
     data = formatter.format(result)
+    puts data
+    puts data['params']
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil],
       'path/lib/path_somefile.rb' => [nil]
