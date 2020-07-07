@@ -1,3 +1,12 @@
+### `0.1.18`
+
+- refactor and move to use v2 endpoint
+- use Timeout::Error
+
+### `0.1.17`
+
+- refactor upload method and add more logging
+
 ### `0.1.10`
 - update numerous ci environments
 - dont fail if cannot upload to codecov

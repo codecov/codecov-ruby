@@ -12,7 +12,7 @@ install:
 	bundle install
 
 test:
-	rake
+	bundle exec rake
 
 compare:
 	hub compare $(shell git tag --sort=refname | tail -1)...master
