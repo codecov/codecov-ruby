@@ -273,7 +273,7 @@ class SimpleCov::Formatter::Codecov
     retries = 3
     begin
       response = https.request(req)
-    rescue TimeoutError => e
+    rescue Timeout::Error => e
       retries -= 1
 
       if retries.zero?
