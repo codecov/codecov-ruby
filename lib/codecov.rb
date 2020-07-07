@@ -9,7 +9,7 @@ require 'tempfile'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.18'
+  VERSION = '0.1.19'
 
   ### CIs
   RECOGNIZED_CIS = [

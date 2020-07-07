@@ -1,3 +1,7 @@
+### `0.1.19`
+
+- fix colorize
+
 ### `0.1.18`
 
 - refactor and move to use v2 endpoint

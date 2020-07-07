@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name               = 'codecov'
-  s.version            = '0.1.18'
+  s.version            = '0.1.19'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
   s.email              = ['hello@codecov.io']
@@ -14,8 +14,9 @@ Gem::Specification.new do |s|
   s.test_files         = ['test/test_codecov.rb']
   s.require_paths      = ['lib']
 
-  s.add_dependency "json"
-  s.add_dependency "simplecov"
+  s.add_dependency 'colorize'
+  s.add_dependency 'json'
+  s.add_dependency 'simplecov'
 
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
