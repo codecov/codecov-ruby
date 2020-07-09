@@ -398,21 +398,9 @@ class SimpleCov::Formatter::Codecov
   end
 
   def result_to_codecov_report(result)
-    report = env_variables.concat(file_network).join("\n").concat("\n")
-    report = report.concat(result_to_codecov_coverage(result).to_s)
+    report = file_network.join("\n").concat("\n")
+    report = report.concat({ 'coverage' => result_to_codecov_coverage(result).to_json })
     report
-  end
-
-  def env_variables
-    vars = []
-    if ENV
-      puts ['==>'.black, 'Appending build variables'].join(' ')
-      ENV.each_pair do |k, v|
-        vars.push("#{k}=#{v}") if k.start_with?('TRAVIS_') || k.start_with?('IMAGE_NAME')
-      end
-      vars.push('<<<<<< ENV')
-    end
-    vars
   end
 
   def file_network
@@ -427,9 +415,12 @@ class SimpleCov::Formatter::Codecov
       'node_modules/'
     ]
 
+    puts ['==>'.green, 'Appending file network'].join(' ')
     network = []
     Dir['**/*'].keep_if do |file|
-      network.push(file) if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+      if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+        network.push(file)
+      end
     end
     network.push('<<<<<< network')
     network
