@@ -94,7 +94,8 @@ class SimpleCov::Formatter::Codecov
   def build_params(ci)
     params = {
       'token' => ENV['CODECOV_TOKEN'],
-      'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
+      'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
+      'package' => "ruby-#{VERSION}"
     }
 
     case ci
