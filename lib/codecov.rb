@@ -5,11 +5,10 @@ require 'json'
 require 'net/http'
 require 'simplecov'
 require 'colorize'
-require 'tempfile'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.19'
+  VERSION = '0.1.20'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -314,15 +313,10 @@ class SimpleCov::Formatter::Codecov
   def gzip_report(report)
     puts ['==>'.green, 'Gzipping contents'].join(' ')
 
-    file = Tempfile.new
-    Zlib::GzipWriter.open(file.path) do |gz|
-      gz.write report
-    end
-    file.rewind
-    gzipped_report = file.read
-    file.close
+    gzip = Zlib::GzipWriter.new(StringIO.new)
+    gzip << report
 
-    gzipped_report
+    gzip.close.string
   end
 
   def upload_to_codecov(ci, report)
@@ -358,8 +352,9 @@ class SimpleCov::Formatter::Codecov
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
       {
-        'X-Reduced-Redundancy' => 'false',
-        'Content-Type' => 'text/plain'
+        'Content-Encoding' => 'gzip',
+        'Content-Type' => 'text/plain',
+        'X-Content-Encoding' => 'gzip',
       }
     )
     req.body = report
@@ -381,6 +376,7 @@ class SimpleCov::Formatter::Codecov
     ci = detect_ci
     report = create_report(result)
     response = upload_to_codecov(ci, report)
+
     report['result'] = JSON.parse(response.body)
     handle_report_response(report)
     net_blockers(:on)

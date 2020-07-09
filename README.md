@@ -24,8 +24,7 @@ require 'codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov
 ```
 
-> In your CI Environment Variables *(not needed for [https://travis-ci.org/](https://travis-ci.org/))*
-
+> In your CI Environment Variables
 ```sh
 CODECOV_TOKEN="your repo token"
 ```
@@ -81,7 +80,7 @@ end
 
 - [thomasrockhu](https://github.com/thomasrockhu)
 
-### Enterprise
+## Enterprise
 
 For companies using Codecov Enterprise you will need to specify the following parameters.
 ```sh
