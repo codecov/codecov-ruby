@@ -1,9 +1,8 @@
 # Codecov Ruby Uploader
 
 [![Codecov](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
-[![Gem Version](https://badge.fury.io/rb/codecov.svg)]
+[![Gem Version](https://badge.fury.io/rb/codecov.svg)](https://badge.fury.io/rb/codecov.svg)
 [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.svg?branch=master)](http://travis-ci.org/codecov/codecov-ruby)
-[![Anything Else]()[]
 
 [Codecov.io](https://codecov.io/) upload support for Ruby.
 
@@ -34,25 +33,23 @@ Find you repo token on your repo page at [codecov.io][1]. Repo tokens are **not*
 
 ## Supported CIs
 
-| [Appveyor CI](https://www.appveyor.com/) |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) |
-| [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) |
-| [Bitrise CI](https://www.bitrise.io/) |
-| [Buildkite CI](https://buildkite.com/) |
-| [Circle CI](https://circleci.com/) |
-| [Codeship CI](https://codeship.com/) |
-| [Drone CI](https://drone.io/) |
-| [GitLab CI](https://docs.gitlab.com/ee/ci/) |
-| [Heroku CI](https://www.heroku.com/continuous-integration) |
-| [Jenkins CI](https://www.jenkins.io/) |
-| [Semaphore CI](https://semaphoreci.com/) |
-| [Shippable](https://www.shippable.com/) |
-| [Solano CI](https://xebialabs.com/technology/solano-ci/) |
-| [TeamCity CI](https://www.jetbrains.com/teamcity/) |
-| [Travis CI](https://travis-ci.org/) |
-| [Wercker CI](https://devcenter.wercker.com/) |
-
-## Configuration
+| [Appveyor CI](https://www.appveyor.com/) |  
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) |  
+| [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) |  
+| [Bitrise CI](https://www.bitrise.io/) |  
+| [Buildkite CI](https://buildkite.com/) |  
+| [Circle CI](https://circleci.com/) |  
+| [Codeship CI](https://codeship.com/) |  
+| [Drone CI](https://drone.io/) |  
+| [GitLab CI](https://docs.gitlab.com/ee/ci/) |  
+| [Heroku CI](https://www.heroku.com/continuous-integration) |  
+| [Jenkins CI](https://www.jenkins.io/) |  
+| [Semaphore CI](https://semaphoreci.com/) |  
+| [Shippable](https://www.shippable.com/) |  
+| [Solano CI](https://xebialabs.com/technology/solano-ci/) |  
+| [TeamCity CI](https://www.jetbrains.com/teamcity/) |  
+| [Travis CI](https://travis-ci.org/) |  
+| [Wercker CI](https://devcenter.wercker.com/) |  
 
 ## Advanced Usage
 
