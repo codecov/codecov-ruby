@@ -399,7 +399,7 @@ class SimpleCov::Formatter::Codecov
 
   def result_to_codecov_report(result)
     report = file_network.join("\n").concat("\n")
-    report = report.concat({ 'coverage' => result_to_codecov_coverage(result).to_json })
+    report = report.concat({ 'coverage' => result_to_codecov_coverage(result) }.to_json)
     report
   end
 
