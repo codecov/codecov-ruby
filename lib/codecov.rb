@@ -329,7 +329,7 @@ class SimpleCov::Formatter::Codecov
     query = URI.encode_www_form(params)
     query_without_token = URI.encode_www_form(params_secret_token)
 
-    gzipped_report = gzip_report(report)
+    gzipped_report = gzip_report(report['codecov'])
 
     report['params'] = params
     report['query'] = query
@@ -391,9 +391,48 @@ class SimpleCov::Formatter::Codecov
   # @return [Hash]
   def result_to_codecov(result)
     {
+      'codecov' => result_to_codecov_report(result),
       'coverage' => result_to_codecov_coverage(result),
       'messages' => result_to_codecov_messages(result)
     }
+  end
+
+  def result_to_codecov_report(result)
+    report = env_variables.concat(file_network).join("\n").concat("\n")
+    report = report.concat(result_to_codecov_coverage(result).to_s)
+    report
+  end
+
+  def env_variables
+    vars = []
+    if ENV
+      puts ['==>'.black, 'Appending build variables'].join(' ')
+      ENV.each_pair do |k, v|
+        vars.push("#{k}=#{v}") unless k.start_with?('rvm') || k.start_with?('RUBY') || k.include?('CODECOV_TOKEN')
+      end
+      vars.push('<<<<<< ENV')
+    end
+    vars
+  end
+
+  def file_network
+    invalid_file_types = [
+      'woff', 'eot', 'otf', # fonts
+      'gif', 'png', 'jpg', 'jpeg', 'psd', # images
+      'ptt', 'pptx', 'numbers', 'pages', 'md', 'txt', 'xlsx', 'docx', 'doc', 'pdf', 'csv', # docs
+      'yml', 'yaml', '.gitignore'
+    ].freeze
+
+    invalid_directories = [
+      'node_modules/'
+    ]
+
+    network = []
+    Dir['**/*'].keep_if do |file|
+      network.push(file) if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+    end
+    network.push('<<<<<< network')
+    network
   end
 
   # Format SimpleCov coverage data for the Codecov.io coverage API.
