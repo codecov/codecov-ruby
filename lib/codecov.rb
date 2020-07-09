@@ -408,7 +408,7 @@ class SimpleCov::Formatter::Codecov
     if ENV
       puts ['==>'.black, 'Appending build variables'].join(' ')
       ENV.each_pair do |k, v|
-        vars.push("#{k}=#{v}") unless k.start_with?('rvm') || k.start_with?('RUBY') || k.include?('CODECOV_TOKEN')
+        vars.push("#{k}=#{v}") if k.start_with?('TRAVIS_') || k.start_with?('IMAGE_NAME')
       end
       vars.push('<<<<<< ENV')
     end
