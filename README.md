@@ -29,10 +29,11 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov
 ```sh
 CODECOV_TOKEN="your repo token"
 ```
-Find you repo token on your repo page at [codecov.io][1]. Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or AppVeyor CI.
+Find you repo token on your repo page at [codecov.io](https://codecov.io). Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or AppVeyor CI.
 
 ## Supported CIs
-
+| CI/CD |
+| ----- |
 | [Appveyor CI](https://www.appveyor.com/) |  
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) |  
 | [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) |  
