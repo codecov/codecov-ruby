@@ -354,7 +354,7 @@ class SimpleCov::Formatter::Codecov
       {
         'Content-Encoding' => 'gzip',
         'Content-Type' => 'text/plain',
-        'X-Content-Encoding' => 'gzip',
+        'X-Content-Encoding' => 'gzip'
       }
     )
     req.body = report
