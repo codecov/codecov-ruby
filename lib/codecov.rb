@@ -363,18 +363,29 @@ class SimpleCov::Formatter::Codecov
 
     return unless response.code == '200'
 
+    reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
     puts ['-> '.green, 'Uploading to'].join(' ')
     puts s3target
     req = Net::HTTP::Put.new(
       s3target,
       {
-        'Content-Type' => 'application/x-gzip',
-        'Content-Encoding' => 'gzip'
+        'Content-Encoding' => 'gzip',
+        'Content-Type' => 'text/plain'
       }
     )
     req.body = report
-    retry_request(req, https)
+    res = retry_request(req, https)
+    if res.body == ''
+      {
+        'uploaded' => 'true',
+        'url' => reports_url,
+        'meta' => {
+          'status' => res.code
+        },
+        'message' => 'Coverage reports upload successfully'
+      }
+    end
   end
 
   def upload_to_v2(url, report, query, query_without_token)
