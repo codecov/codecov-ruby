@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.20'
+  VERSION = '0.2.0'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -339,7 +339,61 @@ class SimpleCov::Formatter::Codecov
     puts "    url:   #{url}"
     puts "    query: #{query_without_token}"
 
-    upload_to_v2(url, gzipped_report, query, query_without_token)
+    response = upload_to_v4(url, gzipped_report, query, query_without_token)
+    response || upload_to_v2(url, gzipped_report, query, query_without_token)
+  end
+
+  def upload_to_v4(url, report, query, query_without_token)
+    uri = URI.parse(url.chomp('/') + '/upload/v4')
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = !url.match(/^https/).nil?
+
+    puts ['-> '.green, 'Pinging Codecov'].join(' ')
+    puts "#{url}/#{uri.path}?#{query_without_token}"
+
+    req = Net::HTTP::Post.new(
+      "#{uri.path}?#{query}",
+      {
+        'X-Reduced-Redundancy' => 'false',
+        'X-Content-Encoding' => 'application/x-gzip',
+        'Content-Type' => 'text/plain'
+      }
+    )
+    response = retry_request(req, https)
+
+    return unless response.code == '200'
+
+    reports_url = response.body.lines[0]
+    s3target = response.body.lines[1]
+    puts ['-> '.green, 'Uploading to'].join(' ')
+    puts s3target
+
+    uri = URI(s3target)
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = true
+    req = Net::HTTP::Put.new(
+      s3target,
+      {
+        'Content-Encoding' => 'gzip',
+        'Content-Type' => 'text/plain'
+      }
+    )
+    req.body = report
+    res = retry_request(req, https)
+    if res.body == ''
+      {
+        'uploaded' => true,
+        'url' => reports_url,
+        'meta' => {
+          'status' => res.code
+        },
+        'message' => 'Coverage reports upload successfully'
+      }.to_json
+    else
+      puts ['-> '.black, 'Could not upload reports via v4 API, defaulting to v2'].join(' ')
+      puts res.body.red
+      nil
+    end
   end
 
   def upload_to_v2(url, report, query, query_without_token)
@@ -359,7 +413,8 @@ class SimpleCov::Formatter::Codecov
       }
     )
     req.body = report
-    retry_request(req, https)
+    res = retry_request(req, https)
+    res&.body
   end
 
   def handle_report_response(report)
@@ -378,7 +433,7 @@ class SimpleCov::Formatter::Codecov
     report = create_report(result)
     response = upload_to_codecov(ci, report)
 
-    report['result'] = JSON.parse(response.body)
+    report['result'] = JSON.parse(response)
     handle_report_response(report)
     net_blockers(:on)
     report
