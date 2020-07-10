@@ -385,6 +385,10 @@ class SimpleCov::Formatter::Codecov
         },
         'message' => 'Coverage reports upload successfully'
       }
+    else
+      puts ['-> '.black, 'Could not upload reports via v4 API, defaulting to v2'].join(' ')
+      puts res.body.red
+      nil
     end
   end
 
