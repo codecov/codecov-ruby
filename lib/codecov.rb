@@ -367,6 +367,9 @@ class SimpleCov::Formatter::Codecov
     s3target = response.body.lines[1]
     puts ['-> '.green, 'Uploading to'].join(' ')
     puts s3target
+
+    https = Net::HTTP.new(s3target.host, s3target.port)
+    https.use_ssl = true
     req = Net::HTTP::Put.new(
       s3target,
       {
