@@ -380,7 +380,6 @@ class SimpleCov::Formatter::Codecov
     )
     req.body = report
     res = retry_request(req, https)
-    puts res
     if res.body == ''
       {
         'uploaded' => true,
