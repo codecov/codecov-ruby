@@ -1,3 +1,6 @@
+### `0.2.0`
+- move to the v4 upload endpoint with the v2 as a fallback
+
 ### `0.1.20`
 - fix critical upload issues on V2 endpoint
 

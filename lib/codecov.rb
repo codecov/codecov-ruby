@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.20'
+  VERSION = '0.2.0'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -339,7 +339,42 @@ class SimpleCov::Formatter::Codecov
     puts "    url:   #{url}"
     puts "    query: #{query_without_token}"
 
-    upload_to_v2(url, gzipped_report, query, query_without_token)
+    response = upload_to_v4(url, gzipped_report, query, query_without_token)
+    response || upload_to_v2(url, gzipped_report, query, query_without_token)
+  end
+
+  def upload_to_v4(url, report, query, query_without_token)
+    uri = URI.parse(url.chomp('/') + '/upload/v4')
+    https = Net::HTTP.new(uri.host, uri.port)
+    https.use_ssl = !url.match(/^https/).nil?
+
+    puts ['-> '.green, 'Pinging Codecov'].join(' ')
+    puts "#{url}/#{uri.path}?#{query_without_token}"
+
+    req = Net::HTTP::Post.new(
+      "#{uri.path}?#{query}",
+      {
+        'X-Reduced-Redundancy' => 'false',
+        'X-Content-Encoding' => 'application/x-gzip',
+        'Content-Type' => 'text/plain'
+      }
+    )
+    response = retry_request(req, https)
+
+    return unless response.code == '200'
+
+    s3target = response.body.lines[1]
+    puts ['-> '.green, 'Uploading to'].join(' ')
+    puts s3target
+    req = Net::HTTP::Put.new(
+      s3target,
+      {
+        'Content-Type' => 'application/x-gzip',
+        'Content-Encoding' => 'gzip'
+      }
+    )
+    req.body = report
+    retry_request(req, https)
   end
 
   def upload_to_v2(url, report, query, query_without_token)
@@ -377,6 +412,7 @@ class SimpleCov::Formatter::Codecov
     ci = detect_ci
     report = create_report(result)
     response = upload_to_codecov(ci, report)
+    puts response.body
 
     report['result'] = JSON.parse(response.body)
     handle_report_response(report)
