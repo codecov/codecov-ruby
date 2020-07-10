@@ -339,8 +339,8 @@ class SimpleCov::Formatter::Codecov
     puts "    url:   #{url}"
     puts "    query: #{query_without_token}"
 
-    response = upload_to_v4(url, gzipped_report, query, query_without_token)
-    response || upload_to_v2(url, gzipped_report, query, query_without_token)
+    upload_to_v4(url, gzipped_report, query, query_without_token)
+    # response || upload_to_v2(url, gzipped_report, query, query_without_token)
   end
 
   def upload_to_v4(url, report, query, query_without_token)
