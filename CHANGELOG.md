@@ -1,14 +1,14 @@
-### `0.1.19`
+### `0.1.20`
+- fix critical upload issues on V2 endpoint
 
+### `0.1.19`
 - fix colorize
 
 ### `0.1.18`
-
 - refactor and move to use v2 endpoint
 - use Timeout::Error
 
 ### `0.1.17`
-
 - refactor upload method and add more logging
 
 ### `0.1.10`

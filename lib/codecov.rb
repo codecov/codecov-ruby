@@ -5,11 +5,10 @@ require 'json'
 require 'net/http'
 require 'simplecov'
 require 'colorize'
-require 'tempfile'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.1.19'
+  VERSION = '0.1.20'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -95,7 +94,8 @@ class SimpleCov::Formatter::Codecov
   def build_params(ci)
     params = {
       'token' => ENV['CODECOV_TOKEN'],
-      'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS']
+      'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
+      'package' => "ruby-#{VERSION}"
     }
 
     case ci
@@ -314,15 +314,10 @@ class SimpleCov::Formatter::Codecov
   def gzip_report(report)
     puts ['==>'.green, 'Gzipping contents'].join(' ')
 
-    file = Tempfile.new
-    Zlib::GzipWriter.open(file.path) do |gz|
-      gz.write report
-    end
-    file.rewind
-    gzipped_report = file.read
-    file.close
+    gzip = Zlib::GzipWriter.new(StringIO.new)
+    gzip << report
 
-    gzipped_report
+    gzip.close.string
   end
 
   def upload_to_codecov(ci, report)
@@ -335,7 +330,7 @@ class SimpleCov::Formatter::Codecov
     query = URI.encode_www_form(params)
     query_without_token = URI.encode_www_form(params_secret_token)
 
-    gzipped_report = gzip_report(report)
+    gzipped_report = gzip_report(report['codecov'])
 
     report['params'] = params
     report['query'] = query
@@ -358,8 +353,9 @@ class SimpleCov::Formatter::Codecov
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
       {
-        'X-Reduced-Redundancy' => 'false',
-        'Content-Type' => 'text/plain'
+        'Content-Encoding' => 'gzip',
+        'Content-Type' => 'text/plain',
+        'X-Content-Encoding' => 'gzip'
       }
     )
     req.body = report
@@ -381,6 +377,7 @@ class SimpleCov::Formatter::Codecov
     ci = detect_ci
     report = create_report(result)
     response = upload_to_codecov(ci, report)
+
     report['result'] = JSON.parse(response.body)
     handle_report_response(report)
     net_blockers(:on)
@@ -395,9 +392,39 @@ class SimpleCov::Formatter::Codecov
   # @return [Hash]
   def result_to_codecov(result)
     {
+      'codecov' => result_to_codecov_report(result),
       'coverage' => result_to_codecov_coverage(result),
       'messages' => result_to_codecov_messages(result)
     }
+  end
+
+  def result_to_codecov_report(result)
+    report = file_network.join("\n").concat("\n")
+    report = report.concat({ 'coverage' => result_to_codecov_coverage(result) }.to_json)
+    report
+  end
+
+  def file_network
+    invalid_file_types = [
+      'woff', 'eot', 'otf', # fonts
+      'gif', 'png', 'jpg', 'jpeg', 'psd', # images
+      'ptt', 'pptx', 'numbers', 'pages', 'md', 'txt', 'xlsx', 'docx', 'doc', 'pdf', 'csv', # docs
+      'yml', 'yaml', '.gitignore'
+    ].freeze
+
+    invalid_directories = [
+      'node_modules/'
+    ]
+
+    puts ['==>'.green, 'Appending file network'].join(' ')
+    network = []
+    Dir['**/*'].keep_if do |file|
+      if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+        network.push(file)
+      end
+    end
+    network.push('<<<<<< network')
+    network
   end
 
   # Format SimpleCov coverage data for the Codecov.io coverage API.

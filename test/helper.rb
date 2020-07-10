@@ -4,7 +4,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'simplecov'
-SimpleCov.start 'rails' do
+SimpleCov.start do
   add_filter '/test/'
 end
 require 'codecov'
