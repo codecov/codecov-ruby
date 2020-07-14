@@ -513,4 +513,14 @@ class TestCodecov < Minitest::Test
       'path/lib/path_somefile.rb' => [nil]
     }.to_json)
   end
+
+  def test_invalid_token
+    ENV['CODECOV_TOKEN'] = 'fake'
+    result = upload
+    assert_equal(false, result['result']['uploaded'])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
+    assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
+  end
 end

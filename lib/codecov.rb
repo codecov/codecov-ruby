@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.0'
+  VERSION = '0.2.1'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -340,6 +340,8 @@ class SimpleCov::Formatter::Codecov
     puts "    query: #{query_without_token}"
 
     response = upload_to_v4(url, gzipped_report, query, query_without_token)
+    return false if response == false
+
     response || upload_to_v2(url, gzipped_report, query, query_without_token)
   end
 
@@ -360,8 +362,10 @@ class SimpleCov::Formatter::Codecov
       }
     )
     response = retry_request(req, https)
-
-    return unless response.code == '200'
+    if response.code == '400'
+      puts response.body.red
+      return false
+    end
 
     reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
@@ -432,6 +436,10 @@ class SimpleCov::Formatter::Codecov
     ci = detect_ci
     report = create_report(result)
     response = upload_to_codecov(ci, report)
+    if response == false
+      report['result'] = { 'uploaded' => false }
+      return report
+    end
 
     report['result'] = JSON.parse(response)
     handle_report_response(report)

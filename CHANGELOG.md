@@ -1,3 +1,6 @@
+### `0.2.1`
+- Properly handle 400 cases when using the v4 endpoint
+
 ### `0.2.0`
 - move to the v4 upload endpoint with the v2 as a fallback
 
