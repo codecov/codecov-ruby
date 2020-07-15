@@ -32,7 +32,7 @@ class TestCodecov < Minitest::Test
     stub('SimpleCov::SourceFile', filename: filename, lines: lines)
   end
 
-  def upload
+  def upload(success=true)
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
@@ -42,6 +42,13 @@ class TestCodecov < Minitest::Test
     data = formatter.format(result)
     puts data
     puts data['params']
+    if success
+      assert_successful_upload(data)
+    end
+    data
+  end
+
+  def assert_successful_upload(data)
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], 'Coverage reports upload successfully')
     assert_equal(data['meta']['version'], 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION)
@@ -49,7 +56,6 @@ class TestCodecov < Minitest::Test
       'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
     }.to_json)
-    data
   end
 
   def setup
@@ -512,5 +518,14 @@ class TestCodecov < Minitest::Test
       'lib/something.rb' => [nil],
       'path/lib/path_somefile.rb' => [nil]
     }.to_json)
+  end
+
+  def test_invalid_token
+    ENV['CODECOV_TOKEN'] = 'fake'
+    result = upload(false)
+    assert_equal(false, result['result']['uploaded'])
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
+    assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
   end
 end
