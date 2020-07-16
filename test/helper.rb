@@ -12,3 +12,5 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 require 'minitest/autorun'
 require 'mocha/setup'
+
+require 'webmock/minitest'
