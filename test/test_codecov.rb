@@ -39,13 +39,29 @@ class TestCodecov < Minitest::Test
                     stub_file('/path/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil])
                   ])
     SimpleCov.stubs(:root).returns('/path')
-    data = formatter.format(result)
+    success_stubs if success
+    data = formatter.format(result, false)
     puts data
     puts data['params']
     if success
       assert_successful_upload(data)
     end
+    WebMock.reset!
     data
+  end
+
+  def success_stubs
+    stub_request(:post, %r{https:\/\/codecov.io\/upload})
+      .to_return(
+        status: 200,
+        body: "https://codecov.io/gh/fake\n" \
+              'https://storage.googleapis.com/codecov/fake'
+      )
+    stub_request(:put, %r{https:\/\/storage.googleapis.com\/})
+      .to_return(
+        status: 200,
+        body: ''
+      )
   end
 
   def assert_successful_upload(data)
@@ -521,6 +537,13 @@ class TestCodecov < Minitest::Test
   end
 
   def test_invalid_token
+    stub_request(:post, %r{https:\/\/codecov.io\/upload})
+      .to_return(
+        status: 400,
+        body: "HTTP 400\n" \
+              'Provided token is not a UUID.'
+      )
+
     ENV['CODECOV_TOKEN'] = 'fake'
     result = upload(false)
     assert_equal(false, result['result']['uploaded'])
