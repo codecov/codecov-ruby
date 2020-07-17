@@ -1,3 +1,6 @@
+### `0.2.2`
+- Handle SocketError and better error handling of v4 failures
+
 ### `0.2.1`
 - Properly handle 400 cases when using the v4 endpoint
 

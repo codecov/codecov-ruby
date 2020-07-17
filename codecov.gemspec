@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name               = 'codecov'
-  s.version            = '0.2.1'
+  s.version            = '0.2.2'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
   s.email              = ['hello@codecov.io']
@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'webmock'
 end

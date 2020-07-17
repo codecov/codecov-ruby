@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.1'
+  VERSION = '0.2.2'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -280,20 +280,21 @@ class SimpleCov::Formatter::Codecov
     retries = 3
     begin
       response = https.request(req)
-    rescue Timeout::Error => e
+    rescue Timeout::Error, SocketError => e
       retries -= 1
 
       if retries.zero?
-        puts 'Timeout error uploading coverage reports to Codecov. Out of retries.'
+        puts 'Timeout or connection error uploading coverage reports to Codecov. Out of retries.'
         puts e
         return response
       end
 
-      puts 'Timeout error uploading coverage reports to Codecov. Retrying...'
+      puts 'Timeout or connection error uploading coverage reports to Codecov. Retrying...'
       puts e
       retry
     rescue StandardError => e
       puts 'Error uploading coverage reports to Codecov. Sorry'
+      puts e.class.name
       puts e
       return response
     end
@@ -362,8 +363,8 @@ class SimpleCov::Formatter::Codecov
       }
     )
     response = retry_request(req, https)
-    if response.code == '400'
-      puts response.body.red
+    if !response&.code || response.code == '400'
+      puts response&.body&.red
       return false
     end
 
@@ -429,8 +430,8 @@ class SimpleCov::Formatter::Codecov
     end
   end
 
-  def format(result)
-    net_blockers(:off)
+  def format(result, disable_net_blockers = true)
+    net_blockers(:off) if disable_net_blockers
 
     display_header
     ci = detect_ci
@@ -443,7 +444,8 @@ class SimpleCov::Formatter::Codecov
 
     report['result'] = JSON.parse(response)
     handle_report_response(report)
-    net_blockers(:on)
+
+    net_blockers(:on) if disable_net_blockers
     report
   end
 
