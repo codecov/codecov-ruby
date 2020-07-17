@@ -352,7 +352,7 @@ class SimpleCov::Formatter::Codecov
     https.use_ssl = !url.match(/^https/).nil?
 
     puts ['-> '.green, 'Pinging Codecov'].join(' ')
-    puts "#{url}/#{uri.path}?#{query_without_token}"
+    puts "#{url}#{uri.path}?#{query_without_token}"
 
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
