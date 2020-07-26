@@ -315,10 +315,12 @@ class SimpleCov::Formatter::Codecov
   def gzip_report(report)
     puts ['==>'.green, 'Gzipping contents'].join(' ')
 
-    gzip = Zlib::GzipWriter.new(StringIO.new)
+    io = StringIO.new
+    gzip = Zlib::GzipWriter.new(io)
     gzip << report
+    gzip.close
 
-    gzip.close.string
+    io.string
   end
 
   def upload_to_codecov(ci, report)
