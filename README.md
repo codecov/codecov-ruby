@@ -1,5 +1,9 @@
 # Codecov Ruby Uploader
 
+## DEPRECATION WARNING
+All versions of the Ruby uploader prior to `0.2.0` will no longer be supported and will be removed from public use on or after *2020-08-17*.
+Please upgrade to the latest versions to continue using this uploader.
+
 [![Codecov](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
 [![Gem Version](https://badge.fury.io/rb/codecov.svg)](https://badge.fury.io/rb/codecov.svg)
 [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.svg?branch=master)](http://travis-ci.org/codecov/codecov-ruby)

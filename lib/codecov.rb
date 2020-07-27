@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.2'
+  VERSION = '0.2.3'
 
   ### CIs
   RECOGNIZED_CIS = [

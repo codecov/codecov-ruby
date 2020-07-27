@@ -1,3 +1,6 @@
+### `0.2.3`
+- Support uploads for jruby 9.1 and 9.2
+
 ### `0.2.2`
 - Handle SocketError and better error handling of v4 failures
 
