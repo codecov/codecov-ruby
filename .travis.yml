@@ -10,3 +10,4 @@ rvm:
   - 2.7
   - jruby
   - jruby-9.1
+  - jruby-9.2
