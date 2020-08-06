@@ -3,7 +3,6 @@
 require 'helper'
 
 class TestCodecov < Minitest::Test
-  REALENV = Marshal.load(Marshal.dump(ENV))
 
   def url
     ENV['CODECOV_URL'] || 'https://codecov.io'
@@ -71,11 +70,6 @@ class TestCodecov < Minitest::Test
   def setup
     ENV['CI'] = nil
     ENV['TRAVIS'] = nil
-  end
-
-  def teardown
-    # needed for sending this projects coverage
-    REALENV.each_pair { |k, v| ENV[k] = v }
   end
 
   def test_git
