@@ -20,6 +20,7 @@ class SimpleCov::Formatter::Codecov
     CIRCLE = 'Circle CI',
     CODESHIP = 'Codeship CI',
     DRONEIO = 'Drone CI',
+    GITHUB = 'GitHub Actions',
     GITLAB = 'GitLab CI',
     HEROKU = 'Heroku CI',
     JENKINS = 'Jenkins CI',
@@ -62,6 +63,8 @@ class SimpleCov::Formatter::Codecov
            CODESHIP
          elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
            DRONEIO
+         elsif (ENV['CI'] == 'true') && (ENV['GITHUB_ACTIONS'] == 'true')
+           GITHUB
          elsif !ENV['GITLAB_CI'].nil?
            GITLAB
          elsif ENV['HEROKU_TEST_RUN_ID']
@@ -172,6 +175,15 @@ class SimpleCov::Formatter::Codecov
       params[:build_url] = ENV['DRONE_BUILD_LINK'] || ENV['DRONE_BUILD_URL'] || ENV['CI_BUILD_URL']
       params[:pr] = ENV['DRONE_PULL_REQUEST']
       params[:tag] = ENV['DRONE_TAG']
+    when GITHUB
+      # https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
+      params[:service] = 'github-actions'
+      params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/heads/', '')
+      # PR refs are in the format: refs/pull/7/merge
+      params[:pr] = ENV['GITHUB_REF'].split('/')[2] if ENV['GITHUB_HEAD_REF']
+      params[:slug] = ENV['GITHUB_REPOSITORY']
+      params[:build] = ENV['GITHUB_RUN_ID']
+      params[:commit] = ENV['GITHUB_SHA']
     when GITLAB
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
       # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
