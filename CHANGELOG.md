@@ -1,3 +1,6 @@
+### `0.2.4`
+- Adds support for GitHub Actions CI
+
 ### `0.2.3`
 - Support uploads for jruby 9.1 and 9.2
 
