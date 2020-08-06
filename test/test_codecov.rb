@@ -35,7 +35,7 @@ class TestCodecov < Minitest::Test
 
   def test_defined
     assert defined?(SimpleCov::Formatter::Codecov)
-    assert defined?(SimpleCov::Formatter::Codecov::VERSION)
+    assert defined?(Version::LATEST)
   end
 
   def stub_file(filename, coverage)
@@ -50,7 +50,7 @@ class TestCodecov < Minitest::Test
     stub('SimpleCov::SourceFile', filename: filename, lines: lines)
   end
 
-  def upload(success=true)
+  def upload(success = true)
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
@@ -61,9 +61,7 @@ class TestCodecov < Minitest::Test
     data = formatter.format(result, false)
     puts data
     puts data['params']
-    if success
-      assert_successful_upload(data)
-    end
+    assert_successful_upload(data) if success
     WebMock.reset!
     data
   end
@@ -85,7 +83,7 @@ class TestCodecov < Minitest::Test
   def assert_successful_upload(data)
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], 'Coverage reports upload successfully')
-    assert_equal(data['meta']['version'], 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION)
+    assert_equal(data['meta']['version'], 'codecov-ruby/v' + Version::LATEST)
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]

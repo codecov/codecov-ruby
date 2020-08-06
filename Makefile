@@ -1,7 +1,7 @@
 .PHONY: test install build deploy
 
 deploy:
-	$(eval VERSION := $(shell cat lib/codecov.rb | grep 'VERSION = ' | cut -d\' -f2))
+	$(eval VERSION := $(shell cat lib/version.rb | grep 'LATEST = ' | cut -d\' -f2))
 	git tag v$(VERSION) -m ""
 	git push origin v$(VERSION)
 	gem build codecov.gemspec
