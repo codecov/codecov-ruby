@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler/setup'
 
 require 'simplecov'
-SimpleCov.start 'rails' do
-  add_filter "/test/"
+SimpleCov.start do
+  add_filter '/test/'
 end
 require 'codecov'
-if ENV['CI'] == 'true'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 require 'minitest/autorun'
-require 'mocha/setup'
+require 'mocha/minitest'
+require 'webmock/minitest'
