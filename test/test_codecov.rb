@@ -3,8 +3,22 @@
 require 'helper'
 
 class TestCodecov < Minitest::Test
-  REALENV = {}
-  ENV.each_pair { |k, v| REALENV[k] = v }
+  CI = SimpleCov::Formatter::Codecov.detect_ci
+
+  REALENV =
+    if CI == SimpleCov::Formatter::Codecov::TRAVIS
+      {
+        'TRAVIS' => ENV['TRAVIS'],
+        'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
+        'TRAVIS_COMMIT' => ENV['TRAVIS_COMMIT'],
+        'TRAVIS_REPO_SLUG' => ENV['TRAVIS_REPO_SLUG'],
+        'TRAVIS_JOB_NUMBER' => ENV['TRAVIS_JOB_NUMBER'],
+        'TRAVIS_PULL_REQUEST' => ENV['TRAVIS_PULL_REQUEST'],
+        'TRAVIS_JOB_ID' => ENV['TRAVIS_JOB_ID']
+      }.freeze
+    else
+      {}
+    end
 
   def url
     ENV['CODECOV_URL'] || 'https://codecov.io'
@@ -76,6 +90,105 @@ class TestCodecov < Minitest::Test
 
   def teardown
     # needed for sending this projects coverage
+    ENV['APPVEYOR'] = nil
+    ENV['APPVEYOR_ACCOUNT_NAME'] = nil
+    ENV['APPVEYOR_BUILD_VERSION'] = nil
+    ENV['APPVEYOR_JOB_ID'] = nil
+    ENV['APPVEYOR_PROJECT_SLUG'] = nil
+    ENV['APPVEYOR_PULL_REQUEST_NUMBER'] = nil
+    ENV['APPVEYOR_REPO_BRANCH'] = nil
+    ENV['APPVEYOR_REPO_COMMIT'] = nil
+    ENV['APPVEYOR_REPO_NAME'] = nil
+    ENV['BITBUCKET_BRANCH'] = nil
+    ENV['BITBUCKET_BUILD_NUMBER'] = nil
+    ENV['BITBUCKET_COMMIT'] = nil
+    ENV['BITRISE_BUILD_NUMBER'] = nil
+    ENV['BITRISE_BUILD_URL'] = nil
+    ENV['BITRISE_GIT_BRANCH'] = nil
+    ENV['BITRISE_GIT_COMMIT'] = nil
+    ENV['BITRISE_IO'] = nil
+    ENV['BITRISE_PULL_REQUEST'] = nil
+    ENV['BITRISEIO_GIT_REPOSITORY_OWNER'] = nil
+    ENV['BITRISEIO_GIT_REPOSITORY_SLUG'] = nil
+    ENV['BRANCH'] = nil
+    ENV['BRANCH_NAME'] = nil
+    ENV['BUILD_ID'] = nil
+    ENV['BUILD_NUMBER'] = nil
+    ENV['BUILD_NUMBER'] = nil
+    ENV['BUILD_URL'] = nil
+    ENV['BUILDKITE'] = nil
+    ENV['BUILDKITE_BRANCH'] = nil
+    ENV['BUILDKITE_JOB_ID'] = nil
+    ENV['BUILDKITE_BUILD_NUMBER'] = nil
+    ENV['BUILDKITE_BUILD_URL'] = nil
+    ENV['BUILDKITE_PROJECT_SLUG'] = nil
+    ENV['BUILDKITE_COMMIT'] = nil
+    ENV['CI'] = 'true'
+    ENV['CI_BRANCH'] = nil
+    ENV['CI_BUILD_ID'] = nil
+    ENV['CI_BUILD_NUMBER'] = nil
+    ENV['CI_BUILD_REF'] = nil
+    ENV['CI_BUILD_REF_NAME'] = nil
+    ENV['CI_BUILD_REPO'] = nil
+    ENV['CI_BUILD_URL'] = nil
+    ENV['CI_COMMIT'] = nil
+    ENV['CI_COMMIT_ID'] = nil
+    ENV['CI_NAME'] = nil
+    ENV['CI_PROJECT_DIR'] = nil
+    ENV['CI_SERVER_NAME'] = nil
+    ENV['CI_SERVER_NAME'] = nil
+    ENV['CIRCLE_BRANCH'] = nil
+    ENV['CIRCLE_BUILD_NUM'] = nil
+    ENV['CIRCLE_NODE_INDEX'] = nil
+    ENV['CIRCLE_PR_NUMBER'] = nil
+    ENV['CIRCLE_PROJECT_REPONAME'] = nil
+    ENV['CIRCLE_PROJECT_USERNAME'] = nil
+    ENV['CIRCLE_SHA1'] = nil
+    ENV['CIRCLECI'] = nil
+    ENV['CODECOV_ENV'] = nil
+    ENV['CODECOV_SLUG'] = nil
+    ENV['CODECOV_TOKEN'] = nil
+    ENV['CODECOV_URL'] = nil
+    ENV['COMMIT'] = nil
+    ENV['DRONE'] = nil
+    ENV['DRONE_BRANCH'] = nil
+    ENV['DRONE_BUILD_URL'] = nil
+    ENV['DRONE_COMMIT'] = nil
+    ENV['ghprbActualCommit'] = nil
+    ENV['ghprbPullId'] = nil
+    ENV['ghprbSourceBranch'] = nil
+    ENV['GIT_BRANCH'] = nil
+    ENV['GIT_COMMIT'] = nil
+    ENV['GITLAB_CI'] = nil
+    ENV['HEROKU_TEST_RUN_ID'] = nil
+    ENV['HEROKU_TEST_RUN_BRANCH'] = nil
+    ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] = nil
+    ENV['JENKINS_URL'] = nil
+    ENV['MAGNUM'] = nil
+    ENV['PULL_REQUEST'] = nil
+    ENV['REPO_NAME'] = nil
+    ENV['REVISION'] = nil
+    ENV['SEMAPHORE'] = nil
+    ENV['SEMAPHORE_BUILD_NUMBER'] = nil
+    ENV['SEMAPHORE_CURRENT_THREAD'] = nil
+    ENV['SEMAPHORE_REPO_SLUG'] = nil
+    ENV['SHIPPABLE'] = nil
+    ENV['TF_BUILD'] = nil
+    ENV['TRAVIS'] = nil
+    ENV['TRAVIS_BRANCH'] = nil
+    ENV['TRAVIS_COMMIT'] = nil
+    ENV['TRAVIS_JOB_ID'] = nil
+    ENV['TRAVIS_JOB_NUMBER'] = nil
+    ENV['TRAVIS_PULL_REQUEST'] = nil
+    ENV['TRAVIS_REPO_SLUG'] = nil
+    ENV['VCS_COMMIT_ID'] = nil
+    ENV['WERCKER_GIT_BRANCH'] = nil
+    ENV['WERCKER_GIT_COMMIT'] = nil
+    ENV['WERCKER_GIT_OWNER'] = nil
+    ENV['WERCKER_GIT_REPOSITORY'] = nil
+    ENV['WERCKER_MAIN_PIPELINE_STARTED'] = nil
+    ENV['WORKSPACE'] = nil
+
     REALENV.each_pair { |k, v| ENV[k] = v }
   end
 
