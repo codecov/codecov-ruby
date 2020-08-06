@@ -3,7 +3,7 @@
 require 'helper'
 
 class TestCodecov < Minitest::Test
-  CI = SimpleCov::Formatter::Codecov.detect_ci
+  CI = SimpleCov::Formatter::Codecov.new.detect_ci
 
   REALENV =
     if CI == SimpleCov::Formatter::Codecov::TRAVIS
