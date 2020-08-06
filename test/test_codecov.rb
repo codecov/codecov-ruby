@@ -50,7 +50,7 @@ class TestCodecov < Minitest::Test
     stub('SimpleCov::SourceFile', filename: filename, lines: lines)
   end
 
-  def upload(success=true)
+  def upload(success = true)
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
@@ -61,9 +61,7 @@ class TestCodecov < Minitest::Test
     data = formatter.format(result, false)
     puts data
     puts data['params']
-    if success
-      assert_successful_upload(data)
-    end
+    assert_successful_upload(data) if success
     WebMock.reset!
     data
   end
