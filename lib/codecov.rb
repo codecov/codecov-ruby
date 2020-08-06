@@ -7,15 +7,9 @@ require 'simplecov'
 require 'colorize'
 require 'zlib'
 
-# Define constants to work before requiring simplecov
-module SimpleCov
-  module Formatter
-  end
-end
+require 'version'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.3'
-
   ### CIs
   RECOGNIZED_CIS = [
     APPVEYOR = 'Appveyor CI',
@@ -47,7 +41,7 @@ class SimpleCov::Formatter::Codecov
       '| |    / _ \ / _\`|/ _ \/ __/ _ \ \ / /',
       '| |___| (_) | (_| |  __/ (_| (_) \ V /',
       ' \_____\___/ \__,_|\___|\___\___/ \_/',
-      "                               Ruby-#{VERSION}",
+      "                               Ruby-#{Version::LATEST}",
       ''
     ].join("\n")
   end
@@ -104,7 +98,7 @@ class SimpleCov::Formatter::Codecov
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
-      'package' => "ruby-#{VERSION}"
+      'package' => "ruby-#{Version::LATEST}"
     }
 
     case ci
@@ -323,7 +317,7 @@ class SimpleCov::Formatter::Codecov
   def create_report(report)
     result = {
       'meta' => {
-        'version' => 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION
+        'version' => 'codecov-ruby/v' + Version::LATEST 
       }
     }
     result.update(result_to_codecov(report))

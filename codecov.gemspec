@@ -2,11 +2,11 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'codecov'
+require 'version'
 
 Gem::Specification.new do |s|
   s.name               = 'codecov'
-  s.version            = SimpleCov::Formatter::Codecov::VERSION
+  s.version            = Version::LATEST
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
   s.email              = ['hello@codecov.io']
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'colorize'
   s.add_dependency 'json'
+  s.add_dependency 'simplecov'
 
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
