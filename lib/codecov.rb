@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.2'
+  VERSION = '0.2.3'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -327,10 +327,12 @@ class SimpleCov::Formatter::Codecov
   def gzip_report(report)
     puts ['==>'.green, 'Gzipping contents'].join(' ')
 
-    gzip = Zlib::GzipWriter.new(StringIO.new)
+    io = StringIO.new
+    gzip = Zlib::GzipWriter.new(io)
     gzip << report
+    gzip.close
 
-    gzip.close.string
+    io.string
   end
 
   def upload_to_codecov(ci, report)

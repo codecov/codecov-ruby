@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name               = 'codecov'
-  s.version            = '0.2.2'
+  s.version            = '0.2.3'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
   s.email              = ['hello@codecov.io']
