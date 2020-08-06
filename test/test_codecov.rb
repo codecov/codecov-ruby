@@ -3,14 +3,23 @@
 require 'helper'
 
 class TestCodecov < Minitest::Test
-  REALENV = {
-    'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
-    'TRAVIS_COMMIT' => ENV['TRAVIS_COMMIT'],
-    'TRAVIS_REPO_SLUG' => ENV['TRAVIS_REPO_SLUG'],
-    'TRAVIS_JOB_NUMBER' => ENV['TRAVIS_JOB_NUMBER'],
-    'TRAVIS_PULL_REQUEST' => ENV['TRAVIS_PULL_REQUEST'],
-    'TRAVIS_JOB_ID' => ENV['TRAVIS_JOB_ID']
-  }.freeze
+  CI = SimpleCov::Formatter::Codecov.new.detect_ci
+
+  REALENV =
+    if CI == SimpleCov::Formatter::Codecov::TRAVIS
+      {
+        'TRAVIS' => ENV['TRAVIS'],
+        'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
+        'TRAVIS_COMMIT' => ENV['TRAVIS_COMMIT'],
+        'TRAVIS_REPO_SLUG' => ENV['TRAVIS_REPO_SLUG'],
+        'TRAVIS_JOB_NUMBER' => ENV['TRAVIS_JOB_NUMBER'],
+        'TRAVIS_PULL_REQUEST' => ENV['TRAVIS_PULL_REQUEST'],
+        'TRAVIS_JOB_ID' => ENV['TRAVIS_JOB_ID']
+      }.freeze
+    else
+      {}
+    end
+
   def url
     ENV['CODECOV_URL'] || 'https://codecov.io'
   end
@@ -165,13 +174,13 @@ class TestCodecov < Minitest::Test
     ENV['SEMAPHORE_REPO_SLUG'] = nil
     ENV['SHIPPABLE'] = nil
     ENV['TF_BUILD'] = nil
-    ENV['TRAVIS'] = 'true'
-    ENV['TRAVIS_BRANCH'] = REALENV['TRAVIS_BRANCH']
-    ENV['TRAVIS_COMMIT'] = REALENV['TRAVIS_COMMIT']
-    ENV['TRAVIS_JOB_ID'] = REALENV['TRAVIS_JOB_ID']
-    ENV['TRAVIS_JOB_NUMBER'] = REALENV['TRAVIS_JOB_NUMBER']
-    ENV['TRAVIS_PULL_REQUEST'] = REALENV['TRAVIS_PULL_REQUEST']
-    ENV['TRAVIS_REPO_SLUG'] = REALENV['TRAVIS_REPO_SLUG']
+    ENV['TRAVIS'] = nil
+    ENV['TRAVIS_BRANCH'] = nil
+    ENV['TRAVIS_COMMIT'] = nil
+    ENV['TRAVIS_JOB_ID'] = nil
+    ENV['TRAVIS_JOB_NUMBER'] = nil
+    ENV['TRAVIS_PULL_REQUEST'] = nil
+    ENV['TRAVIS_REPO_SLUG'] = nil
     ENV['VCS_COMMIT_ID'] = nil
     ENV['WERCKER_GIT_BRANCH'] = nil
     ENV['WERCKER_GIT_COMMIT'] = nil
@@ -179,6 +188,8 @@ class TestCodecov < Minitest::Test
     ENV['WERCKER_GIT_REPOSITORY'] = nil
     ENV['WERCKER_MAIN_PIPELINE_STARTED'] = nil
     ENV['WORKSPACE'] = nil
+
+    REALENV.each_pair { |k, v| ENV[k] = v }
   end
 
   def test_git
