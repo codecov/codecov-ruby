@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'version'
-
 Gem::Specification.new do |s|
   s.name               = 'codecov'
-  s.version            = Version::LATEST
+  s.version            = '0.2.4'
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
   s.email              = ['hello@codecov.io']
