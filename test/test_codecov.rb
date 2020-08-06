@@ -35,7 +35,7 @@ class TestCodecov < Minitest::Test
 
   def test_defined
     assert defined?(SimpleCov::Formatter::Codecov)
-    assert defined?(Version::LATEST)
+    assert defined?(SimpleCov::Formatter::Codecov::VERSION)
   end
 
   def stub_file(filename, coverage)
@@ -83,7 +83,7 @@ class TestCodecov < Minitest::Test
   def assert_successful_upload(data)
     assert_equal(data['result']['uploaded'], true)
     assert_equal(data['result']['message'], 'Coverage reports upload successfully')
-    assert_equal(data['meta']['version'], 'codecov-ruby/v' + Version::LATEST)
+    assert_equal(data['meta']['version'], 'codecov-ruby/v' + SimpleCov::Formatter::Codecov::VERSION)
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil, 1, 0, 0, nil, 1, nil],
       'lib/somefile.rb' => [nil, 1, nil, 1, 1, 1, 0, 0, nil, 1, nil]
