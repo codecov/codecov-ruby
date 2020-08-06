@@ -6,7 +6,16 @@ class TestCodecov < Minitest::Test
   CI = SimpleCov::Formatter::Codecov.new.detect_ci
 
   REALENV =
-    if CI == SimpleCov::Formatter::Codecov::TRAVIS
+    if CI == SimpleCov::Formatter::Codecov::GITHUB
+      {
+        'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
+        'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
+        'GITHUB_REF' => ENV['GITHUB_REF'],
+        'GITHUB_REPOSITORY' => ENV['GITHUB_REPOSITORY'],
+        'GITHUB_RUN_ID' => ENV['GITHUB_RUN_ID'],
+        'GITHUB_SHA' => ENV['GITHUB_SHA']
+      }
+    elsif CI == SimpleCov::Formatter::Codecov::TRAVIS
       {
         'TRAVIS' => ENV['TRAVIS'],
         'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
@@ -15,10 +24,10 @@ class TestCodecov < Minitest::Test
         'TRAVIS_JOB_NUMBER' => ENV['TRAVIS_JOB_NUMBER'],
         'TRAVIS_PULL_REQUEST' => ENV['TRAVIS_PULL_REQUEST'],
         'TRAVIS_JOB_ID' => ENV['TRAVIS_JOB_ID']
-      }.freeze
+      }
     else
       {}
-    end
+    end.freeze
 
   def url
     ENV['CODECOV_URL'] || 'https://codecov.io'
