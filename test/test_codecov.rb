@@ -94,6 +94,7 @@ class TestCodecov < Minitest::Test
 
   def setup
     ENV['CI'] = nil
+    ENV['GITHUB_ACTIONS'] = nil
     ENV['TRAVIS'] = nil
   end
 
