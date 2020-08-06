@@ -1,3 +1,6 @@
+### `0.2.5`
+- Revert single use of VERSION
+
 ### `0.2.4`
 - Adds support for GitHub Actions CI
 
