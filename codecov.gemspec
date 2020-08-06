@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'version'
 
 Gem::Specification.new do |s|
-  s.name               = 'codecov
+  s.name               = 'codecov'
   s.version            = Version::LATEST
   s.platform           = Gem::Platform::RUBY
   s.authors            = ['codecov']
