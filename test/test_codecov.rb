@@ -3,7 +3,7 @@
 require 'helper'
 
 class TestCodecov < Minitest::Test
-  ENV.each_pair { |k, v| REALENV[k] = v }
+  REALENV = Marshal.load(Marshal.dump(ENV))
 
   def url
     ENV['CODECOV_URL'] || 'https://codecov.io'
