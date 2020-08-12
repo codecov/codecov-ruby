@@ -12,3 +12,10 @@ jobs:
       - ruby/install-deps # use the ruby orb to install dependencies
       - gem install bundler
       - bundle exec rake
+
+workflow:
+  version: 2.1
+  build-test:
+    jobs:
+      - build
+
