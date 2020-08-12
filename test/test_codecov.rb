@@ -9,6 +9,7 @@ class TestCodecov < Minitest::Test
     if CI == SimpleCov::Formatter::Codecov::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
+        'github.event.number' => ENV['github.event.number'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
         'GITHUB_REF' => ENV['GITHUB_REF'],
         'GITHUB_REPOSITORY' => ENV['GITHUB_REPOSITORY'],
@@ -170,6 +171,7 @@ class TestCodecov < Minitest::Test
     ENV['GITHUB_ACTIONS'] = nil
     ENV['GITHUB_REF'] = nil
     ENV['GITHUB_HEAD_REF'] = nil
+    ENV['github.event.number'] = nil
     ENV['GITHUB_REPOSITORY'] = nil
     ENV['GITHUB_RUN_ID'] = nil
     ENV['GITHUB_SHA'] = nil
@@ -428,6 +430,8 @@ class TestCodecov < Minitest::Test
   def test_github
     ENV['CI'] = 'true'
     ENV['GITHUB_ACTIONS'] = 'true'
+    ENV['GITHUB_HEAD_REF'] = nil
+    ENV['github.event.number'] = nil
     ENV['GITHUB_REF'] = 'refs/head/master'
     ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
     ENV['GITHUB_RUN_ID'] = '1'
@@ -438,6 +442,27 @@ class TestCodecov < Minitest::Test
     assert_equal('c739768fcac68144a3a6d82305b9c4106934d31a', result['params'][:commit])
     assert_equal('codecov/ci-repo', result['params'][:slug])
     assert_equal('1', result['params'][:build])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    assert_equal('master', result['params'][:branch])
+    assert_equal(nil, result['params'][:pr])
+  end
+
+  def test_github_pr
+    ENV['CI'] = 'true'
+    ENV['GITHUB_ACTIONS'] = 'true'
+    ENV['GITHUB_HEAD_REF'] = 'patch-2'
+    ENV['GITHUB_REF'] = 'refs/pull/7/merge'
+    ENV['github.event.number'] = 7
+    ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
+    ENV['GITHUB_RUN_ID'] = '1'
+    ENV['GITHUB_SHA'] = 'c739768fcac68144a3a6d82305b9c4106934d31a'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal('github-actions', result['params'][:service])
+    assert_equal('c739768fcac68144a3a6d82305b9c4106934d31a', result['params'][:commit])
+    assert_equal('codecov/ci-repo', result['params'][:slug])
+    assert_equal('1', result['params'][:build])
+    assert_equal('7', result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
