@@ -10,4 +10,5 @@ jobs:
     steps:
       - checkout # pull down our git code.
       - ruby/install-deps # use the ruby orb to install dependencies
+      - gem install bundler
       - bundle exec rake
