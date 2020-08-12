@@ -452,7 +452,7 @@ class TestCodecov < Minitest::Test
     ENV['GITHUB_ACTIONS'] = 'true'
     ENV['GITHUB_HEAD_REF'] = 'patch-2'
     ENV['GITHUB_REF'] = 'refs/pull/7/merge'
-    ENV['github.event.number'] = 7
+    ENV['github.event.number'] = '7'
     ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
     ENV['GITHUB_RUN_ID'] = '1'
     ENV['GITHUB_SHA'] = 'c739768fcac68144a3a6d82305b9c4106934d31a'
