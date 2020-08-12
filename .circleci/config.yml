@@ -1,0 +1,13 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@1.0
+
+jobs:
+  build: # our first job, named "build"
+    docker:
+      - image: cimg/ruby:2.7-node # use a tailored CircleCI docker image.
+    steps:
+      - checkout # pull down our git code.
+      - ruby/install-deps # use the ruby orb to install dependencies
+      - bundle exec rake
