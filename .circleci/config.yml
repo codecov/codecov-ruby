@@ -6,8 +6,12 @@ jobs:
       - image: circleci/ruby:2.7
     steps:
       - checkout # pull down our git code.
-      - gem install bundler
-      - bundle exec rake
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Run rakefile
+          command: bundle exec rake
 
 workflow:
   version: 2.1
