@@ -13,3 +13,9 @@ SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 require 'minitest/autorun'
 require 'mocha/minitest'
 require 'webmock/minitest'
+
+require 'minitest/ci'
+
+if ENV["CIRCLECI"]
+  Minitest::Ci.report_dir = "#{ENV["CIRCLE_TEST_REPORTS"]}/reports"
+end
