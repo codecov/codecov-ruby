@@ -15,8 +15,6 @@ jobs:
       - run:
           name: Run rakefile
           command: bundle exec rake
-      - store_test_results:
-          path: ./reports
 
 workflow:
   version: 2.1

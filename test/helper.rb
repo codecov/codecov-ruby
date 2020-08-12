@@ -16,4 +16,4 @@ require 'webmock/minitest'
 
 require 'minitest/ci'
 
-Minitest::Ci.report_dir = "#{ENV['CIRCLE_TEST_REPORTS']}/reports" if ENV['CIRCLECI']
+Minitest::Ci.report_dir = "#{ENV['CIRCLE_TEST_REPORTS']}" if ENV['CIRCLECI']
