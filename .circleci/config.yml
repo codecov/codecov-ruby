@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build: # our first job, named "build"
     docker:
-      - image: cimg/ruby:2.7-node # use a tailored CircleCI docker image.
+      - image: circleci/ruby:2.7
     steps:
       - checkout # pull down our git code.
       - gem install bundler
