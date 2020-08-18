@@ -16,7 +16,7 @@ jobs:
       run: bundle install
     - name: Echo env variables
       run: |
-        echo {{ GITHUB_HEAD_REF }}
-        echo {{ GITHUB_REF }}
+        echo $GITHUB_HEAD_REF
+        echo $GITHUB_REF
     - name: Run tests
       run: bundle exec rake
