@@ -440,7 +440,7 @@ class TestCodecov < Minitest::Test
     assert_equal('codecov/ci-repo', result['params'][:slug])
     assert_equal('1', result['params'][:build])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
-    assert_equal('master', result['params'][:branch])
+    assert_equal('patch-2', result['params'][:branch])
     assert_equal(7, result['params'][:pr])
   end
 
