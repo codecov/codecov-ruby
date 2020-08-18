@@ -181,7 +181,7 @@ class SimpleCov::Formatter::Codecov
       puts "GITHUB_HEAD_REF: #{ENV['GITHUB_HEAD_REF']}"
       puts "GITHUB_REF: #{ENV['GITHUB_REF']}"
       puts "params[:pr]: #{params[:pr]}"
-      params[:pr] = ENV['GITHUB_REF'].split('/')[1] if ENV['GITHUB_HEAD_REF']
+      params[:pr] = ENV['GITHUB_REF'].split('/')[2] unless ENV['GITHUB_HEAD_REF'].nil?
       params[:service] = 'github-actions'
       params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/head/', '')
       params[:slug] = ENV['GITHUB_REPOSITORY']
