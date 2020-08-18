@@ -9,7 +9,6 @@ class TestCodecov < Minitest::Test
     if CI == SimpleCov::Formatter::Codecov::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
-        'github.event.number' => ENV['github.event.number'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
         'GITHUB_REF' => ENV['GITHUB_REF'],
         'GITHUB_REPOSITORY' => ENV['GITHUB_REPOSITORY'],
@@ -171,7 +170,6 @@ class TestCodecov < Minitest::Test
     ENV['GITHUB_ACTIONS'] = nil
     ENV['GITHUB_REF'] = nil
     ENV['GITHUB_HEAD_REF'] = nil
-    ENV['github.event.number'] = nil
     ENV['GITHUB_REPOSITORY'] = nil
     ENV['GITHUB_RUN_ID'] = nil
     ENV['GITHUB_SHA'] = nil

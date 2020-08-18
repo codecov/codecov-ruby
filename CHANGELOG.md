@@ -1,3 +1,6 @@
+### `0.2.6`
+- Fix issue with `push` events on GitHub Actions
+
 ### `0.2.5`
 - Revert single use of VERSION
 
