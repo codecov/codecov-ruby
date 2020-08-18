@@ -40,3 +40,5 @@ coverage
 
 Gemfile.lock
 tmp.json
+
+*.sw[opn]
