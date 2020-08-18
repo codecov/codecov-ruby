@@ -425,9 +425,29 @@ class TestCodecov < Minitest::Test
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
-  def test_github
+  def test_github_pull_request
     ENV['CI'] = 'true'
     ENV['GITHUB_ACTIONS'] = 'true'
+    ENV['GITHUB_HEAD_REF'] = 'patch-2'
+    ENV['GITHUB_REF'] = 'refs/pull/7/merge'
+    ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
+    ENV['GITHUB_RUN_ID'] = '1'
+    ENV['GITHUB_SHA'] = 'c739768fcac68144a3a6d82305b9c4106934d31a'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal('github-actions', result['params'][:service])
+    assert_equal('c739768fcac68144a3a6d82305b9c4106934d31a', result['params'][:commit])
+    assert_equal('codecov/ci-repo', result['params'][:slug])
+    assert_equal('1', result['params'][:build])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    assert_equal('patch-2', result['params'][:branch])
+    assert_equal('7', result['params'][:pr])
+  end
+
+  def test_github_push
+    ENV['CI'] = 'true'
+    ENV['GITHUB_ACTIONS'] = 'true'
+    ENV['GITHUB_HEAD_REF'] = nil
     ENV['GITHUB_REF'] = 'refs/head/master'
     ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
     ENV['GITHUB_RUN_ID'] = '1'
@@ -439,6 +459,8 @@ class TestCodecov < Minitest::Test
     assert_equal('codecov/ci-repo', result['params'][:slug])
     assert_equal('1', result['params'][:build])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    assert_equal('master', result['params'][:branch])
+    assert_equal(false, result['params'].key?(:pr))
   end
 
   def test_gitlab

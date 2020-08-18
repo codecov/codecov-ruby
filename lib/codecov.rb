@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.5'
+  VERSION = '0.2.6'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -178,9 +178,9 @@ class SimpleCov::Formatter::Codecov
     when GITHUB
       # https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
       params[:service] = 'github-actions'
-      params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/heads/', '')
-      # PR refs are in the format: refs/pull/7/merge
-      params[:pr] = ENV['GITHUB_REF'].split('/')[2] if ENV['GITHUB_HEAD_REF']
+      params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/head/', '')
+      # PR refs are in the format: refs/pull/7/merge for pull_request events
+      params[:pr] = ENV['GITHUB_REF'].split('/')[2] unless ENV['GITHUB_HEAD_REF'].nil? || ENV['GITHUB_HEAD_REF'].empty?
       params[:slug] = ENV['GITHUB_REPOSITORY']
       params[:build] = ENV['GITHUB_RUN_ID']
       params[:commit] = ENV['GITHUB_SHA']
