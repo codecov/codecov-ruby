@@ -177,13 +177,18 @@ class SimpleCov::Formatter::Codecov
       params[:tag] = ENV['DRONE_TAG']
     when GITHUB
       # https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
+      puts 'debug'
+      puts ENV['GITHUB_HEAD_REF']
+      puts ENV['GITHUB_REF']
+      puts params[:pr]
       params[:service] = 'github-actions'
       params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/head/', '')
       params[:slug] = ENV['GITHUB_REPOSITORY']
       params[:build] = ENV['GITHUB_RUN_ID']
       params[:commit] = ENV['GITHUB_SHA']
       # PR refs are in the format: refs/pull/7/merge for pull_request events
-      params[:pr] = ENV['GITHUB_REF'].split('/')[2] if ENV['GITHUB_HEAD_REF']
+      params[:pr] = ENV['GITHUB_REF'].split('/')[1] if ENV['GITHUB_HEAD_REF']
+      puts params[:pr]
     when GITLAB
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
       # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
@@ -348,6 +353,8 @@ class SimpleCov::Formatter::Codecov
     gzipped_report = gzip_report(report['codecov'])
 
     report['params'] = params
+    puts 'report params'
+    puts params
     report['query'] = query
 
     puts ['==>'.green, 'Uploading reports'].join(' ')
