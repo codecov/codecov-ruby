@@ -183,9 +183,7 @@ class SimpleCov::Formatter::Codecov
       params[:build] = ENV['GITHUB_RUN_ID']
       params[:commit] = ENV['GITHUB_SHA']
       # PR refs are in the format: refs/pull/7/merge for pull_request events
-      if ENV['GITHUB_HEAD_REF']
-        params[:pr] = ENV['GITHUB_REF'].split('/')[2]
-      end
+      params[:pr] = ENV['GITHUB_REF'].split('/')[2] if ENV['GITHUB_HEAD_REF']
     when GITLAB
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
       # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
