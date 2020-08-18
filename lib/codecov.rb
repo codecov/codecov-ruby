@@ -181,13 +181,13 @@ class SimpleCov::Formatter::Codecov
       puts "GITHUB_HEAD_REF: #{ENV['GITHUB_HEAD_REF']}"
       puts "GITHUB_REF: #{ENV['GITHUB_REF']}"
       puts "params[:pr]: #{params[:pr]}"
-      params[:pr] = ENV['GITHUB_REF'].split('/')[2] unless ENV['GITHUB_HEAD_REF'].nil?
+      # PR refs are in the format: refs/pull/7/merge for pull_request events
+      params[:pr] = ENV['GITHUB_REF'].split('/')[2] unless ENV['GITHUB_HEAD_REF'].empty?
       params[:service] = 'github-actions'
       params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/head/', '')
       params[:slug] = ENV['GITHUB_REPOSITORY']
       params[:build] = ENV['GITHUB_RUN_ID']
       params[:commit] = ENV['GITHUB_SHA']
-      # PR refs are in the format: refs/pull/7/merge for pull_request events
       puts "params[:pr] after: #{params[:pr]}"
     when GITLAB
       # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
