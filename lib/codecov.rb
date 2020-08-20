@@ -430,6 +430,7 @@ class SimpleCov::Formatter::Codecov
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
       {
+        'Accept' => 'application/json',
         'Content-Encoding' => 'gzip',
         'Content-Type' => 'text/plain',
         'X-Content-Encoding' => 'gzip'
