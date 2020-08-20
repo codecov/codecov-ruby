@@ -219,7 +219,10 @@ class TestCodecov < Minitest::Test
     stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
       .to_return(
         status: 200,
-        body: 'HTTP 200'
+        body: [
+          'HTTP 200',
+          'https://example.com/github/codecov/codecov-bash/commit/3f6b51562b93e72c610671644fe2a303c5c0e8e5'
+        ].join("\n")
       )
 
     ENV['CODECOV_URL'] = 'https://example.com'
