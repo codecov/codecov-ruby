@@ -63,6 +63,7 @@ class TestCodecov < Minitest::Test
   end
 
   def upload(success = true)
+    WebMock.enable!
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
