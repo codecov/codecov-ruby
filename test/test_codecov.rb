@@ -219,8 +219,7 @@ class TestCodecov < Minitest::Test
     stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
       .to_return(
         status: 200,
-        body: "https://codecov.io/gh/fake\n" \
-              'https://storage.googleapis.com/codecov/fake'
+        body: ''
       )
 
     ENV['CODECOV_URL'] = 'https://example.com'
