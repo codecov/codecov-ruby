@@ -67,7 +67,7 @@ class TestCodecov < Minitest::Test
   end
 
   def success_stubs
-    stub_request(:post, %r{https:\/\/codecov.io\/upload})
+    stub_request(:post, %r{https:\/\/codecov.io\/upload\/v4})
       .to_return(
         status: 200,
         body: "https://codecov.io/gh/fake\n" \
@@ -216,6 +216,13 @@ class TestCodecov < Minitest::Test
   end
 
   def test_enterprise
+    stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
+      .to_return(
+        status: 200,
+        body: "https://codecov.io/gh/fake\n" \
+              'https://storage.googleapis.com/codecov/fake'
+      )
+
     ENV['CODECOV_URL'] = 'https://example.com'
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
@@ -223,6 +230,7 @@ class TestCodecov < Minitest::Test
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
     assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
+    expect(stub).to have_been_requested.times(1)
   end
 
   def test_travis
