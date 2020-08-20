@@ -420,12 +420,12 @@ class SimpleCov::Formatter::Codecov
   end
 
   def upload_to_v2(url, report, query, query_without_token)
-    uri = URI.parse(url.chomp('/') + 'upload/v2')
+    uri = URI.parse(url.chomp('/') + '/upload/v2')
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
 
     puts ['-> '.green, 'Uploading to Codecov'].join(' ')
-    puts "#{url}/#{uri.path}?#{query_without_token}"
+    puts "#{url}#{uri.path}?#{query_without_token}"
 
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
