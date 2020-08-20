@@ -215,6 +215,16 @@ class TestCodecov < Minitest::Test
     assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
   end
 
+  def test_enterprise
+    ENV['CODECOV_URL'] = 'https://example.com'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
+    assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
+  end
+
   def test_travis
     ENV['CI'] = 'true'
     ENV['TRAVIS'] = 'true'
