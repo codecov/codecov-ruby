@@ -8,6 +8,7 @@ class TestCodecov < Minitest::Test
   REALENV =
     if CI == SimpleCov::Formatter::Codecov::CIRCLE
       {
+        'CIRCLECI' => ENV['CIRCLECI'],
         'CIRCLE_BUILD_NUM' => ENV['CIRCLE_BUILD_NUM'],
         'CIRCLE_NODE_INDEX' => ENV['CIRCLE_NODE_INDEX'],
         'CIRCLE_PROJECT_REPONAME' => ENV['CIRCLE_PROJECT_REPONAME'],
