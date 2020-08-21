@@ -6,7 +6,19 @@ class TestCodecov < Minitest::Test
   CI = SimpleCov::Formatter::Codecov.new.detect_ci
 
   REALENV =
-    if CI == SimpleCov::Formatter::Codecov::GITHUB
+    if CI == SimpleCov::Formatter::Codecov::CIRCLE
+      {
+        'CIRCLECI' => ENV['CIRCLECI'],
+        'CIRCLE_BUILD_NUM' => ENV['CIRCLE_BUILD_NUM'],
+        'CIRCLE_NODE_INDEX' => ENV['CIRCLE_NODE_INDEX'],
+        'CIRCLE_PROJECT_REPONAME' => ENV['CIRCLE_PROJECT_REPONAME'],
+        'CIRCLE_PROJECT_USERNAME' => ENV['CIRCLE_PROJECT_USERNAME'],
+        'CIRCLE_REPOSITORY_URL' => ENV['CIRCLE_REPOSITORY_URL'],
+        'CIRCLE_PR_NUMBER' => ENV['CIRCLE_PR_NUMBER'],
+        'CIRCLE_BRANCH' => ENV['CIRCLE_BRANCH'],
+        'CIRCLE_SHA1' => ENV['CIRCLE_SHA1']
+      }
+    elsif CI == SimpleCov::Formatter::Codecov::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
@@ -51,6 +63,7 @@ class TestCodecov < Minitest::Test
   end
 
   def upload(success = true)
+    WebMock.enable!
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
@@ -92,6 +105,7 @@ class TestCodecov < Minitest::Test
 
   def setup
     ENV['CI'] = nil
+    ENV['CIRCLECI'] = nil
     ENV['GITHUB_ACTIONS'] = nil
     ENV['TRAVIS'] = nil
   end

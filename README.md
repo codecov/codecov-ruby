@@ -7,6 +7,8 @@ Please upgrade to the latest versions to continue using this uploader.
 [![Codecov](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
 [![Gem Version](https://badge.fury.io/rb/codecov.svg)](https://badge.fury.io/rb/codecov.svg)
 [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.svg?branch=master)](http://travis-ci.org/codecov/codecov-ruby)
+[![Codecov](https://circleci.com/gh/codecov/codecov-ruby.svg?style=svg)](https://circleci.com/gh/codecov/codecov-ruby)
+
 
 [Codecov.io](https://codecov.io/) upload support for Ruby.
 
