@@ -80,7 +80,7 @@ class TestCodecov < Minitest::Test
   end
 
   def success_stubs
-    stub_request(:post, %r{https:\/\/codecov.io\/upload})
+    stub_request(:post, %r{https:\/\/codecov.io\/upload\/v4})
       .to_return(
         status: 200,
         body: "https://codecov.io/gh/fake\n" \
@@ -224,6 +224,23 @@ class TestCodecov < Minitest::Test
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
     result = upload
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
+    assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])
+  end
+
+  def test_enterprise
+    stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
+      .to_return(
+        status: 200,
+        body: "{\"id\": \"12345678-1234-abcd-ef12-1234567890ab\", \"message\": \"Coverage reports upload successfully\", \"meta\": { \"status\": 200 }, \"queued\": true, \"uploaded\": true, \"url\": \"https://example.com/github/codecov/codecov-bash/commit/2f6b51562b93e72c610671644fe2a303c5c0e8e5\"}"
+      )
+
+    ENV['CODECOV_URL'] = 'https://example.com'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+    result = upload
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    assert_equal('12345678-1234-abcd-ef12-1234567890ab', result['result']['id'])
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
     assert_equal(`git rev-parse HEAD`.strip, result['params'][:commit])

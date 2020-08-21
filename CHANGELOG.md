@@ -1,3 +1,6 @@
+### `0.2.7`
+- Fix for enterprise users unable to upload using the v4 uploader
+
 ### `0.2.6`
 - Fix issue with `push` events on GitHub Actions
 

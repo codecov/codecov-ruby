@@ -8,7 +8,7 @@ require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.6'
+  VERSION = '0.2.7'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -337,6 +337,7 @@ class SimpleCov::Formatter::Codecov
 
   def upload_to_codecov(ci, report)
     url = ENV['CODECOV_URL'] || 'https://codecov.io'
+    is_enterprise = url != 'https://codecov.io'
 
     params = build_params(ci)
     params_secret_token = params.clone
@@ -354,8 +355,11 @@ class SimpleCov::Formatter::Codecov
     puts "    url:   #{url}"
     puts "    query: #{query_without_token}"
 
-    response = upload_to_v4(url, gzipped_report, query, query_without_token)
-    return false if response == false
+    response = false
+    unless is_enterprise
+      response = upload_to_v4(url, gzipped_report, query, query_without_token)
+      return false if response == false
+    end
 
     response || upload_to_v2(url, gzipped_report, query, query_without_token)
   end
@@ -421,11 +425,12 @@ class SimpleCov::Formatter::Codecov
     https.use_ssl = !url.match(/^https/).nil?
 
     puts ['-> '.green, 'Uploading to Codecov'].join(' ')
-    puts "#{url}/#{uri.path}?#{query_without_token}"
+    puts "#{url}#{uri.path}?#{query_without_token}"
 
     req = Net::HTTP::Post.new(
       "#{uri.path}?#{query}",
       {
+        'Accept' => 'application/json',
         'Content-Encoding' => 'gzip',
         'Content-Type' => 'text/plain',
         'X-Content-Encoding' => 'gzip'
