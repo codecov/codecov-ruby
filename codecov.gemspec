@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>=2.4'
   s.summary               = 'hosted code coverage ruby/rails reporter'
   s.test_files            = ['test/test_codecov.rb']
-  s.version               = '0.2.7'
+  s.version               = '0.2.8'
 
-  s.add_dependency 'colorize'
   s.add_dependency 'json'
   s.add_dependency 'simplecov'
 

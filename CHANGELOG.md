@@ -1,3 +1,6 @@
+### `0.2.8`
+- Remove `colorize` dependency
+
 ### `0.2.7`
 - Fix for enterprise users unable to upload using the v4 uploader
 
