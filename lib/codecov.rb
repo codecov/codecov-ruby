@@ -163,7 +163,7 @@ class SimpleCov::Formatter::Codecov
     when CODEBUILD
       # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
       params[:service] = 'codebuild'
-      params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF'].split['/'][2]
+      params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF'].split('/')[2]
       params[:build] = ENV['CODEBUILD_BUILD_ID']
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
       params[:job] = ENV['CODEBUILD_BUILD_ID']
