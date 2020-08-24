@@ -1,0 +1,26 @@
+version: 2.1
+
+jobs:
+  build: # our first job, named "build"
+    docker:
+      - image: circleci/ruby:2.7
+    steps:
+      - checkout # pull down our git code.
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Bundle install
+          command: bundle install
+      - run:
+          name: Run rakefile
+          command: bundle exec rake
+      - store_test_results:
+          path: '.'
+
+workflow:
+  version: 2.1
+  build-test:
+    jobs:
+      - build
+

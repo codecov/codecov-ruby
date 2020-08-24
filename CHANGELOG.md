@@ -1,3 +1,43 @@
+### `0.2.8`
+- Remove `colorize` dependency
+
+### `0.2.7`
+- Fix for enterprise users unable to upload using the v4 uploader
+
+### `0.2.6`
+- Fix issue with `push` events on GitHub Actions
+
+### `0.2.5`
+- Revert single use of VERSION
+
+### `0.2.4`
+- Adds support for GitHub Actions CI
+
+### `0.2.3`
+- Support uploads for jruby 9.1 and 9.2
+
+### `0.2.2`
+- Handle SocketError and better error handling of v4 failures
+
+### `0.2.1`
+- Properly handle 400 cases when using the v4 endpoint
+
+### `0.2.0`
+- move to the v4 upload endpoint with the v2 as a fallback
+
+### `0.1.20`
+- fix critical upload issues on V2 endpoint
+
+### `0.1.19`
+- fix colorize
+
+### `0.1.18`
+- refactor and move to use v2 endpoint
+- use Timeout::Error
+
+### `0.1.17`
+- refactor upload method and add more logging
+
 ### `0.1.10`
 - update numerous ci environments
 - dont fail if cannot upload to codecov
