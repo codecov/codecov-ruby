@@ -276,7 +276,6 @@ class SimpleCov::Formatter::Codecov
       params[:build] = ENV['WERCKER_MAIN_PIPELINE_STARTED']
       params[:slug] = ENV['WERCKER_GIT_OWNER'] + '/' + ENV['WERCKER_GIT_REPOSITORY']
       params[:commit] = ENV['WERCKER_GIT_COMMIT']
->>>>>>> master
     end
 
     if params[:branch].nil?
