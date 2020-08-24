@@ -4,11 +4,10 @@ require 'uri'
 require 'json'
 require 'net/http'
 require 'simplecov'
-require 'colorize'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.7'
+  VERSION = '0.2.8'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -585,5 +584,25 @@ class SimpleCov::Formatter::Codecov
     end
 
     true
+  end
+end
+
+# https://stackoverflow.com/a/11482430/5769383
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def black
+    colorize(30)
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def green
+    colorize(32)
   end
 end
