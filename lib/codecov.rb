@@ -17,6 +17,7 @@ class SimpleCov::Formatter::Codecov
     BITRISE = 'Bitrise CI',
     BUILDKITE = 'Buildkite CI',
     CIRCLE = 'Circle CI',
+    CODEBUILD = 'Codebuild CI',
     CODESHIP = 'Codeship CI',
     DRONEIO = 'Drone CI',
     GITHUB = 'GitHub Actions',
@@ -58,6 +59,8 @@ class SimpleCov::Formatter::Codecov
            BUILDKITE
          elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
            CIRCLE
+         elsif ENV['CODEBUILD_CI'] == 'true'
+           CODEBUILD
          elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
            CODESHIP
          elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
@@ -157,6 +160,15 @@ class SimpleCov::Formatter::Codecov
       params[:pr] = ENV['CIRCLE_PR_NUMBER']
       params[:branch] = ENV['CIRCLE_BRANCH']
       params[:commit] = ENV['CIRCLE_SHA1']
+    when CODEBUILD
+      # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+      params[:service] = 'codebuild'
+      params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF'].split('/')[2]
+      params[:build] = ENV['CODEBUILD_BUILD_ID']
+      params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
+      params[:job] = ENV['CODEBUILD_BUILD_ID']
+      params[:slug] = ENV['CODEBUILD_SOURCE_REPO_URL'].match(/.*github.com\/(?<slug>.*).git/)['slug']
+      params[:pr] = ENV['CODEBUILD_SOURCE_VERSION'].match(/pr\/(?<pr>.*)/)['pr'] if ENV['CODEBUILD_SOURCE_VERSION']
     when CODESHIP
       # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
       params[:service] = 'codeship'

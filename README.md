@@ -39,23 +39,24 @@ Find you repo token on your repo page at [codecov.io](https://codecov.io). Repo 
 ## Supported CIs
 | CI/CD |
 | ----- |
-| [Appveyor CI](https://www.appveyor.com/) |  
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) |  
-| [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) |  
-| [Bitrise CI](https://www.bitrise.io/) |  
-| [Buildkite CI](https://buildkite.com/) |  
-| [Circle CI](https://circleci.com/) |  
-| [Codeship CI](https://codeship.com/) |  
-| [Drone CI](https://drone.io/) |  
-| [GitLab CI](https://docs.gitlab.com/ee/ci/) |  
-| [Heroku CI](https://www.heroku.com/continuous-integration) |  
-| [Jenkins CI](https://www.jenkins.io/) |  
-| [Semaphore CI](https://semaphoreci.com/) |  
-| [Shippable](https://www.shippable.com/) |  
-| [Solano CI](https://xebialabs.com/technology/solano-ci/) |  
-| [TeamCity CI](https://www.jetbrains.com/teamcity/) |  
-| [Travis CI](https://travis-ci.org/) |  
-| [Wercker CI](https://devcenter.wercker.com/) |  
+| [Appveyor CI](https://www.appveyor.com/) |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) |
+| [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) |
+| [Bitrise CI](https://www.bitrise.io/) |
+| [Buildkite CI](https://buildkite.com/) |
+| [Codebuild CI](https://aws.amazon.com/codebuild/) |
+| [Circle CI](https://circleci.com/) |
+| [Codeship CI](https://codeship.com/) |
+| [Drone CI](https://drone.io/) |
+| [GitLab CI](https://docs.gitlab.com/ee/ci/) |
+| [Heroku CI](https://www.heroku.com/continuous-integration) |
+| [Jenkins CI](https://www.jenkins.io/) |
+| [Semaphore CI](https://semaphoreci.com/) |
+| [Shippable](https://www.shippable.com/) |
+| [Solano CI](https://xebialabs.com/technology/solano-ci/) |
+| [TeamCity CI](https://www.jetbrains.com/teamcity/) |
+| [Travis CI](https://travis-ci.org/) |
+| [Wercker CI](https://devcenter.wercker.com/) |
 
 ## Advanced Usage
 

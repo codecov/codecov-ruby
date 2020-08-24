@@ -167,6 +167,12 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLE_PROJECT_USERNAME'] = nil
     ENV['CIRCLE_SHA1'] = nil
     ENV['CIRCLECI'] = nil
+    ENV['CODEBUILD_CI'] = nil
+    ENV['CODEBUILD_BUILD_ID'] = nil
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = nil
+    ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = nil
+    ENV['CODEBUILD_SOURCE_VERSION'] = nil
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = nil
     ENV['CODECOV_ENV'] = nil
     ENV['CODECOV_SLUG'] = nil
     ENV['CODECOV_TOKEN'] = nil
@@ -609,6 +615,27 @@ class TestCodecov < Minitest::Test
     assert_equal('743b04806ea677403aa2ff26c6bdeb85005de658', result['params'][:commit])
     assert_equal('100', result['params'][:build])
     assert_equal('master', result['params'][:branch])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+
+  def test_codebuild
+    ENV['CODEBUILD_CI'] = "true"
+    ENV['CODEBUILD_BUILD_ID'] = "codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3"
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = 'refs/heads/master'
+    ENV['CODEBUILD_SOURCE_VERSION'] = 'pr/123'
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = 'https://github.com/owner/repo.git'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+
+    assert_equal("codebuild", result['params'][:service])
+    assert_equal("d653b934ed59c1a785cc1cc79d08c9aaa4eba73b", result['params'][:commit])
+    assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:build])
+    assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:job])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal("master", result['params'][:branch])
+    assert_equal("123", result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
