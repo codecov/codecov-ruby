@@ -8,6 +8,7 @@ Please upgrade to the latest versions to continue using this uploader.
 [![Gem Version](https://badge.fury.io/rb/codecov.svg)](https://badge.fury.io/rb/codecov.svg)
 [![Build Status](https://secure.travis-ci.org/codecov/codecov-ruby.svg?branch=master)](http://travis-ci.org/codecov/codecov-ruby)
 [![Codecov](https://circleci.com/gh/codecov/codecov-ruby.svg?style=svg)](https://circleci.com/gh/codecov/codecov-ruby)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby?ref=badge_shield)
 
 
 [Codecov.io](https://codecov.io/) upload support for Ruby.
@@ -95,3 +96,7 @@ CODECOV_URL="https://codecov.mycompany.com"
 CODECOV_SLUG="owner/repo"
 CODECOV_TOKEN="repository token or global token"
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby?ref=badge_large)
