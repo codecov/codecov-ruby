@@ -7,7 +7,7 @@ require 'simplecov'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.8'
+  VERSION = '0.2.9'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -88,7 +88,7 @@ class SimpleCov::Formatter::Codecov
          end
 
     if !RECOGNIZED_CIS.include?(ci)
-      puts ['x>'.red, 'No CI provider detected.'].join(' ')
+      puts [red('x>'), 'No CI provider detected.'].join(' ')
     else
       puts "==> #{ci} detected"
     end
@@ -336,7 +336,7 @@ class SimpleCov::Formatter::Codecov
   end
 
   def gzip_report(report)
-    puts ['==>'.green, 'Gzipping contents'].join(' ')
+    puts [green('==>'), 'Gzipping contents'].join(' ')
 
     io = StringIO.new
     gzip = Zlib::GzipWriter.new(io)
@@ -362,7 +362,7 @@ class SimpleCov::Formatter::Codecov
     report['params'] = params
     report['query'] = query
 
-    puts ['==>'.green, 'Uploading reports'].join(' ')
+    puts [green('==>'), 'Uploading reports'].join(' ')
     puts "    url:   #{url}"
     puts "    query: #{query_without_token}"
 
@@ -380,7 +380,7 @@ class SimpleCov::Formatter::Codecov
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
 
-    puts ['-> '.green, 'Pinging Codecov'].join(' ')
+    puts [green('-> '), 'Pinging Codecov'].join(' ')
     puts "#{url}#{uri.path}?#{query_without_token}"
 
     req = Net::HTTP::Post.new(
@@ -393,13 +393,13 @@ class SimpleCov::Formatter::Codecov
     )
     response = retry_request(req, https)
     if !response&.code || response.code == '400'
-      puts response&.body&.red
+      puts red(response&.body)
       return false
     end
 
     reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
-    puts ['-> '.green, 'Uploading to'].join(' ')
+    puts [green('-> '), 'Uploading to'].join(' ')
     puts s3target
 
     uri = URI(s3target)
@@ -424,8 +424,8 @@ class SimpleCov::Formatter::Codecov
         'message' => 'Coverage reports upload successfully'
       }.to_json
     else
-      puts ['-> '.black, 'Could not upload reports via v4 API, defaulting to v2'].join(' ')
-      puts res.body.red
+      puts [black('-> '), 'Could not upload reports via v4 API, defaulting to v2'].join(' ')
+      puts red(res.body)
       nil
     end
   end
@@ -435,7 +435,7 @@ class SimpleCov::Formatter::Codecov
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
 
-    puts ['-> '.green, 'Uploading to Codecov'].join(' ')
+    puts [green('-> '), 'Uploading to Codecov'].join(' ')
     puts "#{url}#{uri.path}?#{query_without_token}"
 
     req = Net::HTTP::Post.new(
@@ -456,7 +456,7 @@ class SimpleCov::Formatter::Codecov
     if report['result']['uploaded']
       puts "    View reports at #{report['result']['url']}"
     else
-      puts '    X> Failed to upload coverage reports'.red
+      puts red('    X> Failed to upload coverage reports')
     end
   end
 
@@ -511,7 +511,7 @@ class SimpleCov::Formatter::Codecov
       'node_modules/'
     ]
 
-    puts ['==>'.green, 'Appending file network'].join(' ')
+    puts [green('==>'), 'Appending file network'].join(' ')
     network = []
     Dir['**/*'].keep_if do |file|
       if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
@@ -597,24 +597,17 @@ class SimpleCov::Formatter::Codecov
 
     true
   end
-end
 
-# https://stackoverflow.com/a/11482430/5769383
-class String
-  # colorization
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
+  # Convenience color methods
+  def black(str)
+    str.nil? ? '' : "\e[30m#{str}\e[0m"
   end
 
-  def black
-    colorize(30)
+  def red(str)
+    str.nil? ? '' : "\e[31m#{str}\e[0m"
   end
 
-  def red
-    colorize(31)
-  end
-
-  def green
-    colorize(32)
+  def green(str)
+    str.nil? ? '' : "\e[32m#{str}\e[0m"
   end
 end
