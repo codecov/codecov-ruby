@@ -1,3 +1,7 @@
+### `0.2.9`
+- Remove `String` specific colors
+- Add support for Codebuild CI
+
 ### `0.2.8`
 - Remove `colorize` dependency
 
