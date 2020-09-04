@@ -509,16 +509,20 @@ class SimpleCov::Formatter::Codecov
     ].freeze
 
     invalid_directories = [
-      'node_modules/'
+      'node_modules/',
+      'public/',
+      'storage/',
+      'tmp/'
     ]
 
     puts [green('==>'), 'Appending file network'].join(' ')
     network = []
     Dir['**/*'].keep_if do |file|
-      if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+      if File.file?(file) && !file.end_with?(*invalid_file_types) && invalid_directories.none? { |dir| file.include?(dir) }
         network.push(file)
       end
     end
+
     network.push('<<<<<< network')
     network
   end
