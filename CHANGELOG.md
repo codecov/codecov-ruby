@@ -1,3 +1,7 @@
+### `0.2.10`
+- Adds better logging on error cases
+- Add more invalid directories in the network
+
 ### `0.2.9`
 - Remove `String` specific colors
 - Add support for Codebuild CI

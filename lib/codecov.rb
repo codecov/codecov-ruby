@@ -7,7 +7,7 @@ require 'simplecov'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.9'
+  VERSION = '0.2.10'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -319,6 +319,7 @@ class SimpleCov::Formatter::Codecov
       puts 'Error uploading coverage reports to Codecov. Sorry'
       puts e.class.name
       puts e
+      puts "Backtrace:\n\t#{e.backtrace}"
       return response
     end
 
@@ -414,7 +415,7 @@ class SimpleCov::Formatter::Codecov
     )
     req.body = report
     res = retry_request(req, https)
-    if res.body == ''
+    if res&.body == ''
       {
         'uploaded' => true,
         'url' => reports_url,
@@ -425,7 +426,7 @@ class SimpleCov::Formatter::Codecov
       }.to_json
     else
       puts [black('-> '), 'Could not upload reports via v4 API, defaulting to v2'].join(' ')
-      puts red(res.body)
+      puts red(res&.body || 'nil')
       nil
     end
   end
@@ -508,16 +509,20 @@ class SimpleCov::Formatter::Codecov
     ].freeze
 
     invalid_directories = [
-      'node_modules/'
+      'node_modules/',
+      'public/',
+      'storage/',
+      'tmp/'
     ]
 
     puts [green('==>'), 'Appending file network'].join(' ')
     network = []
     Dir['**/*'].keep_if do |file|
-      if File.file?(file) && !file.end_with?(*invalid_file_types) && !file.include?(*invalid_directories)
+      if File.file?(file) && !file.end_with?(*invalid_file_types) && invalid_directories.none? { |dir| file.include?(dir) }
         network.push(file)
       end
     end
+
     network.push('<<<<<< network')
     network
   end
