@@ -1,3 +1,6 @@
+### `0.2.11`
+- Add vendor/ to invalid directories
+
 ### `0.2.10`
 - Adds better logging on error cases
 - Add more invalid directories in the network
