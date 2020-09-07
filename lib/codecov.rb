@@ -7,7 +7,7 @@ require 'simplecov'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.10'
+  VERSION = '0.2.11'
 
   ### CIs
   RECOGNIZED_CIS = [
@@ -512,7 +512,8 @@ class SimpleCov::Formatter::Codecov
       'node_modules/',
       'public/',
       'storage/',
-      'tmp/'
+      'tmp/',
+      'vendor/'
     ]
 
     puts [green('==>'), 'Appending file network'].join(' ')
