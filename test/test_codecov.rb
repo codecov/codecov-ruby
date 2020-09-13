@@ -639,6 +639,27 @@ class TestCodecov < Minitest::Test
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
+  def test_codebuild_source_version_is_other_than_pr_number
+    ENV['CODEBUILD_CI'] = 'true'
+    ENV['CODEBUILD_BUILD_ID'] = 'codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3'
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = 'refs/heads/master'
+    ENV['CODEBUILD_SOURCE_VERSION'] = 'git-commit-hash-12345'
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = 'https://github.com/owner/repo.git'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+
+    assert_equal('codebuild', result['params'][:service])
+    assert_equal('d653b934ed59c1a785cc1cc79d08c9aaa4eba73b', result['params'][:commit])
+    assert_equal('codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3', result['params'][:build])
+    assert_equal('git-commit-hash-12345', result['params'][:pr])
+    assert_equal('owner/repo', result['params'][:slug])
+    assert_equal('master', result['params'][:branch])
+    assert_equal('git-commit-hash-12345', result['params'][:pr])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+
   def test_filenames_are_shortened_correctly
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
 
