@@ -168,7 +168,10 @@ class SimpleCov::Formatter::Codecov
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
       params[:job] = ENV['CODEBUILD_BUILD_ID']
       params[:slug] = ENV['CODEBUILD_SOURCE_REPO_URL'].match(/.*github.com\/(?<slug>.*).git/)['slug']
-      params[:pr] = ENV['CODEBUILD_SOURCE_VERSION'].match(/pr\/(?<pr>.*)/)['pr'] if ENV['CODEBUILD_SOURCE_VERSION']
+      params[:pr] = if ENV['CODEBUILD_SOURCE_VERSION']
+                      matched = ENV['CODEBUILD_SOURCE_VERSION'].match(%r{pr/(?<pr>.*)})
+                      matched.nil? ? ENV['CODEBUILD_SOURCE_VERSION'] : matched['pr']
+                    end
     when CODESHIP
       # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
       params[:service] = 'codeship'
