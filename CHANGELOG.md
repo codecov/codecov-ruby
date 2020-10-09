@@ -1,3 +1,6 @@
+### `0.2.12`
+- [#102](https://github.com/codecov/codecov-ruby/pull/102) Fix value of params[:pr] when useing CodeBuild
+
 ### `0.2.11`
 - Add vendor/ to invalid directories
 
