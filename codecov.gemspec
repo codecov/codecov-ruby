@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.test_files            = ['test/test_codecov.rb']
   s.version               = '0.2.12'
 
-  s.add_dependency 'json'
   s.add_dependency 'simplecov'
 
   s.add_development_dependency 'minitest'
