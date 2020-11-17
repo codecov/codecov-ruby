@@ -72,12 +72,12 @@ end
 
 ## Useful Links
 
-[FAQ](https://docs.codecov.io/docs/frequently-asked-questions)  
-[Recipe List](https://docs.codecov.io/docs/common-recipe-list)  
-[Error Reference](https://docs.codecov.io/docs/error-reference)  
-[Changelog](./CHANGELOG.md)  
-[Support](https://codecov.io/support)  
-[Community Boards](https://community.codecov.io)  
+[FAQ](https://docs.codecov.io/docs/frequently-asked-questions)
+[Recipe List](https://docs.codecov.io/docs/common-recipe-list)
+[Error Reference](https://docs.codecov.io/docs/error-reference)
+[Changelog](./CHANGELOG.md)
+[Support](https://codecov.io/support)
+[Community Boards](https://community.codecov.io)
 
 ## Caveats
 
