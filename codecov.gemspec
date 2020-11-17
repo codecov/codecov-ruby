@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                  = 'codecov'
-  s.authors               = ['codecov']
+  s.authors               = ['Steve Peak', 'Tom Hu']
   s.description           = 'hosted code coverage'
   s.email                 = ['hello@codecov.io']
   s.files                 = ['lib/codecov.rb']
