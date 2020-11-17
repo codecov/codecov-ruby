@@ -3,7 +3,8 @@
 Gem::Specification.new do |s|
   s.name                  = 'codecov'
   s.authors               = ['Steve Peak', 'Tom Hu']
-  s.description           = 'hosted code coverage'
+  s.summary               = 'Hosted code coverage'
+  s.description           = 'Hosted code coverage Ruby reporter.'
   s.email                 = ['hello@codecov.io']
   s.files                 = ['lib/codecov.rb']
   s.homepage              = 'https://github.com/codecov/codecov-ruby'
@@ -11,7 +12,6 @@ Gem::Specification.new do |s|
   s.platform              = Gem::Platform::RUBY
   s.require_paths         = ['lib']
   s.required_ruby_version = '>=2.4'
-  s.summary               = 'hosted code coverage ruby/rails reporter'
   s.test_files            = ['test/test_codecov.rb']
   s.version               = '0.2.12'
 
