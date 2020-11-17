@@ -13,12 +13,12 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '~> 2.4'
   s.version               = '0.2.12'
 
-  s.add_dependency 'simplecov'
+  s.add_dependency 'simplecov', '~> 0.18.0'
 
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'minitest-ci'
-  s.add_development_dependency 'mocha'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'minitest', '~> 5.0'
+  s.add_development_dependency 'minitest-ci', '~> 3.0'
+  s.add_development_dependency 'mocha', '~> 1.0'
+  s.add_development_dependency 'rake', '~> 13.0'
+  s.add_development_dependency 'rubocop', '~> 1.0'
+  s.add_development_dependency 'webmock', '~> 3.0'
 end
