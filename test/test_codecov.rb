@@ -484,7 +484,7 @@ class TestCodecov < Minitest::Test
   def test_github_push
     ENV['CI'] = 'true'
     ENV['GITHUB_ACTIONS'] = 'true'
-    ENV['GITHUB_HEAD_REF'] = nil
+    ENV['GITHUB_HEAD_REF'] = ''
     ENV['GITHUB_REF'] = 'refs/heads/master'
     ENV['GITHUB_REPOSITORY'] = 'codecov/ci-repo'
     ENV['GITHUB_RUN_ID'] = '1'
