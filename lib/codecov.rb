@@ -192,7 +192,7 @@ class SimpleCov::Formatter::Codecov
     when GITHUB
       # https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables#default-environment-variables
       params[:service] = 'github-actions'
-      params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/head/', '')
+      params[:branch] = ENV['GITHUB_HEAD_REF'] || ENV['GITHUB_REF'].sub('refs/heads/', '')
       # PR refs are in the format: refs/pull/7/merge for pull_request events
       params[:pr] = ENV['GITHUB_REF'].split('/')[2] unless ENV['GITHUB_HEAD_REF'].nil? || ENV['GITHUB_HEAD_REF'].empty?
       params[:slug] = ENV['GITHUB_REPOSITORY']
