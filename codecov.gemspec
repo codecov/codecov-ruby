@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>=2.4'
   s.summary               = 'hosted code coverage ruby/rails reporter'
   s.test_files            = ['test/test_codecov.rb']
-  s.version               = '0.2.12'
+  s.version               = '0.2.13'
 
   s.add_dependency 'simplecov'
 

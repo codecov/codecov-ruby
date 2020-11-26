@@ -1,3 +1,8 @@
+### `0.2.13`
+- [#105](https://github.com/codecov/codecov-ruby/pull/105) Remove unnecessary dependency for ruby standard gem
+- [#110](https://github.com/codecov/codecov-ruby/pull/110) Fix GitHub Actions
+- [#111](https://github.com/codecov/codecov-ruby/pull/111) Fix branch name detection for GitHub Actions CI
+
 ### `0.2.12`
 - [#102](https://github.com/codecov/codecov-ruby/pull/102) Fix value of params[:pr] when useing CodeBuild
 
