@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'lib/codecov/version'
+
 Gem::Specification.new do |s|
   s.name                  = 'codecov'
   s.authors               = ['codecov']
@@ -13,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>=2.4'
   s.summary               = 'hosted code coverage ruby/rails reporter'
   s.test_files            = ['test/test_codecov.rb']
-  s.version               = '0.2.12'
+  s.version               = ::Codecov::VERSION
 
   s.add_dependency 'simplecov'
 
