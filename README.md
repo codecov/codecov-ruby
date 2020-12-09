@@ -83,6 +83,8 @@ end
 
 1. There are known issues when `Simplecov.track_files` is enabled. We recommend that you require all code files in your tests so that Simplecov can provide Codecov with properly mapped coverage report metrics. [codecov/support#133]( https://github.com/codecov/support/issues/133)
   - https://github.com/colszowka/simplecov/blob/master/README.md#default-root-filter-and-coverage-for-things-outside-of-it
+2. `git` must be installed.
+  - https://github.com/codecov/codecov-ruby/blob/5e3dae3/lib/codecov.rb#L284-L295
 
 ## Maintainers
 
