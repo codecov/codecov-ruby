@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'lib/codecov/version'
+
 Gem::Specification.new do |s|
   s.name                  = 'codecov'
   s.authors               = ['Steve Peak', 'Tom Hu']
@@ -11,7 +13,7 @@ Gem::Specification.new do |s|
   s.license               = 'MIT'
   s.platform              = Gem::Platform::RUBY
   s.required_ruby_version = '~> 2.4'
-  s.version               = '0.2.13'
+  s.version               = ::Codecov::VERSION
 
   s.add_dependency 'simplecov', '~> 0.18.0'
 

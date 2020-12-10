@@ -7,7 +7,7 @@ require 'simplecov'
 SimpleCov.start do
   add_filter '/test/'
 end
-require 'codecov'
+require_relative '../lib/codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 require 'minitest/autorun'

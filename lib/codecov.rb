@@ -6,9 +6,9 @@ require 'net/http'
 require 'simplecov'
 require 'zlib'
 
-class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.13'
+require_relative 'codecov/version'
 
+class SimpleCov::Formatter::Codecov
   ### CIs
   RECOGNIZED_CIS = [
     APPVEYOR = 'Appveyor CI',
@@ -41,7 +41,7 @@ class SimpleCov::Formatter::Codecov
       '| |    / _ \ / _\`|/ _ \/ __/ _ \ \ / /',
       '| |___| (_) | (_| |  __/ (_| (_) \ V /',
       ' \_____\___/ \__,_|\___|\___\___/ \_/',
-      "                               Ruby-#{VERSION}",
+      "                               Ruby-#{::Codecov::VERSION}",
       ''
     ].join("\n")
   end
@@ -100,7 +100,7 @@ class SimpleCov::Formatter::Codecov
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
-      'package' => "ruby-#{VERSION}"
+      'package' => "ruby-#{::Codecov::VERSION}"
     }
 
     case ci
@@ -336,7 +336,7 @@ class SimpleCov::Formatter::Codecov
   def create_report(report)
     result = {
       'meta' => {
-        'version' => 'codecov-ruby/v' + VERSION
+        'version' => 'codecov-ruby/v' + ::Codecov::VERSION
       }
     }
     result.update(result_to_codecov(report))
