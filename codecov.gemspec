@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '~> 2.4'
   s.version               = ::Codecov::VERSION
 
-  s.add_dependency 'simplecov', '~> 0.18.0'
+  s.add_dependency 'simplecov', '>= 0.18', '< 0.21'
 
   s.add_development_dependency 'minitest', '~> 5.0'
   s.add_development_dependency 'minitest-ci', '~> 3.0'
