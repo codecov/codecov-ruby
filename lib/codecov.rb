@@ -7,7 +7,7 @@ require 'simplecov'
 require 'zlib'
 
 class SimpleCov::Formatter::Codecov
-  VERSION = '0.2.12'
+  VERSION = '0.2.13'
 
   ### CIs
   RECOGNIZED_CIS = [
