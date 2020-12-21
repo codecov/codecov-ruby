@@ -2,6 +2,7 @@
 - #107 Add EditorConfig file
 - #113 Return version constant, don't duplicate version value
 
+
 ### `0.2.13`
 - [#105](https://github.com/codecov/codecov-ruby/pull/105) Remove unnecessary dependency for ruby standard gem
 - [#110](https://github.com/codecov/codecov-ruby/pull/110) Fix GitHub Actions
