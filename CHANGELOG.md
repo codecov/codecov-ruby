@@ -1,7 +1,7 @@
 ### `0.2.14`
 - #107 Add EditorConfig file
 - #113 Return version constant, don't duplicate version value
-
+- #117 Update simplecov dependency versions
 
 ### `0.2.13`
 - [#105](https://github.com/codecov/codecov-ruby/pull/105) Remove unnecessary dependency for ruby standard gem
