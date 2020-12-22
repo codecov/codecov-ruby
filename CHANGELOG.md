@@ -1,3 +1,6 @@
+### `0.2.15`
+- #118 Include codecov/version in the gem
+
 ### `0.2.14`
 - #107 Add EditorConfig file
 - #113 Return version constant, don't duplicate version value
