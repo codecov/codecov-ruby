@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage              = 'https://github.com/codecov/codecov-ruby'
   s.license               = 'MIT'
   s.platform              = Gem::Platform::RUBY
-  s.required_ruby_version = '~> 2.4'
+  s.required_ruby_version = '>= 2.4'
   s.version               = ::Codecov::VERSION
 
   s.add_dependency 'simplecov', '>= 0.15', '< 0.21'
