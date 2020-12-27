@@ -11,11 +11,24 @@ Gem::Specification.new do |s|
   s.files                 = Dir[
     'lib/**/*.rb', 'README.md', 'LICENSE', 'CHANGELOG.md'
   ]
-  s.homepage              = 'https://github.com/codecov/codecov-ruby'
   s.license               = 'MIT'
+  s.version               = ::Codecov::VERSION
+
+  github_uri = 'https://github.com/codecov/codecov-ruby'
+
+  s.homepage = github_uri
+
+  s.metadata = {
+    'bug_tracker_uri' => "#{github_uri}/issues",
+    'changelog_uri' => "#{github_uri}/blob/v#{s.version}/CHANGELOG.md",
+    'documentation_uri' =>
+      "http://www.rubydoc.info/gems/#{s.name}/#{s.version}",
+    'homepage_uri' => s.homepage,
+    'source_code_uri' => github_uri
+  }
+
   s.platform              = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.4', '< 4'
-  s.version               = ::Codecov::VERSION
 
   s.add_dependency 'simplecov', '>= 0.15', '< 0.22'
 
