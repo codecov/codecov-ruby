@@ -8,7 +8,9 @@ Gem::Specification.new do |s|
   s.summary               = 'Hosted code coverage'
   s.description           = 'Hosted code coverage Ruby reporter.'
   s.email                 = ['hello@codecov.io']
-  s.files                 = Dir['lib/**/*.rb']
+  s.files                 = Dir[
+    'lib/**/*.rb', 'README.md', 'LICENSE', 'CHANGELOG.md'
+  ]
   s.homepage              = 'https://github.com/codecov/codecov-ruby'
   s.license               = 'MIT'
   s.platform              = Gem::Platform::RUBY
