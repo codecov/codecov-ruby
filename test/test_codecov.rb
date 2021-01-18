@@ -363,26 +363,28 @@ class TestCodecov < Minitest::Test
   end
 
   def test_appveyor
-    ENV['CI'] = 'True'
-    ENV['APPVEYOR'] = 'True'
-    ENV['APPVEYOR_REPO_BRANCH'] = 'master'
-    ENV['APPVEYOR_JOB_ID'] = 'build'
-    ENV['APPVEYOR_PULL_REQUEST_NUMBER'] = '1'
-    ENV['APPVEYOR_ACCOUNT_NAME'] = 'owner'
-    ENV['APPVEYOR_PROJECT_SLUG'] = 'repo'
-    ENV['APPVEYOR_BUILD_VERSION'] = 'job'
-    ENV['APPVEYOR_REPO_NAME'] = 'owner/repo'
-    ENV['APPVEYOR_REPO_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
-    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
-    result = upload
-    assert_equal('appveyor', result['params'][:service])
-    assert_equal('743b04806ea677403aa2ff26c6bdeb85005de658', result['params'][:commit])
-    assert_equal('master', result['params'][:branch])
-    assert_equal('owner/repo', result['params'][:slug])
-    assert_equal('1', result['params'][:pr])
-    assert_equal('build', result['params'][:build])
-    assert_equal('owner/repo/job', result['params'][:job])
-    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    %w[True true].each do |enabled_value|
+      ENV['CI'] = enabled_value
+      ENV['APPVEYOR'] = enabled_value
+      ENV['APPVEYOR_REPO_BRANCH'] = 'master'
+      ENV['APPVEYOR_JOB_ID'] = 'build'
+      ENV['APPVEYOR_PULL_REQUEST_NUMBER'] = '1'
+      ENV['APPVEYOR_ACCOUNT_NAME'] = 'owner'
+      ENV['APPVEYOR_PROJECT_SLUG'] = 'repo'
+      ENV['APPVEYOR_BUILD_VERSION'] = 'job'
+      ENV['APPVEYOR_REPO_NAME'] = 'owner/repo'
+      ENV['APPVEYOR_REPO_COMMIT'] = '743b04806ea677403aa2ff26c6bdeb85005de658'
+      ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+      result = upload
+      assert_equal('appveyor', result['params'][:service])
+      assert_equal('743b04806ea677403aa2ff26c6bdeb85005de658', result['params'][:commit])
+      assert_equal('master', result['params'][:branch])
+      assert_equal('owner/repo', result['params'][:slug])
+      assert_equal('1', result['params'][:pr])
+      assert_equal('build', result['params'][:build])
+      assert_equal('owner/repo/job', result['params'][:job])
+      assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+    end
   end
 
   def test_circleci

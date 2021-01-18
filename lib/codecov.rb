@@ -47,7 +47,8 @@ class SimpleCov::Formatter::Codecov
   end
 
   def detect_ci
-    ci = if (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
+    ci = if (ENV['CI'] == 'True' && ENV['APPVEYOR'] == 'True') ||
+            (ENV['CI'] == 'true' && ENV['APPVEYOR'] == 'true')
            APPVEYOR
          elsif !ENV['TF_BUILD'].nil?
            AZUREPIPELINES
