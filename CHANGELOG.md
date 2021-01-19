@@ -1,3 +1,7 @@
+### `0.3.0`
+- #124 Ruby 3.0 support
+- #125 open simplecov requirement to 0.21.x
+
 ### `0.2.15`
 - #118 Include codecov/version in the gem
 
