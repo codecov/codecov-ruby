@@ -11,7 +11,7 @@ require_relative 'codecov/uploader'
 
 class SimpleCov::Formatter::Codecov
   def format(result, disable_net_blockers = true)
-    report = Codecov::Simplecov::Formatter.format(result)
-    Codecov::Uploader(report, disable_net_blockers)
+    report = Codecov::SimpleCov::Formatter.format(result)
+    Codecov::Uploader.upload(report, disable_net_blockers)
   end
 end

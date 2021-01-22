@@ -6,7 +6,7 @@ require 'net/http'
 require 'simplecov'
 require 'zlib'
 
-require_relative 'codecov/version'
+require_relative 'version'
 
 class Codecov::Uploader
   ### CIs
@@ -32,7 +32,7 @@ class Codecov::Uploader
     WERCKER = 'Wercker CI'
   ].freeze
 
-  def upload(report, disable_net_blockers = true)
+  def self.upload(report, disable_net_blockers = true)
     net_blockers(:off) if disable_net_blockers
 
     display_header
@@ -50,7 +50,7 @@ class Codecov::Uploader
     report
   end
 
-  def display_header
+  def self.display_header
     puts [
       '',
       '  _____          _',
@@ -64,7 +64,7 @@ class Codecov::Uploader
     ].join("\n")
   end
 
-  def detect_ci
+  def self.detect_ci
     ci = if (ENV['CI'] == 'True') && (ENV['APPVEYOR'] == 'True')
            APPVEYOR
          elsif !ENV['TF_BUILD'].nil?
@@ -114,7 +114,7 @@ class Codecov::Uploader
     ci
   end
 
-  def build_params(ci)
+  def self.build_params(ci)
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
@@ -324,7 +324,7 @@ class Codecov::Uploader
     params
   end
 
-  def retry_request(req, https)
+  def self.retry_request(req, https)
     retries = 3
     begin
       response = https.request(req)
@@ -351,7 +351,7 @@ class Codecov::Uploader
     response
   end
 
-  def gzip_report(report)
+  def self.gzip_report(report)
     puts [green('==>'), 'Gzipping contents'].join(' ')
 
     io = StringIO.new
@@ -362,7 +362,7 @@ class Codecov::Uploader
     io.string
   end
 
-  def upload_to_codecov(ci, report)
+  def self.upload_to_codecov(ci, report)
     url = ENV['CODECOV_URL'] || 'https://codecov.io'
     is_enterprise = url != 'https://codecov.io'
 
@@ -391,7 +391,7 @@ class Codecov::Uploader
     response || upload_to_v2(url, gzipped_report, query, query_without_token)
   end
 
-  def upload_to_v4(url, report, query, query_without_token)
+  def self.upload_to_v4(url, report, query, query_without_token)
     uri = URI.parse(url.chomp('/') + '/upload/v4')
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
@@ -446,7 +446,7 @@ class Codecov::Uploader
     end
   end
 
-  def upload_to_v2(url, report, query, query_without_token)
+  def self.upload_to_v2(url, report, query, query_without_token)
     uri = URI.parse(url.chomp('/') + '/upload/v2')
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = !url.match(/^https/).nil?
@@ -468,7 +468,7 @@ class Codecov::Uploader
     res&.body
   end
 
-  def handle_report_response(report)
+  def self.handle_report_response(report)
     if report['result']['uploaded']
       puts "    View reports at #{report['result']['url']}"
     else
@@ -482,7 +482,7 @@ class Codecov::Uploader
   #
   # @param switch Toggle switch for Net Blockers.
   # @return [Boolean]
-  def net_blockers(switch)
+  def self.net_blockers(switch)
     throw 'Only :on or :off' unless %i[on off].include? switch
 
     if defined?(VCR)
@@ -509,15 +509,15 @@ class Codecov::Uploader
   end
 
   # Convenience color methods
-  def black(str)
+  def self.black(str)
     str.nil? ? '' : "\e[30m#{str}\e[0m"
   end
 
-  def red(str)
+  def self.red(str)
     str.nil? ? '' : "\e[31m#{str}\e[0m"
   end
 
-  def green(str)
+  def self.green(str)
     str.nil? ? '' : "\e[32m#{str}\e[0m"
   end
 end
