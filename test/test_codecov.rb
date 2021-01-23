@@ -3,10 +3,10 @@
 require_relative 'helper'
 
 class TestCodecov < Minitest::Test
-  CI = SimpleCov::Formatter::Codecov.new.detect_ci
+  CI = Codecov::Uploader.detect_ci
 
   REALENV =
-    if CI == SimpleCov::Formatter::Codecov::CIRCLE
+    if CI == Codecov::Uploader::CIRCLE
       {
         'CIRCLECI' => ENV['CIRCLECI'],
         'CIRCLE_BUILD_NUM' => ENV['CIRCLE_BUILD_NUM'],
@@ -18,7 +18,7 @@ class TestCodecov < Minitest::Test
         'CIRCLE_BRANCH' => ENV['CIRCLE_BRANCH'],
         'CIRCLE_SHA1' => ENV['CIRCLE_SHA1']
       }
-    elsif CI == SimpleCov::Formatter::Codecov::GITHUB
+    elsif CI == Codecov::Uploader::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
@@ -27,7 +27,7 @@ class TestCodecov < Minitest::Test
         'GITHUB_RUN_ID' => ENV['GITHUB_RUN_ID'],
         'GITHUB_SHA' => ENV['GITHUB_SHA']
       }
-    elsif CI == SimpleCov::Formatter::Codecov::TRAVIS
+    elsif CI == Codecov::Uploader::TRAVIS
       {
         'TRAVIS' => ENV['TRAVIS'],
         'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
