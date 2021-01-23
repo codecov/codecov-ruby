@@ -647,7 +647,7 @@ class TestCodecov < Minitest::Test
     ENV['CODEBUILD_CI'] = "true"
     ENV['CODEBUILD_INITIATOR'] = "codepipeline/codepipeline-name"
     ENV['CODEBUILD_BUILD_ID'] = "codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3"
-    ENV['CODEBUILD_BUILD_URL'] = "https://us-east-1.console.aws.amazon.com/codebuild/home?region=us-east-1#/builds/codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3/view/new"
+    ENV['CODEBUILD_BUILD_URL'] = "http://codebuild"
     ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
     ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = nil
     ENV['CODEBUILD_SOURCE_VERSION'] = 'arn:aws:s3:::bucket/codepipeline-name/SourceActionName/cf4IT8b'
@@ -662,6 +662,7 @@ class TestCodecov < Minitest::Test
     assert_equal("codebuild", result['params'][:service])
     assert_equal("d653b934ed59c1a785cc1cc79d08c9aaa4eba73b", result['params'][:commit])
     assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:build])
+    assert_equal("http://codebuild", result['params'][:build_url])
     assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:job])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal("branch-name", result['params'][:branch])
