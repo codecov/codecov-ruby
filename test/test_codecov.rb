@@ -169,10 +169,14 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLECI'] = nil
     ENV['CODEBUILD_CI'] = nil
     ENV['CODEBUILD_BUILD_ID'] = nil
+    ENV['CODEBUILD_BUILD_URL'] = nil
+    ENV['CODEBUILD_INITIATOR'] = nil
     ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = nil
     ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = nil
     ENV['CODEBUILD_SOURCE_VERSION'] = nil
     ENV['CODEBUILD_SOURCE_REPO_URL'] = nil
+    ENV['CODESTAR_BRANCH_NAME'] = nil
+    ENV['CODESTAR_FULL_REPOSITORY_NAME'] = nil
     ENV['CODECOV_ENV'] = nil
     ENV['CODECOV_SLUG'] = nil
     ENV['CODECOV_TOKEN'] = nil
@@ -636,6 +640,32 @@ class TestCodecov < Minitest::Test
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal("master", result['params'][:branch])
     assert_equal("123", result['params'][:pr])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+
+  def test_codebuild_codepipeline
+    ENV['CODEBUILD_CI'] = "true"
+    ENV['CODEBUILD_INITIATOR'] = "codepipeline/codepipeline-name"
+    ENV['CODEBUILD_BUILD_ID'] = "codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3"
+    ENV['CODEBUILD_BUILD_URL'] = "https://us-east-1.console.aws.amazon.com/codebuild/home?region=us-east-1#/builds/codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3/view/new"
+    ENV['CODEBUILD_RESOLVED_SOURCE_VERSION'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CODEBUILD_WEBHOOK_HEAD_REF'] = nil
+    ENV['CODEBUILD_SOURCE_VERSION'] = 'arn:aws:s3:::bucket/codepipeline-name/SourceActionName/cf4IT8b'
+    ENV['CODEBUILD_SOURCE_REPO_URL'] = nil
+    # set CodeStarSourceConnection namespace and CodeBuild variables manually in CodePipeline, see source code comments
+    ENV['CODESTAR_BRANCH_NAME'] = 'branch-name'
+    ENV['CODESTAR_FULL_REPOSITORY_NAME'] = 'owner/repo'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+
+    assert_equal("codebuild", result['params'][:service])
+    assert_equal("d653b934ed59c1a785cc1cc79d08c9aaa4eba73b", result['params'][:commit])
+    assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:build])
+    assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:job])
+    assert_equal("owner/repo", result['params'][:slug])
+    assert_equal("branch-name", result['params'][:branch])
+    assert_equal("arn:aws:s3:::bucket/codepipeline-name/SourceActionName/cf4IT8b", result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 

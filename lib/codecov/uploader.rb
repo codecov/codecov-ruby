@@ -180,16 +180,27 @@ class Codecov::Uploader
       params[:commit] = ENV['CIRCLE_SHA1']
     when CODEBUILD
       # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+      # To use CodePipeline as CodeBuild source which sets no branch and slug variable:
+      #
+      # 1. Set up CodeStarSourceConnection as source action provider
+      #    https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodestarConnectionSource.html
+      # 2. Add a Namespace to your source action. Example: "CodeStar".
+      #    https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html#reference-variables-concepts-namespaces
+      # 3. Add these environment variables to your CodeBuild action:
+      #   - CODESTAR_BRANCH_NAME: #{GitHub.BranchName}
+      #   - CODESTAR_FULL_REPOSITORY_NAME: #{GitHub.FullRepositoryName} (optional)
+      #     https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html#action-reference-CodeBuild-config
       params[:service] = 'codebuild'
-      params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF'].split('/')[2]
+      params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF']&.split('/')&.[](2) || ENV['CODESTAR_BRANCH_NAME']
       params[:build] = ENV['CODEBUILD_BUILD_ID']
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
       params[:job] = ENV['CODEBUILD_BUILD_ID']
-      params[:slug] = ENV['CODEBUILD_SOURCE_REPO_URL'].match(/.*github.com\/(?<slug>.*).git/)['slug']
+      params[:slug] = ENV['CODEBUILD_SOURCE_REPO_URL']&.match(/.*github.com\/(?<slug>.*).git/)&.[]('slug') || ENV['CODESTAR_FULL_REPOSITORY_NAME']
       params[:pr] = if ENV['CODEBUILD_SOURCE_VERSION']
                       matched = ENV['CODEBUILD_SOURCE_VERSION'].match(%r{pr/(?<pr>.*)})
                       matched.nil? ? ENV['CODEBUILD_SOURCE_VERSION'] : matched['pr']
                     end
+      params[:build_url] = ENV['CODEBUILD_BUILD_URL']
     when CODESHIP
       # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
       params[:service] = 'codeship'
