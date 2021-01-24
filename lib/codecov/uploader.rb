@@ -187,16 +187,18 @@ class Codecov::Uploader
       # 2. Add a Namespace to your source action. Example: "CodeStar".
       #    https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html#reference-variables-concepts-namespaces
       # 3. Add these environment variables to your CodeBuild action:
-      #   - CODESTAR_BRANCH_NAME: #{GitHub.BranchName}
-      #   - CODESTAR_FULL_REPOSITORY_NAME: #{GitHub.FullRepositoryName} (optional)
+      #   - CODESTAR_BRANCH_NAME: #{CodeStar.BranchName}
+      #   - CODESTAR_FULL_REPOSITORY_NAME: #{CodeStar.FullRepositoryName} (optional)
       #     https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html#action-reference-CodeBuild-config
+      #
+      # PRs are not supported with CodePipeline.
       params[:service] = 'codebuild'
       params[:branch] = ENV['CODEBUILD_WEBHOOK_HEAD_REF']&.split('/')&.[](2) || ENV['CODESTAR_BRANCH_NAME']
       params[:build] = ENV['CODEBUILD_BUILD_ID']
       params[:commit] = ENV['CODEBUILD_RESOLVED_SOURCE_VERSION']
       params[:job] = ENV['CODEBUILD_BUILD_ID']
       params[:slug] = ENV['CODEBUILD_SOURCE_REPO_URL']&.match(/.*github.com\/(?<slug>.*).git/)&.[]('slug') || ENV['CODESTAR_FULL_REPOSITORY_NAME']
-      params[:pr] = if ENV['CODEBUILD_SOURCE_VERSION']
+      params[:pr] = if ENV['CODEBUILD_SOURCE_VERSION'] && !(ENV['CODEBUILD_INITIATOR'] =~ /codepipeline/)
                       matched = ENV['CODEBUILD_SOURCE_VERSION'].match(%r{pr/(?<pr>.*)})
                       matched.nil? ? ENV['CODEBUILD_SOURCE_VERSION'] : matched['pr']
                     end

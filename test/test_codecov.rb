@@ -666,7 +666,7 @@ class TestCodecov < Minitest::Test
     assert_equal("codebuild-project:458dq3q8-7354-4513-8702-ea7b9c81efb3", result['params'][:job])
     assert_equal("owner/repo", result['params'][:slug])
     assert_equal("branch-name", result['params'][:branch])
-    assert_equal("arn:aws:s3:::bucket/codepipeline-name/SourceActionName/cf4IT8b", result['params'][:pr])
+    assert_nil(result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
