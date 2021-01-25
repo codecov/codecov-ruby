@@ -666,7 +666,7 @@ class TestCodecov < Minitest::Test
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
                     stub_file('path/lib/something.rb', []),
-                    stub_file('pathpath/libpath_somefile.rb', [])
+                    stub_file('path/path/lib/path_somefile.rb', [])
                   ])
     SimpleCov.stubs(:root).returns('path')
     data = formatter.format(result)
