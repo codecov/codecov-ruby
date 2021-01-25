@@ -674,7 +674,7 @@ class TestCodecov < Minitest::Test
     puts data['params']
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil],
-      'path/libpath_somefile.rb' => [nil]
+      'path/lib/path_somefile.rb' => [nil]
     }.to_json)
   end
 
