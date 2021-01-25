@@ -66,10 +66,10 @@ class TestCodecov < Minitest::Test
     WebMock.enable!
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
-                    stub_file('/path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
-                    stub_file('/path/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil])
+                    stub_file('path/lib/something.rb', [1, 0, 0, nil, 1, nil]),
+                    stub_file('path/lib/somefile.rb', [1, nil, 1, 1, 1, 0, 0, nil, 1, nil])
                   ])
-    SimpleCov.stubs(:root).returns('/path')
+    SimpleCov.stubs(:root).returns('path')
     success_stubs if success
     data = formatter.format(result, false)
     puts data
@@ -665,16 +665,16 @@ class TestCodecov < Minitest::Test
 
     formatter = SimpleCov::Formatter::Codecov.new
     result = stub('SimpleCov::Result', files: [
-                    stub_file('/path/lib/something.rb', []),
-                    stub_file('/path/path/lib/path_somefile.rb', [])
+                    stub_file('path/lib/something.rb', []),
+                    stub_file('pathpath/libpath_somefile.rb', [])
                   ])
-    SimpleCov.stubs(:root).returns('/path')
+    SimpleCov.stubs(:root).returns('path')
     data = formatter.format(result)
     puts data
     puts data['params']
     assert_equal(data['coverage'].to_json, {
       'lib/something.rb' => [nil],
-      'path/lib/path_somefile.rb' => [nil]
+      'path/libpath_somefile.rb' => [nil]
     }.to_json)
   end
 
