@@ -1,5 +1,5 @@
 ### `0.4.1`
-- #
+- #133 Write down to file when using the formatter
 
 ### `0.4.0`
 - #130 Split uploader from formatter
