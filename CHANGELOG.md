@@ -1,3 +1,6 @@
+### `0.4.0`
+- #130 Split uploader from formatter
+
 ### `0.3.0`
 - #124 Ruby 3.0 support
 - #125 open simplecov requirement to 0.21.x
