@@ -17,6 +17,9 @@ module Codecov
         }
         result.update(result_to_codecov(report))
 
+        puts "Root #{::SimpleCov.root}"
+        puts "Coverage dir #{::SimpleCov.coverage_dir}"
+        puts "Coverage path #{::SimpleCov.coverage_path}"
         result_path = File.join(::SimpleCov.coverage_path, RESULT_FILE_NAME)
         if File.writeable?(result_path)
           File.write(result_path, result['codecov'])
