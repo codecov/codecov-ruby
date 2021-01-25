@@ -1,5 +1,5 @@
 ### `0.4.0`
-- # Split Ruby uploader from formatter
+- #130 Split uploader from formatter
 
 ### `0.3.0`
 - #124 Ruby 3.0 support
