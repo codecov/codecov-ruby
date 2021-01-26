@@ -1,5 +1,5 @@
 ### `0.4.2`
-- # Wrap file creation in try/catch
+- #134 Wrap file creation in try/catch
 
 ### `0.4.1`
 - #133 Write down to file when using the formatter
