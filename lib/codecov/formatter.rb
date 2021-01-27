@@ -17,12 +17,13 @@ module Codecov
         }
         result.update(result_to_codecov(report))
 
-        result_path = File.join(::SimpleCov.coverage_path, RESULT_FILE_NAME)
-        if File.writable?(result_path)
+        begin
+          result_path = File.join(::SimpleCov.coverage_path, RESULT_FILE_NAME)
           File.write(result_path, result['codecov'])
-          puts "Coverage report generated to #{result_path}.\#{result}"
-        else
-          puts "Could not write coverage report to file #{result_path}.\n#{result}"
+          puts "Coverage report generated to #{result_path}.\n#{result}"
+        rescue Errno::ENOENT => e
+          puts e
+          puts "Could not write coverage report to file.\n#{result}"
         end
 
         result
