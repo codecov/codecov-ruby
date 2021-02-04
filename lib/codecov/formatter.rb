@@ -20,7 +20,8 @@ module Codecov
         begin
           result_path = File.join(::SimpleCov.coverage_path, RESULT_FILE_NAME)
           File.write(result_path, result['codecov'])
-          puts "Coverage report generated to #{result_path}.\n#{result['coverage'][0,255]}..."
+          overflow = result['coverage'].to_s.length > 256 ? '...' : ''
+          puts "Coverage report generated to #{result_path}.\n#{result['coverage'].to_s.[](0, 255)}#{overflow}"
         rescue Errno::ENOENT => e
           puts e
           puts "Could not write coverage report to file.\n#{result}"
