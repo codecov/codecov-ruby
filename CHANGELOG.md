@@ -1,3 +1,6 @@
+### `0.4.3`
+-
+
 ### `0.4.2`
 - #134 Wrap file creation in try/catch
 
