@@ -1,3 +1,6 @@
+### `0.4.3`
+- #135 Shorten coverage message on formatter
+
 ### `0.4.2`
 - #134 Wrap file creation in try/catch
 
