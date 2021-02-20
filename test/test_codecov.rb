@@ -145,6 +145,14 @@ class TestCodecov < Minitest::Test
     ENV['BUILDKITE_BUILD_URL'] = nil
     ENV['BUILDKITE_PROJECT_SLUG'] = nil
     ENV['BUILDKITE_COMMIT'] = nil
+    ENV['CF_BRANCH'] = nil
+    ENV['CF_BUILD_ID'] = nil
+    ENV['CF_BUILD_URL'] = nil
+    ENV['CF_PULL_REQUEST_NUMBER'] = nil
+    ENV['CF_REPO_NAME'] = nil
+    ENV['CF_REPO_OWNER'] = nil
+    ENV['CF_REVISION'] = nil
+    ENV['CF_URL'] = nil
     ENV['CI'] = 'true'
     ENV['CI_BRANCH'] = nil
     ENV['CI_BUILD_ID'] = nil
@@ -688,6 +696,29 @@ class TestCodecov < Minitest::Test
     assert_equal('owner/repo', result['params'][:slug])
     assert_equal('master', result['params'][:branch])
     assert_equal('git-commit-hash-12345', result['params'][:pr])
+    assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+
+  def test_codefresh
+    ENV['CF_URL'] = 'https://g.codefresh.io'
+    ENV['CF_BUILD_ID'] = '458dq3q8-7354-4513-8702-ea7b9c81efb3'
+    ENV['CF_BUILD_URL'] = 'https://g.codefresh.io/build/458dq3q8-7354-4513-8702-ea7b9c81efb3'
+    ENV['CF_REVISION'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CF_BRANCH'] = 'master'
+    ENV['CF_PULL_REQUEST_NUMBER'] = '123'
+    ENV['CF_REPO_OWNER'] = 'owner'
+    ENV['CF_REPO_NAME'] = 'repo'
+    ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
+
+    result = upload
+
+    assert_equal('codefresh', result['params'][:service])
+    assert_equal('d653b934ed59c1a785cc1cc79d08c9aaa4eba73b', result['params'][:commit])
+    assert_equal('458dq3q8-7354-4513-8702-ea7b9c81efb3', result['params'][:build])
+    assert_equal('owner/repo', result['params'][:slug])
+    assert_equal('master', result['params'][:branch])
+    assert_equal('123', result['params'][:pr])
+    assert_equal('https://g.codefresh.io/build/458dq3q8-7354-4513-8702-ea7b9c81efb3', result['params'][:build_url])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
 
