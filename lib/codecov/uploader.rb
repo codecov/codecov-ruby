@@ -208,7 +208,7 @@ class Codecov::Uploader
       params[:build_url] = ENV['CODEBUILD_BUILD_URL']
     when CODEFRESH
       # https://codefresh.io/docs/docs/codefresh-yaml/variables/
-      params[:service] = 'codefresh'
+      # params[:service] = 'codefresh'
       params[:branch] = ENV['CF_BRANCH']
       params[:build] = ENV['CF_BUILD_ID']
       params[:build_url] = ENV['CF_BUILD_URL']
