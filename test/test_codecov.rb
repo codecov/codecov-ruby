@@ -700,6 +700,7 @@ class TestCodecov < Minitest::Test
   end
 
   def test_codefresh
+    ENV['CI'] = 'true'
     ENV['CF_URL'] = 'https://g.codefresh.io'
     ENV['CF_BUILD_ID'] = '458dq3q8-7354-4513-8702-ea7b9c81efb3'
     ENV['CF_BUILD_URL'] = 'https://g.codefresh.io/build/458dq3q8-7354-4513-8702-ea7b9c81efb3'
