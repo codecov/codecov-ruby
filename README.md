@@ -51,6 +51,7 @@ Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or App
 | [Bitrise CI](https://www.bitrise.io/) |
 | [Buildkite CI](https://buildkite.com/) |
 | [CodeBuild CI](https://aws.amazon.com/codebuild/) |
+| [Codefresh CI](https://codefresh.io/) |
 | [CodePipeline](https://aws.amazon.com/codepipeline/) |
 | [Circle CI](https://circleci.com/) |
 | [Codeship CI](https://codeship.com/) |

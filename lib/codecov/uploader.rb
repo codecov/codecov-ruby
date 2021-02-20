@@ -18,6 +18,7 @@ class Codecov::Uploader
     BUILDKITE = 'Buildkite CI',
     CIRCLE = 'Circle CI',
     CODEBUILD = 'Codebuild CI',
+    CODEFRESH = 'Codefresh CI',
     CODESHIP = 'Codeship CI',
     DRONEIO = 'Drone CI',
     GITHUB = 'GitHub Actions',
@@ -79,6 +80,8 @@ class Codecov::Uploader
            CIRCLE
          elsif ENV['CODEBUILD_CI'] == 'true'
            CODEBUILD
+         elsif (ENV['CI'] == 'true') && !ENV['CF_URL'].nil?
+           CODEFRESH
          elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
            CODESHIP
          elsif ((ENV['CI'] == 'true') || (ENV['CI'] == 'drone')) && (ENV['DRONE'] == 'true')
@@ -203,6 +206,15 @@ class Codecov::Uploader
                       matched.nil? ? ENV['CODEBUILD_SOURCE_VERSION'] : matched['pr']
                     end
       params[:build_url] = ENV['CODEBUILD_BUILD_URL']
+    when CODEFRESH
+      # https://codefresh.io/docs/docs/codefresh-yaml/variables/
+      params[:service] = 'codefresh'
+      params[:branch] = ENV['CF_BRANCH']
+      params[:build] = ENV['CF_BUILD_ID']
+      params[:build_url] = ENV['CF_BUILD_URL']
+      params[:commit] = ENV['CF_REVISION']
+      params[:pr] = ENV['CF_PULL_REQUEST_NUMBER']
+      params[:slug] = ENV['CF_REPO_OWNER'] + '/' + ENV['CF_REPO_NAME']
     when CODESHIP
       # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
       params[:service] = 'codeship'
