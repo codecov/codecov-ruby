@@ -37,7 +37,17 @@ class Codecov::Uploader
 
     display_header
     ci = detect_ci
-    response = upload_to_codecov(ci, report)
+
+    begin
+      response = upload_to_codecov(ci, report)
+    rescue StandardError => e
+      puts `#{e.message}`
+      puts `#{e.backtrace.join("\n")}`
+      raise e unless ::SimpleCov.pass_ci_if_error
+
+      response = false
+    end
+
     if response == false
       report['result'] = { 'uploaded' => false }
       return report
