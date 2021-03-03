@@ -43,7 +43,7 @@ class Codecov::Uploader
     rescue StandardError => e
       puts `#{e.message}`
       puts `#{e.backtrace.join("\n")}`
-      raise e unless ::SimpleCov.pass_ci_if_error
+      raise e unless ::Codecov.pass_ci_if_error
 
       response = false
     end
@@ -544,3 +544,6 @@ class Codecov::Uploader
     str.nil? ? '' : "\e[32m#{str}\e[0m"
   end
 end
+
+require_relative 'configuration'
+Codecov.extend Codecov::Configuration
