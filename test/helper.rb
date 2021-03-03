@@ -9,6 +9,7 @@ SimpleCov.start do
 end
 require_relative '../lib/codecov'
 SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
+Codecov.pass_ci_if_error = true
 
 require 'minitest/autorun'
 require 'mocha/minitest'

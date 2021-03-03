@@ -1,3 +1,6 @@
+### `0.5.1`
+- #138 Update pass_ci_if_error flag
+
 ### `0.5.0`
 - #137 Place uploader in try/rescue block and add pass_ci_if_error flag
 
