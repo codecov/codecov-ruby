@@ -6,7 +6,8 @@ class TestCodecov < Minitest::Test
   CI = Codecov::Uploader.detect_ci
 
   REALENV =
-    if CI == Codecov::Uploader::CIRCLE
+    case CI
+    when Codecov::Uploader::CIRCLE
       {
         'CIRCLECI' => ENV['CIRCLECI'],
         'CIRCLE_BUILD_NUM' => ENV['CIRCLE_BUILD_NUM'],
@@ -18,7 +19,7 @@ class TestCodecov < Minitest::Test
         'CIRCLE_BRANCH' => ENV['CIRCLE_BRANCH'],
         'CIRCLE_SHA1' => ENV['CIRCLE_SHA1']
       }
-    elsif CI == Codecov::Uploader::GITHUB
+    when Codecov::Uploader::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
@@ -27,7 +28,7 @@ class TestCodecov < Minitest::Test
         'GITHUB_RUN_ID' => ENV['GITHUB_RUN_ID'],
         'GITHUB_SHA' => ENV['GITHUB_SHA']
       }
-    elsif CI == Codecov::Uploader::TRAVIS
+    when Codecov::Uploader::TRAVIS
       {
         'TRAVIS' => ENV['TRAVIS'],
         'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
