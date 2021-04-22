@@ -59,7 +59,6 @@ module Codecov
 
         invalid_directories = [
           'node_modules/',
-          'public/',
           'storage/',
           'tmp/',
           'vendor/'
