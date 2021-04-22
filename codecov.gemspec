@@ -33,9 +33,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'simplecov', '>= 0.15', '< 0.22'
 
   s.add_development_dependency 'minitest', '~> 5.0'
-  s.add_development_dependency 'minitest-ci', '~> 3.0'
   s.add_development_dependency 'mocha', '~> 1.0'
   s.add_development_dependency 'rake', '~> 13.0'
-  s.add_development_dependency 'rubocop', '~> 1.0'
   s.add_development_dependency 'webmock', '~> 3.0'
 end
