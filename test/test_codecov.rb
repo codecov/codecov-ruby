@@ -687,9 +687,27 @@ class TestCodecov < Minitest::Test
     assert_equal('git-commit-hash-12345', result['params'][:pr])
     assert_equal('owner/repo', result['params'][:slug])
     assert_equal('master', result['params'][:branch])
-    assert_equal('git-commit-hash-12345', result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
   end
+
+  def test_cirrus_ci
+    ENV['CIRRUS_CI'] = 'true'
+    ENV['CIRRUS_BRANCH'] = 'master'
+    ENV['CIRRUS_BUILD_ID'] = '12345'
+    ENV['CIRRUS_TASK_ID'] = '54321'
+    ENV['CIRRUS_CHANGE_IN_REPO'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CIRRUS_TASK_NAME'] = 'test'
+    ENV['CIRRUS_PR'] = '10'
+    ENV['CIRRUS_REPO_FULL_NAME'] = 'owner/repo'
+
+    result = upload
+
+    assert_equal('cirrus-ci', result['params'][:service])
+    assert_equal('d653b934ed59c1a785cc1cc79d08c9aaa4eba73b', result['params'][:commit])
+    assert_equal('12345', result['params'][:build])
+    assert_equal('10', result['params'][:pr])
+    assert_equal('owner/repo', result['params'][:slug])
+    assert_equal('master', result['params'][:branch])
 
   def test_filenames_are_shortened_correctly
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
