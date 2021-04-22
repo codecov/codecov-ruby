@@ -708,6 +708,7 @@ class TestCodecov < Minitest::Test
     assert_equal('10', result['params'][:pr])
     assert_equal('owner/repo', result['params'][:slug])
     assert_equal('master', result['params'][:branch])
+  end
 
   def test_filenames_are_shortened_correctly
     ENV['CODECOV_TOKEN'] = 'f881216b-b5c0-4eb1-8f21-b51887d1d506'
