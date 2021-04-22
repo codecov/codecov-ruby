@@ -42,8 +42,8 @@ class Codecov::Uploader
     begin
       response = upload_to_codecov(ci, report)
     rescue StandardError => e
-      puts `#{e.message}`
-      puts `#{e.backtrace.join("\n")}`
+      puts e.message
+      puts e.backtrace.join("\n")
       raise e unless ::Codecov.pass_ci_if_error
 
       response = false
@@ -88,7 +88,7 @@ class Codecov::Uploader
            BUILDKITE
          elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
            CIRCLE
-         elsif (ENV['CIRRUS_CI'] != '')
+         elsif !ENV['CIRRUS_CI'].nil?
            CIRRUS
          elsif ENV['CODEBUILD_CI'] == 'true'
            CODEBUILD
@@ -195,7 +195,7 @@ class Codecov::Uploader
       # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
       params[:branch] = ENV['CIRRUS_BRANCH']
       params[:build] = ENV['CIRRUS_BUILD_ID']
-      params[:build_url] = `https://cirrus-ci.com/tasks/#{ENV['CIRRUS_TASK_ID']}`
+      params[:build_url] = "https://cirrus-ci.com/tasks/#{ENV['CIRRUS_TASK_ID']}"
       params[:commit] = ENV['CIRRUS_CHANGE_IN_REPO']
       params[:job] = ENV['CIRRUS_TASK_NAME']
       params[:pr] = ENV['CIRRUS_PR']

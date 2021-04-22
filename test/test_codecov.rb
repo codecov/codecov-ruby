@@ -167,6 +167,14 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLE_PROJECT_USERNAME'] = nil
     ENV['CIRCLE_SHA1'] = nil
     ENV['CIRCLECI'] = nil
+    ENV['CIRRUS_CI'] = nil
+    ENV['CIRRUS_BRANCH'] = nil
+    ENV['CIRRUS_BUILD_ID'] = nil
+    ENV['CIRRUS_TASK_ID'] = nil
+    ENV['CIRRUS_CHANGE_IN_REPO'] = nil
+    ENV['CIRRUS_TASK_NAME'] = nil
+    ENV['CIRRUS_PR'] = nil
+    ENV['CIRRUS_REPO_FULL_NAME'] = nil
     ENV['CODEBUILD_CI'] = nil
     ENV['CODEBUILD_BUILD_ID'] = nil
     ENV['CODEBUILD_BUILD_URL'] = nil
@@ -240,7 +248,7 @@ class TestCodecov < Minitest::Test
   end
 
   def test_enterprise
-    stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
+    stub_request(:post, %r{https://example.com/upload/v2})
       .to_return(
         status: 200,
         body: "{\"id\": \"12345678-1234-abcd-ef12-1234567890ab\", \"message\": \"Coverage reports upload successfully\", \"meta\": { \"status\": 200 }, \"queued\": true, \"uploaded\": true, \"url\": \"https://example.com/github/codecov/codecov-bash/commit/2f6b51562b93e72c610671644fe2a303c5c0e8e5\"}"
