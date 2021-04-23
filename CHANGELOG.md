@@ -1,3 +1,6 @@
+### `0.5.2`
+- #141 Add Cirrus CI support
+
 ### `0.5.1`
 - #138 Update pass_ci_if_error flag
 

@@ -17,6 +17,7 @@ class Codecov::Uploader
     BITRISE = 'Bitrise CI',
     BUILDKITE = 'Buildkite CI',
     CIRCLE = 'Circle CI',
+    CIRRUS = 'Cirrus CI',
     CODEBUILD = 'Codebuild CI',
     CODESHIP = 'Codeship CI',
     DRONEIO = 'Drone CI',
@@ -41,8 +42,8 @@ class Codecov::Uploader
     begin
       response = upload_to_codecov(ci, report)
     rescue StandardError => e
-      puts `#{e.message}`
-      puts `#{e.backtrace.join("\n")}`
+      puts e.message
+      puts e.backtrace.join("\n")
       raise e unless ::Codecov.pass_ci_if_error
 
       response = false
@@ -87,6 +88,8 @@ class Codecov::Uploader
            BUILDKITE
          elsif (ENV['CI'] == 'true') && (ENV['CIRCLECI'] == 'true')
            CIRCLE
+         elsif !ENV['CIRRUS_CI'].nil?
+           CIRRUS
          elsif ENV['CODEBUILD_CI'] == 'true'
            CODEBUILD
          elsif (ENV['CI'] == 'true') && (ENV['CI_NAME'] == 'codeship')
@@ -188,6 +191,16 @@ class Codecov::Uploader
       params[:pr] = ENV['CIRCLE_PR_NUMBER']
       params[:branch] = ENV['CIRCLE_BRANCH']
       params[:commit] = ENV['CIRCLE_SHA1']
+    when CIRRUS
+      # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
+      params[:branch] = ENV['CIRRUS_BRANCH']
+      params[:build] = ENV['CIRRUS_BUILD_ID']
+      params[:build_url] = "https://cirrus-ci.com/tasks/#{ENV['CIRRUS_TASK_ID']}"
+      params[:commit] = ENV['CIRRUS_CHANGE_IN_REPO']
+      params[:job] = ENV['CIRRUS_TASK_NAME']
+      params[:pr] = ENV['CIRRUS_PR']
+      params[:service] = 'cirrus-ci'
+      params[:slug] = ENV['CIRRUS_REPO_FULL_NAME']
     when CODEBUILD
       # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
       # To use CodePipeline as CodeBuild source which sets no branch and slug variable:

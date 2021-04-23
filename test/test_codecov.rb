@@ -6,7 +6,8 @@ class TestCodecov < Minitest::Test
   CI = Codecov::Uploader.detect_ci
 
   REALENV =
-    if CI == Codecov::Uploader::CIRCLE
+    case CI
+    when Codecov::Uploader::CIRCLE
       {
         'CIRCLECI' => ENV['CIRCLECI'],
         'CIRCLE_BUILD_NUM' => ENV['CIRCLE_BUILD_NUM'],
@@ -18,7 +19,7 @@ class TestCodecov < Minitest::Test
         'CIRCLE_BRANCH' => ENV['CIRCLE_BRANCH'],
         'CIRCLE_SHA1' => ENV['CIRCLE_SHA1']
       }
-    elsif CI == Codecov::Uploader::GITHUB
+    when Codecov::Uploader::GITHUB
       {
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
@@ -27,7 +28,7 @@ class TestCodecov < Minitest::Test
         'GITHUB_RUN_ID' => ENV['GITHUB_RUN_ID'],
         'GITHUB_SHA' => ENV['GITHUB_SHA']
       }
-    elsif CI == Codecov::Uploader::TRAVIS
+    when Codecov::Uploader::TRAVIS
       {
         'TRAVIS' => ENV['TRAVIS'],
         'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
@@ -167,6 +168,14 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLE_PROJECT_USERNAME'] = nil
     ENV['CIRCLE_SHA1'] = nil
     ENV['CIRCLECI'] = nil
+    ENV['CIRRUS_CI'] = nil
+    ENV['CIRRUS_BRANCH'] = nil
+    ENV['CIRRUS_BUILD_ID'] = nil
+    ENV['CIRRUS_TASK_ID'] = nil
+    ENV['CIRRUS_CHANGE_IN_REPO'] = nil
+    ENV['CIRRUS_TASK_NAME'] = nil
+    ENV['CIRRUS_PR'] = nil
+    ENV['CIRRUS_REPO_FULL_NAME'] = nil
     ENV['CODEBUILD_CI'] = nil
     ENV['CODEBUILD_BUILD_ID'] = nil
     ENV['CODEBUILD_BUILD_URL'] = nil
@@ -240,7 +249,7 @@ class TestCodecov < Minitest::Test
   end
 
   def test_enterprise
-    stub = stub_request(:post, %r{https:\/\/example.com\/upload\/v2})
+    stub_request(:post, %r{https://example.com/upload/v2})
       .to_return(
         status: 200,
         body: "{\"id\": \"12345678-1234-abcd-ef12-1234567890ab\", \"message\": \"Coverage reports upload successfully\", \"meta\": { \"status\": 200 }, \"queued\": true, \"uploaded\": true, \"url\": \"https://example.com/github/codecov/codecov-bash/commit/2f6b51562b93e72c610671644fe2a303c5c0e8e5\"}"
@@ -687,8 +696,27 @@ class TestCodecov < Minitest::Test
     assert_equal('git-commit-hash-12345', result['params'][:pr])
     assert_equal('owner/repo', result['params'][:slug])
     assert_equal('master', result['params'][:branch])
-    assert_equal('git-commit-hash-12345', result['params'][:pr])
     assert_equal('f881216b-b5c0-4eb1-8f21-b51887d1d506', result['params']['token'])
+  end
+
+  def test_cirrus_ci
+    ENV['CIRRUS_CI'] = 'true'
+    ENV['CIRRUS_BRANCH'] = 'master'
+    ENV['CIRRUS_BUILD_ID'] = '12345'
+    ENV['CIRRUS_TASK_ID'] = '54321'
+    ENV['CIRRUS_CHANGE_IN_REPO'] = 'd653b934ed59c1a785cc1cc79d08c9aaa4eba73b'
+    ENV['CIRRUS_TASK_NAME'] = 'test'
+    ENV['CIRRUS_PR'] = '10'
+    ENV['CIRRUS_REPO_FULL_NAME'] = 'owner/repo'
+
+    result = upload
+
+    assert_equal('cirrus-ci', result['params'][:service])
+    assert_equal('d653b934ed59c1a785cc1cc79d08c9aaa4eba73b', result['params'][:commit])
+    assert_equal('12345', result['params'][:build])
+    assert_equal('10', result['params'][:pr])
+    assert_equal('owner/repo', result['params'][:slug])
+    assert_equal('master', result['params'][:branch])
   end
 
   def test_filenames_are_shortened_correctly
