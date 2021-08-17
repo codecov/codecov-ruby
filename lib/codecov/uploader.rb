@@ -128,7 +128,7 @@ class Codecov::Uploader
   end
 
   def self.build_params(ci)
-    puts [red('x>'), ' No token specified or token is empty'] if ENV['CODECOV_TOKEN'].nil?
+    puts [red('x>'), 'No token specified or token is empty'].join(' ') if ENV['CODECOV_TOKEN'].nil?
 
     params = {
       'token' => ENV['CODECOV_TOKEN'],
