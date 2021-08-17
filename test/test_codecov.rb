@@ -751,7 +751,9 @@ class TestCodecov < Minitest::Test
       )
 
     ENV['CODECOV_TOKEN'] = 'fake'
+    ::Codecov.pass_ci_if_error = true
     result = upload(false)
+    ::Codecov.pass_ci_if_error = false
     assert_equal(false, result['result']['uploaded'])
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
