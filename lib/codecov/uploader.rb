@@ -54,7 +54,7 @@ class Codecov::Uploader
     handle_report_response(report)
 
     net_blockers(:on) if disable_net_blockers
-    raise StandardError.new '' unless ::Codecov.pass_ci_if_error
+    raise Error.new 'Could not upload reports to Codecov' unless ::Codecov.pass_ci_if_error
     report
   end
 
@@ -454,7 +454,7 @@ class Codecov::Uploader
 
     if s3target.empty?
       puts red(response.body)
-      # return false
+      return false
     end
 
     puts [green('-> '), 'Uploading to'].join(' ')
