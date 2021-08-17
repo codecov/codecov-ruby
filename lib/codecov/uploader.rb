@@ -49,13 +49,15 @@ class Codecov::Uploader
       response = false
     end
 
-    report['result'] = { 'uploaded' => false } unless response
-    report['result'] = JSON.parse(response)
-    handle_report_response(report)
-
     net_blockers(:on) if disable_net_blockers
 
-    raise StandardError.new 'Could not upload reports to Codecov' unless (response || ::Codecov.pass_ci_if_error)
+    unless response
+      report['result'] = { 'uploaded' => false }
+      raise StandardError.new 'Could not upload reports to Codecov' unless ::Codecov.pass_ci_if_error
+      return report
+    end
+    report['result'] = JSON.parse(response)
+    handle_report_response(report)
     report
   end
 
