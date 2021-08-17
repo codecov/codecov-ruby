@@ -128,7 +128,8 @@ class Codecov::Uploader
   end
 
   def self.build_params(ci)
-    puts [red('x>'), 'No token specified or token is empty'].join(' ') if ENV['CODECOV_TOKEN'].nil?
+    puts [red('x>'), 'No token specified or token is empty'].join(' ') if
+      ENV['CODECOV_TOKEN'].nil? || ENV['CODECOV_TOKEN'].empty?
 
     params = {
       'token' => ENV['CODECOV_TOKEN'],
@@ -453,6 +454,12 @@ class Codecov::Uploader
 
     reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
+
+    if s3target.empty?
+      puts red(response.body)
+      return false
+    end
+
     puts [green('-> '), 'Uploading to'].join(' ')
     puts s3target
 
