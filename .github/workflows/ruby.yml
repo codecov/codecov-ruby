@@ -27,4 +27,4 @@ jobs:
     - name: Run tests
       run: bundle exec rake
       env:
-        CODECOV_TOKEN: f881216b-b5c0-4eb1-8f21-b51887d1d506
+        CODECOV_TOKEN: f881216b-b5c0-4eb1-8f21-b51887d1d507
