@@ -54,7 +54,8 @@ class Codecov::Uploader
     handle_report_response(report)
 
     net_blockers(:on) if disable_net_blockers
-    raise Error.new 'Could not upload reports to Codecov' unless ::Codecov.pass_ci_if_error
+
+    raise StandardError.new 'Could not upload reports to Codecov' unless (response || ::Codecov.pass_ci_if_error)
     report
   end
 
