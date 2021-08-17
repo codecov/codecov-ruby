@@ -457,7 +457,7 @@ class Codecov::Uploader
 
     if s3target.empty?
       puts red(response.body)
-      return false
+      # return false
     end
 
     puts [green('-> '), 'Uploading to'].join(' ')
