@@ -114,6 +114,7 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLECI'] = nil
     ENV['GITHUB_ACTIONS'] = nil
     ENV['TRAVIS'] = nil
+    ::Codecov.pass_ci_if_error = true
   end
 
   def teardown
@@ -242,6 +243,7 @@ class TestCodecov < Minitest::Test
     ENV['WORKSPACE'] = nil
 
     REALENV.each_pair { |k, v| ENV[k] = v }
+    ::Codecov.pass_ci_if_error = false
   end
 
   def test_git
@@ -751,9 +753,7 @@ class TestCodecov < Minitest::Test
       )
 
     ENV['CODECOV_TOKEN'] = 'fake'
-    ::Codecov.pass_ci_if_error = true
     result = upload(false)
-    ::Codecov.pass_ci_if_error = false
     assert_equal(false, result['result']['uploaded'])
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     assert_equal(branch != 'HEAD' ? branch : 'master', result['params'][:branch])
