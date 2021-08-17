@@ -1,3 +1,6 @@
+### `0.6.0`
+- #145 Fixes issue with nil URI and provides more token information
+
 ### `0.5.2`
 - #141 Add Cirrus CI support
 
