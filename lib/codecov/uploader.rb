@@ -455,7 +455,7 @@ class Codecov::Uploader
     reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
 
-    if s3target.empty?
+    if s3target.nil? || s3target.empty?
       puts red(response.body)
       return false
     end
