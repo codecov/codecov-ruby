@@ -50,7 +50,7 @@ class Codecov::Uploader
     end
 
     if response == false
-      raise e unless ::Codecov.pass_ci_if_error
+      raise StandardError.new report unless ::Codecov.pass_ci_if_error
 
       report['result'] = { 'uploaded' => false }
       return report
