@@ -49,15 +49,15 @@ class Codecov::Uploader
       response = false
     end
 
-    if response == false
+    net_blockers(:on) if disable_net_blockers
+
+    unless response
       report['result'] = { 'uploaded' => false }
+      raise StandardError.new 'Could not upload reports to Codecov' unless ::Codecov.pass_ci_if_error
       return report
     end
-
     report['result'] = JSON.parse(response)
     handle_report_response(report)
-
-    net_blockers(:on) if disable_net_blockers
     report
   end
 
@@ -128,6 +128,9 @@ class Codecov::Uploader
   end
 
   def self.build_params(ci)
+    puts [red('x>'), 'No token specified or token is empty'].join(' ') if
+      ENV['CODECOV_TOKEN'].nil? || ENV['CODECOV_TOKEN'].empty?
+
     params = {
       'token' => ENV['CODECOV_TOKEN'],
       'flags' => ENV['CODECOV_FLAG'] || ENV['CODECOV_FLAGS'],
@@ -451,6 +454,12 @@ class Codecov::Uploader
 
     reports_url = response.body.lines[0]
     s3target = response.body.lines[1]
+
+    if s3target.nil? || s3target.empty?
+      puts red(response.body)
+      return false
+    end
+
     puts [green('-> '), 'Uploading to'].join(' ')
     puts s3target
 

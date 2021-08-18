@@ -17,10 +17,12 @@ class TestCodecov < Minitest::Test
         'CIRCLE_REPOSITORY_URL' => ENV['CIRCLE_REPOSITORY_URL'],
         'CIRCLE_PR_NUMBER' => ENV['CIRCLE_PR_NUMBER'],
         'CIRCLE_BRANCH' => ENV['CIRCLE_BRANCH'],
-        'CIRCLE_SHA1' => ENV['CIRCLE_SHA1']
+        'CIRCLE_SHA1' => ENV['CIRCLE_SHA1'],
+        'CODECOV_TOKEN' => ENV['CODECOV_TOKEN']
       }
     when Codecov::Uploader::GITHUB
       {
+        'CODECOV_TOKEN' => ENV['CODECOV_TOKEN'],
         'GITHUB_ACTIONS' => ENV['GITHUB_ACTIONS'],
         'GITHUB_HEAD_REF' => ENV['GITHUB_HEAD_REF'],
         'GITHUB_REF' => ENV['GITHUB_REF'],
@@ -30,6 +32,7 @@ class TestCodecov < Minitest::Test
       }
     when Codecov::Uploader::TRAVIS
       {
+        'CODECOV_TOKEN' => ENV['CODECOV_TOKEN'],
         'TRAVIS' => ENV['TRAVIS'],
         'TRAVIS_BRANCH' => ENV['TRAVIS_BRANCH'],
         'TRAVIS_COMMIT' => ENV['TRAVIS_COMMIT'],
@@ -39,7 +42,9 @@ class TestCodecov < Minitest::Test
         'TRAVIS_JOB_ID' => ENV['TRAVIS_JOB_ID']
       }
     else
-      {}
+      {
+        'CODECOV_TOKEN' => ENV['CODECOV_TOKEN']
+      }
     end.freeze
 
   def url
@@ -109,6 +114,7 @@ class TestCodecov < Minitest::Test
     ENV['CIRCLECI'] = nil
     ENV['GITHUB_ACTIONS'] = nil
     ENV['TRAVIS'] = nil
+    ::Codecov.pass_ci_if_error = true
   end
 
   def teardown
@@ -237,6 +243,7 @@ class TestCodecov < Minitest::Test
     ENV['WORKSPACE'] = nil
 
     REALENV.each_pair { |k, v| ENV[k] = v }
+    ::Codecov.pass_ci_if_error = false
   end
 
   def test_git
