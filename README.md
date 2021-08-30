@@ -1,10 +1,10 @@
+🚨🚨 Deprecation Notice 🚨🚨
+
+This uploader is being deprecated by the Codecov team. We recommend migrating to our [new uploader](https://docs.codecov.com/docs/codecov-uploader) as soon as possible to prevent any lapses in coverage. You can visit our blog post to learn more about our [deprecation plan](https://about.codecov.io/blog/codecov-uploader-deprecation-plan/)
+
+**On February 1, 2022 this uploader will be completely deprecated and will no longer be able to upload coverage to Codecov.**
+
 # Codecov Ruby Uploader
-
-## DEPRECATION WARNING
-
-All versions of the Ruby uploader prior to `0.2.0` will no longer be supported
-and will be removed from public use on or after *2020-08-17*.
-Please upgrade to the latest versions to continue using this uploader.
 
 [![Codecov](https://codecov.io/github/codecov/codecov-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
 [![Gem Version](https://badge.fury.io/rb/codecov.svg)](https://rubygems.org/gems/codecov)
