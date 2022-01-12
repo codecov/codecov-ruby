@@ -42,7 +42,7 @@ CODECOV_TOKEN="your repo token"
 ```
 
 Find you repo token on your repo page at [codecov.io](https://codecov.io).
-Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or AppVeyor CI.
+Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, AppVeyor CI, or GitHub Actions.
 
 ## Supported CIs
 | CI/CD |
@@ -57,6 +57,7 @@ Repo tokens are **not** required for public repos on Travis-Ci, CircleCI, or App
 | [Circle CI](https://circleci.com/) |
 | [Codeship CI](https://codeship.com/) |
 | [Drone CI](https://drone.io/) |
+| [GitHub Actions](https://github.com/features/actions) |
 | [GitLab CI](https://docs.gitlab.com/ee/ci/) |
 | [Heroku CI](https://www.heroku.com/continuous-integration) |
 | [Jenkins CI](https://www.jenkins.io/) |
