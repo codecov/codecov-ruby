@@ -108,6 +108,5 @@ CODECOV_SLUG="owner/repo"
 CODECOV_TOKEN="repository token or global token"
 ```
 
-
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-ruby?ref=badge_large)
