@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.platform              = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.4', '< 4'
 
-  s.add_dependency 'simplecov', '>= 0.15', '< 0.22'
+  s.add_dependency 'simplecov', '>= 0.15', '< 0.23'
 
   s.add_development_dependency 'minitest', '~> 5.0'
   s.add_development_dependency 'mocha', '~> 1.0'
